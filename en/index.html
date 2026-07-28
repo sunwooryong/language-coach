@@ -1,0 +1,791 @@
+<title>영어 코치 · 매일 15분</title>
+<style>
+:root{
+  --bg:#f4f6fb; --card:#ffffff; --ink:#151a24; --sub:#5d6779; --line:#e3e8f2;
+  --brand:#2f6df6; --brand2:#12b886; --warn:#f59f00; --bad:#e03131; --gold:#f0a500;
+  --chip:#eef3ff; --shadow:0 2px 10px rgba(20,30,60,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0e1117; --card:#171b24; --ink:#e9edf5; --sub:#95a0b5; --line:#252b38;
+    --brand:#5b8dff; --brand2:#2fd39c; --warn:#ffc94d; --bad:#ff6b6b; --gold:#ffc94d;
+    --chip:#1d2534; --shadow:0 2px 10px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f4f6fb; --card:#ffffff; --ink:#151a24; --sub:#5d6779; --line:#e3e8f2;
+  --brand:#2f6df6; --brand2:#12b886; --warn:#f59f00; --bad:#e03131; --gold:#f0a500;
+  --chip:#eef3ff; --shadow:0 2px 10px rgba(20,30,60,.07);
+}
+:root[data-theme="dark"]{
+  --bg:#0e1117; --card:#171b24; --ink:#e9edf5; --sub:#95a0b5; --line:#252b38;
+  --brand:#5b8dff; --brand2:#2fd39c; --warn:#ffc94d; --bad:#ff6b6b; --gold:#ffc94d;
+  --chip:#1d2534; --shadow:0 2px 10px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:460px;margin:0 auto;padding:0 14px 96px;font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;overflow-x:hidden}
+body{margin:0;background:var(--bg)}
+h1,h2,h3{margin:0}
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 2px 10px;position:sticky;top:0;background:var(--bg);z-index:5}
+.top .t{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.icbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 10px;font-size:16px;color:var(--ink);box-shadow:var(--shadow)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+.sub{color:var(--sub);font-size:13px}
+.row{display:flex;align-items:center;gap:10px}
+.sp{justify-content:space-between}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;border:0;background:var(--brand);color:#fff;font-size:16px;font-weight:800;margin-top:10px}
+.btn.g{background:var(--brand2)}
+.btn.o{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qb{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 10px;text-align:center;font-weight:700;font-size:14px;box-shadow:var(--shadow);color:var(--ink)}
+.qb .e{font-size:22px;display:block;margin-bottom:4px}
+.bar{height:10px;background:var(--chip);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.st{color:var(--brand);font-weight:900}
+.word{font-size:27px;font-weight:900;letter-spacing:-.5px}
+.pron{font-size:16px;color:var(--sub);margin-top:2px}
+.mean{font-size:17px;font-weight:700;margin-top:6px}
+.tap{position:relative;cursor:pointer}
+.spk{position:absolute;right:2px;top:2px;font-size:26px;opacity:.55}
+.tagc{display:inline-block;font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;background:var(--chip);color:var(--brand)}
+.exs{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+.ex{background:var(--chip);border-radius:12px;padding:10px;margin-bottom:8px}
+.ex b{display:block;font-size:15px}
+.ex .p{font-size:12px;color:var(--sub)}
+.ex .k{font-size:13px;margin-top:2px}
+.mini{display:inline-block;padding:8px 10px;border-radius:11px;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:13px;font-weight:700;margin-right:6px;margin-top:8px}
+.star{font-size:20px;background:none;border:0;color:var(--gold)}
+.path{display:flex;align-items:center;gap:10px;padding:10px;border-radius:13px;margin-bottom:7px;border:1px solid var(--line);background:var(--card)}
+.path.now{border-color:var(--brand);box-shadow:0 0 0 2px rgba(47,109,246,.14)}
+.path.lock{opacity:.5}
+.path .n{font-size:20px;width:26px;text-align:center}
+.opt{display:block;width:100%;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;font-weight:700;margin-bottom:9px}
+.opt.ok{border-color:var(--brand2);background:rgba(18,184,134,.14)}
+.opt.no{border-color:var(--bad);background:rgba(224,49,49,.14)}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:9}
+.nav .in{max-width:460px;margin:0 auto;display:flex;width:100%}
+.nav button{flex:1;background:none;border:0;padding:9px 0 12px;color:var(--sub);font-size:11px;font-weight:700}
+.nav button .e{display:block;font-size:20px}
+.nav button.on{color:var(--brand)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px;width:100%}
+textarea{min-height:120px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.seg button{flex:1;min-width:66px;padding:9px 4px;border-radius:11px;border:1px solid var(--line);background:transparent;color:var(--sub);font-size:13px;font-weight:700}
+.seg button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.hfbig{font-size:32px;font-weight:900;text-align:center;margin:6px 0}
+.hfko{font-size:19px;font-weight:700;text-align:center}
+.hfp{text-align:center;color:var(--sub);margin-top:4px}
+.ctl{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.ctl button{width:64px;height:64px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:23px}
+.ctl button.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.note{background:var(--chip);border-radius:12px;padding:10px;font-size:12.5px;color:var(--sub);margin-top:10px}
+.pill{display:inline-block;padding:5px 10px;border-radius:99px;background:var(--chip);font-size:12px;font-weight:800;margin:0 6px 6px 0}
+.big{font-size:40px;font-weight:900;text-align:center}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="t" id="ttl">영어 코치</div>
+    <div class="row">
+      <button class="icbtn" id="thbtn">🌓</button>
+      <button class="icbtn" id="setbtn">⚙️</button>
+    </div>
+  </div>
+  <div id="view"></div>
+</div>
+<div class="nav"><div class="in">
+  <button data-v="home" class="on"><span class="e">🏠</span>홈</button>
+  <button data-v="lesson"><span class="e">📘</span>수업</button>
+  <button data-v="review"><span class="e">🔁</span>복습</button>
+  <button data-v="cheat"><span class="e">🔎</span>치트</button>
+  <button data-v="pron"><span class="e">🗣️</span>발음</button>
+</div></div>
+<audio id="keepAlive" loop playsinline style="display:none"></audio>
+
+<script>
+/*VOCAB_START*/
+var VOCAB=[
+["coach","Focus","집중해","「포」커스",[["q","Can you focus?","집중할 수 있어?","캔 유 「포」커스"],["a","Yes I can focus.","네 집중할 수 있어요","예스 아이 캔 「포」커스"],["c","Focus on the target.","표적에 집중해","「포」커스 온 더 「타」겟"]]],
+["coach","Breathe","숨 쉬어","브「리」드",[["q","Do you breathe slowly?","천천히 숨 쉬니?","두 유 브「리」드 스「로」울리"],["a","I breathe slowly.","천천히 숨 쉬어요","아이 브「리」드 스「로」울리"],["c","Breathe and shoot.","숨 쉬고 쏴","브「리」드 앤 「슛」"]]],
+["coach","Relax","긴장 풀어","릴「랙」스",[["q","Are you relaxed?","긴장 풀렸어?","아 유 릴「랙」스트"],["a","I am relaxed now.","지금은 괜찮아요","아이 앰 릴「랙」스트 「나」우"],["c","Relax your shoulders.","어깨 힘 빼","릴「랙」스 유어 「숄」더스"]]],
+["coach","Ready","준비된","「레」디",[["q","Are you ready?","준비됐어?","아 유 「레」디"],["a","Yes I am ready.","네 준비됐어요","예스 아이 앰 「레」디"],["c","Get ready please.","준비해 주세요","겟 「레」디 플「리」즈"]]],
+["coach","Again","다시","어「겐」",[["q","One more time again?","한 번 더 다시 할까?","원 모어 「타」임 어「겐」"],["a","Okay let us try again.","네 다시 해봐요","오「케」이 렛 어스 트「라」이 어「겐」"],["c","Try again slowly.","천천히 다시 해","트「라」이 어「겐」 스「로」울리"]]],
+["coach","Score","점수","스「코」어",[["q","What is your score?","점수가 몇이야?","「왓」 이즈 유어 스「코」어"],["a","My score is good.","점수 좋아요","마이 스「코」어 이즈 「굿」"],["c","Good score today.","오늘 점수 좋다","「굿」 스「코」어 투「데」이"]]],
+["social","Nice","좋은","「나」이스",[["q","Is this nice?","이거 괜찮아?","이즈 디스 「나」이스"],["a","Yes very nice.","응 아주 좋아","예스 「베」리 「나」이스"],["c","Nice to meet you.","만나서 반가워요","「나」이스 투 「밋」 유"]]],
+["social","Beautiful","아름다운","「뷰」티풀",[["q","Is this place beautiful?","여기 예뻐?","이즈 디스 플「레」이스 「뷰」티풀"],["a","It is very beautiful.","아주 예뻐요","잇 이즈 「베」리 「뷰」티풀"],["c","You look beautiful today.","오늘 멋져 보여요","유 「룩」 「뷰」티풀 투「데」이"]]],
+["social","Together","함께","투「게」더",[["q","Can we eat together?","같이 먹을래요?","캔 위 「잇」 투「게」더"],["a","Yes let us go together.","네 같이 가요","예스 렛 어스 「고」 투「게」더"],["c","See you later together.","나중에 같이 봐요","「씨」 유 「레」이터 투「게」더"]]],
+["social","Miss","보고 싶다","「미」스",[["q","Do you miss me?","내가 보고 싶어요?","두 유 「미」스 미"],["a","I miss you a lot.","많이 보고 싶어요","아이 「미」스 유 어 「랏」"],["c","I miss you already.","벌써 보고 싶어요","아이 「미」스 유 올「레」디"]]],
+["social","Free","한가한","프「리」",[["q","Are you free tonight?","오늘 밤 시간 있어요?","아 유 프「리」 투「나」잇"],["a","Yes I am free.","네 시간 있어요","예스 아이 앰 프「리」"],["c","Call me when free.","시간 되면 전화해요","「콜」 미 「웬」 프「리」"]]],
+["react","Really","정말","「리」얼리",[["q","Really? Is that true?","정말? 진짜예요?","「리」얼리 이즈 댓 트「루」"],["a","Yes really true.","네 진짜예요","예스 「리」얼리 트「루」"],["c","Oh really? Nice!","오 정말? 좋다!","오 「리」얼리 「나」이스"]]],
+["react","Awesome","최고다","「어」썸",[["q","Was it awesome?","최고였어요?","워즈 잇 「어」썸"],["a","Yes it was awesome.","네 최고였어요","예스 잇 워즈 「어」썸"],["c","That is awesome!","그거 대박이다!","댓 이즈 「어」썸"]]],
+["react","Sorry","미안해","「쏘」리",[["q","Are you sorry now?","지금 미안해요?","아 유 「쏘」리 「나」우"],["a","I am so sorry.","정말 미안해요","아이 앰 「쏘」 「쏘」리"],["c","Sorry I am late.","늦어서 미안해요","「쏘」리 아이 앰 「레」잇"]]],
+["react","Thanks","고마워","「땡」스",[["q","Thanks a lot, okay?","정말 고마워요, 괜찮죠?","「땡」스 어 「랏」 오「케」이"],["a","Thanks for your help.","도와줘서 고마워요","「땡」스 포 유어 「헬」프"],["c","Thanks so much!","정말 고마워요!","「땡」스 「쏘」 「머」치"]]],
+["react","Sure","물론","「슈」어",[["q","Sure? Can you do it?","확실해요? 할 수 있어요?","「슈」어 캔 유 두 잇"],["a","Sure no problem.","물론 문제 없어요","「슈」어 노 프「라」블럼"],["c","Sure, let us go.","좋아요, 가요","「슈」어 렛 어스 「고」"]]],
+["survive","Where","어디","「웨」어",[["q","Where is the toilet?","화장실 어디예요?","「웨」어 이즈 더 「토」일렛"],["a","It is over there.","저쪽에 있어요","잇 이즈 「오」버 「데」어"],["c","Where are you now?","지금 어디예요?","「웨」어 아 유 「나」우"]]],
+["survive","Much","많이","「머」치",[["q","How much is this?","이거 얼마예요?","「하」우 「머」치 이즈 디스"],["a","It is too much.","너무 비싸요","잇 이즈 「투」 「머」치"],["c","Not too much please.","너무 많이는 말고요","「낫」 「투」 「머」치 플「리」즈"]]],
+["survive","Water","물","「워」터",[["q","Can I get water?","물 좀 주시겠어요?","캔 아이 겟 「워」터"],["a","Here is your water.","여기 물 있어요","「히」어 이즈 유어 「워」터"],["c","Cold water please.","찬물 주세요","「콜」드 「워」터 플「리」즈"]]],
+["survive","Help","도와줘","「헬」프",[["q","Can you help me?","도와주실 수 있어요?","캔 유 「헬」프 미"],["a","Yes I can help.","네 도와드릴게요","예스 아이 캔 「헬」프"],["c","Help me please!","도와주세요!","「헬」프 미 플「리」즈"]]],
+["survive","Please","부탁해요","플「리」즈",[["q","One more please?","하나 더 주시겠어요?","원 모어 플「리」즈"],["a","Yes, here you are.","네, 여기요","예스 「히」어 유 아"],["c","Slowly please.","천천히요","스「로」울리 플「리」즈"]]],
+["coach","Watch","지켜봐","「왓」치",[["q","Can you watch me?","나 좀 봐줄래?","캔 유 「왓」치 미"],["a","Yes I will watch.","네 볼게요","예스 아이 윌 「왓」치"],["c","Watch and learn.","보고 배워","「왓」치 앤 「런」"]]],
+["social","Fun","재미있는","「펀」",[["q","Was it fun?","재밌었어?","워즈 잇 「펀」"],["a","Yes so much fun.","네 정말 재밌었어요","예스 「쏘」 「머」치 「펀」"],["c","Let us have fun.","재밌게 놀자","렛 어스 「해」브 「펀」"]]],
+["react","Wow","우와","「와」우",[["q","Wow really?","우와 정말요?","「와」우 「리」얼리"],["a","I know wow.","그러니까요 우와","아이 「노」우 「와」우"],["c","Wow that is great.","우와 대단하다","「와」우 댓 이즈 그「레」잇"]]],
+["survive","Hot","더운","「핫」",[["q","Is it hot today?","오늘 더워요?","이즈 잇 「핫」 투「데」이"],["a","Yes very hot.","네 아주 더워요","예스 「베」리 「핫」"],["c","So hot outside.","밖이 너무 더워요","「쏘」 「핫」 아웃「사」이드"]]],
+["coach","Aim","조준해","「에」임",[["q","Aim at the target.","표적을 조준해","「에」임 앳 더 「타」겟"],["a","I am aiming now.","지금 조준 중이에요","아이 앰 「에」이밍 「나」우"],["c","Aim and breathe.","조준하고 숨 쉬어","「에」임 앤 브「리」드"]]],
+["social","Sweet","다정한","스「윗」",[["q","Are you sweet to her?","그녀에게 다정해요?","아 유 스「윗」 투 「허」"],["a","Yes I am sweet.","네 다정해요","예스 아이 앰 스「윗」"],["c","That is so sweet.","그거 정말 다정하다","댓 이즈 「쏘」 스「윗」"]]],
+["react","Cool","멋지다","「쿨」",[["q","Is that cool?","그거 멋져요?","이즈 댓 「쿨」"],["a","Yes so cool.","네 정말 멋져요","예스 「쏘」 「쿨」"],["c","Cool, I like it.","멋지다, 마음에 들어","「쿨」 아이 라「익」 잇"]]],
+["survive","Hungry","배고픈","「헝」그리",[["q","Are you hungry now?","지금 배고파요?","아 유 「헝」그리 「나」우"],["a","Yes very hungry.","네 아주 배고파요","예스 「베」리 「헝」그리"],["c","I am so hungry.","저 너무 배고파요","아이 앰 「쏘」 「헝」그리"]]],
+];
+/*VOCAB_END*/
+
+/* ============ 유틸 ============ */
+var CATNAME={coach:"코칭·대회",social:"사교·연애",react:"리액션·일상",survive:"생존·여행"};
+var CATEMO={coach:"🎯",social:"💬",react:"✨",survive:"🧭"};
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function stress(s){return esc(s).replace(/「([^」]*)」/g,'<span class="st">$1</span>');}
+function plain(s){return String(s).replace(/[「」]/g,"");}
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function addDays(str,n){var p=str.split("-");var d=new Date(+p[0],+p[1]-1,+p[2]);d.setDate(d.getDate()+n);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function diffDays(a,b){var pa=a.split("-"),pb=b.split("-");return Math.round((new Date(+pb[0],+pb[1]-1,+pb[2])-new Date(+pa[0],+pa[1]-1,+pa[2]))/86400000);}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function W(v){return {cat:v[0],en:v[1],ko:v[2],pr:v[3],ex:v[4]};}
+function byEn(en){for(var i=0;i<VOCAB.length;i++){if(VOCAB[i][1]===en)return W(VOCAB[i]);}return null;}
+
+/* ============ 상태 ============ */
+var KEY="engCoach_v1";
+var S=null;
+function fresh(){return{curDay:1,done:{},sizes:{1:3},examTries:{},examFirstDate:{},lastExamSig:"",srs:{},fav:{},streak:0,lastActive:"",theme:"",rate:0.85,hf:{mode:"ko2en",scope:"today",rep:2,gap:"normal",ex:false,shuf:true,loop:true}};}
+function load(){try{var r=localStorage.getItem(KEY);S=r?JSON.parse(r):fresh();}catch(e){S=fresh();}
+  var f=fresh();for(var k in f){if(S[k]===undefined)S[k]=f[k];}
+  if(!S.hf)S.hf=f.hf; for(var k2 in f.hf){if(S.hf[k2]===undefined)S.hf[k2]=f.hf[k2];}
+  touchStreak();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function touchStreak(){var t=todayStr();if(!S.lastActive){S.streak=1;S.lastActive=t;save();return;}
+  var d=diffDays(S.lastActive,t);if(d===0)return;if(d===1){S.streak++;}else{S.streak=1;}S.lastActive=t;save();}
+
+/* ============ 일정 계산 ============ */
+function weekOf(day){return Math.floor((day-1)/8)+1;}
+function dayInWeek(day){return ((day-1)%8)+1;} /* 1~7 수업, 8 시험 */
+function sizeOf(w){return S.sizes[w]||3;}
+function weekStartIdx(w){var s=0;for(var i=1;i<w;i++){s+=sizeOf(i)*7;}return s;}
+function wordsForDay(day){
+  var w=weekOf(day),d=dayInWeek(day);if(d===8)return[];
+  var n=sizeOf(w),st=weekStartIdx(w)+(d-1)*n,out=[];
+  for(var i=st;i<st+n&&i<VOCAB.length;i++)out.push(W(VOCAB[i]));
+  return out;
+}
+function weekWords(w){var n=sizeOf(w),st=weekStartIdx(w),out=[];
+  for(var i=st;i<st+n*7&&i<VOCAB.length;i++)out.push(W(VOCAB[i]));return out;}
+function learnedWords(){var out=[];for(var d=1;d<S.curDay;d++){if(dayInWeek(d)===8)continue;var ws=wordsForDay(d);for(var i=0;i<ws.length;i++)out.push(ws[i]);}return out;}
+function isExamDay(day){return dayInWeek(day)===8;}
+function weekProgress(){var w=weekOf(S.curDay);var d=dayInWeek(S.curDay);return{w:w,d:d,pct:Math.round(((d-1)/8)*100)};}
+
+/* ============ 음성 ============ */
+var voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()||[];}catch(e){voices=[];}}
+if(window.speechSynthesis){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function pickVoice(lang){for(var i=0;i<voices.length;i++){if(voices[i].lang&&voices[i].lang.replace("_","-").toLowerCase()===lang.toLowerCase())return voices[i];}
+  var p=lang.split("-")[0];for(var j=0;j<voices.length;j++){if(voices[j].lang&&voices[j].lang.toLowerCase().indexOf(p)===0)return voices[j];}return null;}
+function say(text,lang,rate){
+  return new Promise(function(res){
+    if(!window.speechSynthesis){res();return;}
+    try{
+      var u=new SpeechSynthesisUtterance(plain(text));
+      u.lang=lang||"en-US";u.rate=rate||S.rate||0.85;
+      var v=pickVoice(u.lang);if(v)u.voice=v;
+      u.onend=function(){res();};u.onerror=function(){res();};
+      speechSynthesis.cancel();speechSynthesis.speak(u);
+      setTimeout(function(){res();},12000);
+    }catch(e){res();}
+  });
+}
+function speak(t,l){say(t,l||"en-US");}
+function gLink(t){return "https://translate.google.com/?sl=en&tl=ko&op=translate&text="+encodeURIComponent(plain(t));}
+
+/* ============ SRS ============ */
+var INTERVALS=[1,1,2,4,7,14,30];
+function srsRegister(en){if(!S.srs[en])S.srs[en]={n:0,due:addDays(todayStr(),1)};}
+function srsAnswer(en,ok){var r=S.srs[en];if(!r){srsRegister(en);r=S.srs[en];}
+  if(ok){r.n=Math.min(r.n+1,INTERVALS.length-1);}else{r.n=0;}
+  r.due=addDays(todayStr(),INTERVALS[r.n]);save();}
+function dueWords(){var t=todayStr(),out=[];
+  for(var en in S.srs){if(diffDays(S.srs[en].due,t)>=0){var w=byEn(en);if(w)out.push(w);}}
+  return out;}
+
+/* ============ 문제 생성 ============ */
+function makeQ(pool,word,type){
+  var others=[];for(var i=0;i<pool.length;i++){if(pool[i].en!==word.en)others.push(pool[i]);}
+  shuffle(others);var d=others.slice(0,3);
+  var opts,ans,prompt,ptype;
+  if(type===0){ /* 듣기 -> 뜻 */
+    opts=[word.ko];for(var a=0;a<d.length;a++)opts.push(d[a].ko);
+    ans=word.ko;prompt="🔊 듣고 뜻을 고르세요";ptype="listen";
+  }else if(type===1){ /* 뜻 -> 영어 */
+    opts=[word.en];for(var b=0;b<d.length;b++)opts.push(d[b].en);
+    ans=word.en;prompt=word.ko;ptype="ko2en";
+  }else{ /* 영어 -> 뜻 */
+    opts=[word.ko];for(var c=0;c<d.length;c++)opts.push(d[c].ko);
+    ans=word.ko;prompt=word.en;ptype="en2ko";
+  }
+  while(opts.length<4)opts.push("—");
+  shuffle(opts);
+  return{en:word.en,ko:word.ko,pr:word.pr,type:ptype,prompt:prompt,opts:opts,ans:ans};
+}
+function buildExam(w){
+  var pool=weekWords(w);if(pool.length<2)return[];
+  var best=null;
+  for(var attempt=0;attempt<12;attempt++){
+    var qs=[],types=[];
+    for(var i=0;i<20;i++)types.push(i%3);
+    shuffle(types);
+    var bag=[];
+    while(bag.length<20){var c=pool.slice();shuffle(c);bag=bag.concat(c);}
+    bag=bag.slice(0,20);
+    for(var j=0;j<20;j++)qs.push(makeQ(pool,bag[j],types[j]));
+    shuffle(qs);
+    var sig=qs.map(function(q){return q.en+"|"+q.type+"|"+q.opts.join(",");}).join("#");
+    best=qs;
+    if(sig!==S.lastExamSig){S.lastExamSig=sig;save();return qs;}
+  }
+  return best;
+}
+
+/* ============ 라우터 ============ */
+var VIEW="home";
+var RENDER={};
+function go(v){
+  VIEW=v;
+  var btns=document.querySelectorAll(".nav button");
+  for(var i=0;i<btns.length;i++)btns[i].className=(btns[i].getAttribute("data-v")===v?"on":"");
+  var f=RENDER[v];
+  var el=document.getElementById("view");
+  if(!f){el.innerHTML='<div class="card">화면을 찾을 수 없어요.</div>';return;}
+  el.innerHTML=f();
+  window.scrollTo(0,0);
+  if(AFTER[v])AFTER[v]();
+}
+var AFTER={};
+
+/* ============ 카드 ============ */
+function cardHTML(wd,idx){
+  var fav=S.fav[wd.en]?"⭐":"☆";
+  return '<div class="card">'
+  +'<div class="row sp"><span class="tagc">'+CATEMO[wd.cat]+" "+CATNAME[wd.cat]+'</span>'
+  +'<button class="star" onclick="togFav(\''+wd.en+'\')">'+fav+'</button></div>'
+  +'<div class="tap" onclick="speak(\''+wd.en.replace(/'/g,"")+'\')" style="margin-top:6px">'
+  +'<span class="spk">🔊</span>'
+  +'<div class="word">'+esc(wd.en)+'</div>'
+  +'<div class="pron">'+stress(wd.pr)+'</div>'
+  +'<div class="mean">'+esc(wd.ko)+'</div></div>'
+  +'<div><button class="mini" onclick="togEx('+idx+')">💬 예문 3개</button>'
+  +'<a class="mini" style="text-decoration:none" href="'+gLink(wd.en)+'" target="_blank" rel="noopener">🌐 구글 발음</a></div>'
+  +'<div class="exs" id="ex'+idx+'" style="display:none">'
+  +'<div class="sub" style="margin-bottom:8px">📌 예문은 시험에는 나오지 않아요 (이해를 돕는 입력용)</div>'
+  +wd.ex.map(function(e){
+      var lab=e[0]==="q"?"❓ 질문":(e[0]==="a"?"💡 답변":"🗣️ 자주 쓰는 말");
+      return '<div class="ex tap" onclick="speak(\''+e[1].replace(/'/g,"")+'\')"><span class="sub">'+lab+'</span>'
+      +'<b>'+esc(e[1])+'</b><div class="p">'+stress(e[3])+'</div><div class="k">'+esc(e[2])+'</div></div>';
+    }).join("")
+  +'</div></div>';
+}
+function togEx(i){var el=document.getElementById("ex"+i);if(el)el.style.display=el.style.display==="none"?"block":"none";}
+function togFav(en){S.fav[en]=!S.fav[en];save();go(VIEW);}
+
+/* ============ 홈 ============ */
+RENDER.home=function(){
+  var p=weekProgress();
+  var day=S.curDay,exam=isExamDay(day);
+  var ws=wordsForDay(day);
+  var out='<div class="card"><div class="row sp">'
+   +'<div><div class="sub">연속 학습</div><div style="font-size:26px;font-weight:900">🔥 '+S.streak+'일</div></div>'
+   +'<div style="text-align:right"><div class="sub">'+p.w+'주차 · 하루 '+sizeOf(p.w)+'단어</div>'
+   +'<div style="font-size:20px;font-weight:800">'+p.d+' / 8일</div></div></div>'
+   +'<div class="bar" style="margin-top:12px"><i style="width:'+p.pct+'%"></i></div></div>';
+
+  if(exam){
+    out+='<div class="card" style="border-color:var(--warn)"><div class="tagc" style="background:rgba(245,159,0,.18);color:var(--warn)">🎯 오늘 할 일</div>'
+    +'<div style="font-size:21px;font-weight:900;margin-top:8px">'+p.w+'주차 시험</div>'
+    +'<div class="sub" style="margin-top:4px">20문항 · 100점이어야 통과예요</div>'
+    +'<button class="btn" onclick="go(\'exam\')">시험 보러 가기</button></div>';
+  }else if(ws.length===0){
+    out+='<div class="card"><div style="font-size:19px;font-weight:900">🎉 준비된 단어를 모두 배웠어요!</div>'
+    +'<div class="sub" style="margin-top:6px">매일 아침 새 단어가 자동으로 추가돼요. 그동안 복습과 핸즈프리를 해보세요.</div></div>';
+  }else{
+    out+='<div class="card" style="border-color:var(--brand)"><div class="tagc">📘 오늘 할 일</div>'
+    +'<div style="font-size:21px;font-weight:900;margin-top:8px">'+day+'일차 수업 · '+ws.length+'단어</div>'
+    +'<div class="sub" style="margin-top:6px">'+ws.map(function(x){return esc(x.en);}).join(" · ")+'</div>'
+    +'<button class="btn" onclick="go(\'lesson\')">수업 시작</button></div>';
+  }
+
+  var due=dueWords().length;
+  out+='<div class="grid4" style="margin-bottom:12px">'
+   +'<button class="qb" onclick="go(\'review\')"><span class="e">🔁</span>복습 '+due+'개</button>'
+   +'<button class="qb" onclick="go(\'hands\')"><span class="e">🎧</span>핸즈프리</button>'
+   +'<button class="qb" onclick="go(\'cheat\')"><span class="e">🔎</span>치트시트</button>'
+   +'<button class="qb" onclick="go(\'pron\')"><span class="e">🗣️</span>발음 기초</button></div>';
+
+  out+='<div class="card"><h3 style="font-size:16px;margin-bottom:10px">🗺️ 학습 경로 ('+p.w+'주차)</h3>';
+  var base=(p.w-1)*8;
+  for(var i=1;i<=8;i++){
+    var d=base+i,st,cls,ico,label;
+    if(S.done[d]){st="done";}else if(d===S.curDay){st="now";}else if(d<S.curDay){st="done";}else{st="lock";}
+    cls=st==="now"?"path now":(st==="lock"?"path lock":"path");
+    ico=st==="done"?"✓":(st==="lock"?"🔒":(i===8?"🎯":"▶"));
+    label=i===8?(p.w+"주차 시험 · 20문항"):(d+"일차 · "+sizeOf(p.w)+"단어");
+    var click=(st==="lock")?"":(i===8?'onclick="go(\'exam\')"':'onclick="openDay('+d+')"');
+    out+='<div class="'+cls+'" '+click+'><div class="n">'+ico+'</div><div><div style="font-weight:800">'+label+'</div>'
+    +'<div class="sub">'+(st==="done"?"완료":(st==="now"?"오늘":"잠김"))+'</div></div></div>';
+  }
+  out+='</div>';
+  out+='<div class="note">💡 하루 15분이면 충분해요. 전날을 끝내야 다음 날이 열립니다.</div>';
+  return out;
+};
+function openDay(d){LESSON_DAY=d;go("lesson");}
+
+/* ============ 수업 ============ */
+var LESSON_DAY=null;
+RENDER.lesson=function(){
+  var day=LESSON_DAY||S.curDay;LESSON_DAY=null;
+  if(day>S.curDay)return '<div class="card">🔒 아직 잠긴 날이에요.<button class="btn o" onclick="go(\'home\')">홈으로</button></div>';
+  if(isExamDay(day))return '<div class="card">오늘은 시험 날이에요 🎯<button class="btn" onclick="go(\'exam\')">시험 보기</button></div>';
+  var ws=wordsForDay(day);
+  if(!ws.length)return '<div class="card">준비된 단어를 모두 배웠어요. 내일 새 단어가 추가돼요!<button class="btn o" onclick="go(\'home\')">홈으로</button></div>';
+  var out='<div class="card"><div class="row sp"><div><div class="sub">'+weekOf(day)+'주차</div>'
+   +'<div style="font-size:20px;font-weight:900">'+day+'일차 수업</div></div>'
+   +'<button class="mini" onclick="playDay('+day+')" style="margin:0">▶ 전체 듣기</button></div></div>';
+  for(var i=0;i<ws.length;i++)out+=cardHTML(ws[i],i);
+  if(S.done[day]){
+    out+='<div class="card" style="text-align:center"><div style="font-weight:800">✅ 이 날은 완료했어요</div></div>';
+  }else{
+    out+='<button class="btn g" onclick="finishDay('+day+')">오늘 수업 완료 ✓</button>';
+  }
+  out+='<div style="height:6px"></div>';
+  return out;
+};
+function finishDay(day){
+  var ws=wordsForDay(day);
+  for(var i=0;i<ws.length;i++)srsRegister(ws[i].en);
+  S.done[day]=todayStr();
+  if(day===S.curDay)S.curDay=day+1;
+  save();go("home");
+}
+function playDay(day){
+  var ws=wordsForDay(day);var i=0;
+  (function next(){if(i>=ws.length)return;say(ws[i].en,"en-US").then(function(){
+    return say(ws[i].ko,"ko-KR");}).then(function(){i++;next();});})();
+}
+
+/* ============ 복습 ============ */
+var RV={list:[],i:0,answered:false,right:0};
+RENDER.review=function(){
+  if(!RV.list.length||RV.i>=RV.list.length){
+    var due=dueWords();
+    if(!due.length)return '<div class="card"><div style="font-size:19px;font-weight:900">😌 오늘 복습할 단어가 없어요</div>'
+      +'<div class="sub" style="margin-top:6px">수업을 완료하면 자동으로 복습 일정이 잡혀요.</div>'
+      +'<button class="btn o" onclick="startReviewAll()">그래도 배운 것 전체 복습</button></div>';
+    return '<div class="card"><div style="font-size:19px;font-weight:900">🔁 복습 '+due.length+'단어</div>'
+      +'<div class="sub" style="margin-top:6px">맞히면 다음 복습이 멀어지고, 틀리면 다시 처음부터예요.</div>'
+      +'<button class="btn" onclick="startReview()">복습 시작</button></div>';
+  }
+  return quizHTML(RV,"rvPick","🔁 복습");
+};
+function startReview(){RV={list:shuffle(dueWords()).map(function(w){return makeQ(learnedWords().length>3?learnedWords():VOCAB.map(W),w,Math.floor(Math.random()*3));}),i:0,answered:false,right:0};go("review");}
+function startReviewAll(){var L=learnedWords();if(!L.length)L=VOCAB.slice(0,6).map(W);
+  RV={list:shuffle(L.slice()).map(function(w){return makeQ(L.length>3?L:VOCAB.map(W),w,Math.floor(Math.random()*3));}),i:0,answered:false,right:0};go("review");}
+function rvPick(k){
+  if(RV.answered)return;RV.answered=true;
+  var q=RV.list[RV.i];var ok=(q.opts[k]===q.ans);
+  if(ok)RV.right++;
+  srsAnswer(q.en,ok);
+  markOpts(k,q);
+  setTimeout(function(){RV.i++;RV.answered=false;
+    if(RV.i>=RV.list.length){alert("복습 끝! "+RV.right+" / "+RV.list.length+" 정답");RV.list=[];}
+    go("review");},850);
+}
+function markOpts(k,q){
+  var bs=document.querySelectorAll("#qopts .opt");
+  for(var i=0;i<bs.length;i++){
+    if(bs[i].getAttribute("data-t")===q.ans)bs[i].className="opt ok";
+    else if(i===k)bs[i].className="opt no";
+  }
+}
+function quizHTML(st,fn,title){
+  var q=st.list[st.i];
+  var head=(st.i+1)+" / "+st.list.length;
+  var pr="";
+  if(q.type==="listen"){pr='<button class="btn" onclick="speak(\''+q.en.replace(/'/g,"")+'\')">🔊 다시 듣기</button><div class="sub" style="text-align:center;margin-top:8px">듣고 뜻을 고르세요</div>';}
+  else{pr='<div class="big">'+esc(q.prompt)+'</div><div class="sub" style="text-align:center">'+(q.type==="ko2en"?"→ 영어를 고르세요":"→ 뜻을 고르세요")+'</div>';}
+  var out='<div class="card"><div class="row sp"><span class="tagc">'+title+'</span><b>'+head+'</b></div>'
+   +'<div class="bar" style="margin-top:10px"><i style="width:'+Math.round(st.i/st.list.length*100)+'%"></i></div>'
+   +'<div style="margin-top:16px">'+pr+'</div></div><div id="qopts">';
+  for(var i=0;i<q.opts.length;i++)out+='<button class="opt" data-t="'+esc(q.opts[i])+'" onclick="'+fn+'('+i+')">'+esc(q.opts[i])+'</button>';
+  out+='</div>';
+  return out;
+}
+AFTER.review=function(){if(RV.list.length&&RV.i<RV.list.length&&RV.list[RV.i].type==="listen")setTimeout(function(){speak(RV.list[RV.i].en);},300);};
+
+/* ============ 시험 ============ */
+var EX={stage:"intro",list:[],i:0,answered:false,wrong:[],score:0};
+RENDER.exam=function(){
+  var day=S.curDay;
+  if(!isExamDay(day)){
+    return '<div class="card"><div style="font-size:19px;font-weight:900">🎯 시험은 8일차에 열려요</div>'
+    +'<div class="sub" style="margin-top:6px">지금은 '+dayInWeek(day)+'일차예요. 매일 수업을 끝내면 시험이 열립니다.</div>'
+    +'<button class="btn o" onclick="go(\'home\')">홈으로</button></div>';
+  }
+  var w=weekOf(day);
+  if(EX.stage==="intro"){
+    var tries=S.examTries[w]||0;
+    return '<div class="card"><div style="font-size:22px;font-weight:900">🎯 '+w+'주차 시험</div>'
+    +'<div class="sub" style="margin-top:8px">· 20문항 (듣기 / 뜻→영어 / 영어→뜻)<br>· <b>100점(전 문항 정답)</b>만 통과<br>· 예문은 출제되지 않아요<br>· 못 통과하면 내일 <b>새로운 문제</b>로 다시 봐요</div>'
+    +(tries?'<div class="note">지금까지 '+tries+'번 응시했어요. 이번엔 문제가 전부 새로 섞였습니다.</div>':'')
+    +'<button class="btn" onclick="startExam()">시험 시작</button>'
+    +'<button class="btn o" onclick="go(\'home\')">나중에</button></div>';
+  }
+  if(EX.stage==="quiz")return quizHTML(EX,"exPick","🎯 시험");
+  /* result */
+  if(EX.score===20){
+    return '<div class="card" style="text-align:center"><div style="font-size:52px">🏆</div>'
+    +'<div style="font-size:24px;font-weight:900;margin-top:6px">100점 통과!</div>'
+    +'<div class="sub" style="margin-top:8px">'+w+'주차를 끝냈어요. 다음 주차는 하루 <b>'+sizeOf(w+1)+'단어</b>예요.</div>'
+    +'<button class="btn g" onclick="go(\'home\')">다음 주차로 →</button></div>';
+  }
+  var out='<div class="card" style="text-align:center"><div style="font-size:46px">💪</div>'
+   +'<div style="font-size:23px;font-weight:900;margin-top:6px">'+EX.score+' / 20</div>'
+   +'<div class="sub" style="margin-top:6px">100점이어야 통과예요. 아래 단어를 다시 보고 도전하세요.</div></div>';
+  out+='<div class="card"><h3 style="font-size:16px;margin-bottom:8px">❌ 틀린 문제</h3>';
+  var seen={};
+  for(var i=0;i<EX.wrong.length;i++){
+    var q=EX.wrong[i];if(seen[q.en])continue;seen[q.en]=1;
+    out+='<div class="ex tap" onclick="speak(\''+q.en.replace(/'/g,"")+'\')"><b>'+esc(q.en)+'</b><div class="p">'+stress(q.pr)+'</div><div class="k">'+esc(q.ko)+'</div></div>';
+  }
+  out+='</div>';
+  out+='<button class="btn" onclick="startExam()">🔄 새 문제로 다시 도전</button>';
+  out+='<button class="btn o" onclick="go(\'lesson\')">📘 단어 다시 보기</button>';
+  out+='<button class="btn o" onclick="go(\'home\')">홈으로</button>';
+  return out;
+};
+function startExam(){
+  var w=weekOf(S.curDay);
+  S.examTries[w]=(S.examTries[w]||0)+1;
+  if(!S.examFirstDate[w])S.examFirstDate[w]=todayStr();
+  save();
+  EX={stage:"quiz",list:buildExam(w),i:0,answered:false,wrong:[],score:0};
+  go("exam");
+}
+function exPick(k){
+  if(EX.answered)return;EX.answered=true;
+  var q=EX.list[EX.i];var ok=(q.opts[k]===q.ans);
+  if(ok)EX.score++;else EX.wrong.push(q);
+  srsAnswer(q.en,ok);
+  markOpts(k,q);
+  setTimeout(function(){
+    EX.i++;EX.answered=false;
+    if(EX.i>=EX.list.length){EX.stage="result";finishExam();}
+    go("exam");
+  },600);
+}
+function finishExam(){
+  var w=weekOf(S.curDay);
+  if(EX.score===20){
+    var tries=S.examTries[w]||1;
+    var cur=sizeOf(w),next=cur;
+    if(tries===1&&S.examFirstDate[w]===todayStr())next=Math.min(cur+1,4);
+    else if(S.examFirstDate[w]!==todayStr())next=Math.max(cur-1,2);
+    S.sizes[w+1]=next;
+    S.done[S.curDay]=todayStr();
+    S.curDay=S.curDay+1;
+    save();
+  }
+}
+AFTER.exam=function(){if(EX.stage==="quiz"&&EX.list[EX.i]&&EX.list[EX.i].type==="listen")setTimeout(function(){speak(EX.list[EX.i].en);},300);};
+
+/* ============ 치트시트 ============ */
+var CH={q:"",fav:false,cat:"all"};
+RENDER.cheat=function(){
+  var L=learnedWords();if(!L.length)L=[];
+  var out='<div class="card"><input id="chq" placeholder="🔎 한국어 · 영어로 검색" value="'+esc(CH.q)+'" oninput="CH.q=this.value;renderCheatList()">'
+  +'<div class="seg" style="margin-top:8px">'
+  +'<button class="'+(CH.cat==="all"?"on":"")+'" onclick="CH.cat=\'all\';go(\'cheat\')">전체</button>'
+  +Object.keys(CATNAME).map(function(c){return '<button class="'+(CH.cat===c?"on":"")+'" onclick="CH.cat=\''+c+'\';go(\'cheat\')">'+CATEMO[c]+'</button>';}).join("")
+  +'<button class="'+(CH.fav?"on":"")+'" onclick="CH.fav=!CH.fav;go(\'cheat\')">⭐</button></div>'
+  +'<div class="sub" style="margin-top:8px">배운 단어 '+L.length+'개 · 카드를 누르면 발음이 나와요</div></div>'
+  +'<div id="chlist"></div>';
+  return out;
+};
+AFTER.cheat=function(){renderCheatList();};
+function renderCheatList(){
+  var el=document.getElementById("chlist");if(!el)return;
+  var L=learnedWords();
+  var q=(CH.q||"").trim().toLowerCase();
+  var r=L.filter(function(w){
+    if(CH.fav&&!S.fav[w.en])return false;
+    if(CH.cat!=="all"&&w.cat!==CH.cat)return false;
+    if(!q)return true;
+    return w.en.toLowerCase().indexOf(q)>=0||w.ko.indexOf(q)>=0||plain(w.pr).indexOf(q)>=0;
+  });
+  if(!r.length){el.innerHTML='<div class="card sub">결과가 없어요. 수업을 더 진행하면 여기에 쌓여요.</div>';return;}
+  var out="";
+  for(var i=0;i<r.length;i++){
+    out+='<div class="card tap" style="padding:13px" onclick="speak(\''+r[i].en.replace(/'/g,"")+'\')">'
+    +'<span class="spk" style="font-size:20px">🔊</span>'
+    +'<div class="row sp"><span class="tagc">'+CATEMO[r[i].cat]+'</span>'
+    +'<button class="star" onclick="event.stopPropagation();togFav(\''+r[i].en+'\')">'+(S.fav[r[i].en]?"⭐":"☆")+'</button></div>'
+    +'<div style="font-size:21px;font-weight:900">'+esc(r[i].en)+'</div>'
+    +'<div class="pron">'+stress(r[i].pr)+'</div>'
+    +'<div class="mean">'+esc(r[i].ko)+'</div></div>';
+  }
+  el.innerHTML=out;
+}
+
+/* ============ 발음 ============ */
+RENDER.pron=function(){
+  function blk(t,d,rows){
+    return '<div class="card"><h3 style="font-size:17px">'+t+'</h3><div class="sub" style="margin:6px 0 10px">'+d+'</div>'
+    +rows.map(function(r){return '<div class="ex tap" onclick="speak(\''+r[0].replace(/'/g,"")+'\')"><b>'+esc(r[0])+'</b><div class="p">'+stress(r[1])+'</div><div class="k">'+esc(r[2])+'</div></div>';}).join("")+'</div>';
+  }
+  var out='<div class="card"><div style="font-size:20px;font-weight:900">🗣️ 영어 발음 기초</div>'
+   +'<div class="sub" style="margin-top:6px">베트남어의 성조 대신, 영어는 <b>강세</b>가 뜻을 지켜줘요. 「 」 안이 세게 읽는 자리입니다.</div></div>';
+
+  out+=blk("① 강세 규칙 (제일 중요)","강세 하나만 맞아도 알아들어요. 강세 음절은 <b>길고·크고·높게</b>, 나머지는 흘려서 짧게.",
+    [["Focus","「포」커스 (앞이 세게)","2음절 명사·동사는 대개 앞이 강해요"],
+     ["Relax","릴「랙」스 (뒤가 세게)","re-, be-, to-로 시작하는 동사는 뒤가 강해요"],
+     ["Beautiful","「뷰」티풀","-ful, -ly 붙어도 강세는 그대로"],
+     ["Together","투「게」더","가운데가 강한 3음절 단어"]]);
+
+  out+=blk("② 연음 (linking)","앞 단어 끝소리와 뒷 단어 첫소리를 붙여 읽으면 원어민처럼 들려요.",
+    [["Focus on it","「포」커<u>서</u> 오「닛」","s+on → 서 / on+it → 오닛"],
+     ["Take it easy","「테」이<u>키</u><u>리</u>지","k+it → 키, t+ea → 리(약한 t)"],
+     ["Help me please","「헬」미 플「리」즈","p 소리는 거의 삼켜요"],
+     ["Are you ready","아<u>유</u> 「레」디","are+you 붙이기"]]);
+
+  out+=blk("③ 어려운 소리 (th · r/l · f/v)","한국어에 없는 소리예요. 입 모양만 기억하세요.",
+    [["Thanks / Think","「땡」스 · 「띵」크","th = 혀끝을 앞니 사이에 살짝 물고 바람"],
+     ["Really / Little","「리」얼리 · 「리」틀","r = 혀 안 닿음 / l = 혀끝을 윗니 뒤에 붙임"],
+     ["Free / Very","프「리」 · 「베」리","f = 윗니로 아랫입술 / v = 같은 자리 + 목 울림"],
+     ["Water / Better","「워」러 · 「베」러","미국식은 t가 ㄹ 소리로 바뀌어요"]]);
+
+  out+=blk("④ 문장 리듬","중요한 단어(내용어)만 세게, 나머지(is, the, to, you)는 빠르게 흘려요.",
+    [["Are you READY to SHOOT?","아유 「레」디 투 「슛」","ready, shoot 만 세게"],
+     ["I MISS you a LOT","아이 「미」스 유 어 「랏」","miss, lot 만 세게"],
+     ["How MUCH is THIS?","「하」우 「머」치 이즈 「디」스","much, this 만 세게"],
+     ["FOCUS on the TARGET","「포」커스 온 더 「타」겟","focus, target 만 세게"]]);
+
+  out+='<div class="note">🎧 각 줄을 눌러 따라 말해보세요. 하루 1분이면 충분해요.</div>';
+  return out;
+};
+
+/* ============ 백그라운드 재생 유지 ============ */
+function buildSilentWavURL(){
+  var sampleRate=8000,numSamples=sampleRate;
+  var buf=new ArrayBuffer(44+numSamples);
+  var view=new DataView(buf);
+  function ws(o,s){for(var i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i));}
+  ws(0,"RIFF");view.setUint32(4,36+numSamples,true);ws(8,"WAVE");
+  ws(12,"fmt ");view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);
+  view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate,true);view.setUint16(32,1,true);view.setUint16(34,8,true);
+  ws(36,"data");view.setUint32(40,numSamples,true);
+  for(var i=0;i<numSamples;i++)view.setUint8(44+i,128);
+  return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}));
+}
+function keepAliveStart(){
+  var a=document.getElementById("keepAlive");if(!a)return;
+  try{
+    if(!a.src)a.src=buildSilentWavURL();
+    a.play().catch(function(){});
+  }catch(e){}
+}
+function keepAliveStop(){
+  var a=document.getElementById("keepAlive");if(!a)return;
+  try{a.pause();}catch(e){}
+}
+function mediaSessionSet(en,ko){
+  if(!("mediaSession" in navigator))return;
+  try{
+    navigator.mediaSession.metadata=new MediaMetadata({title:en,artist:ko,album:"영어 코치 핸즈프리"});
+    navigator.mediaSession.playbackState=HF.run?"playing":"paused";
+    navigator.mediaSession.setActionHandler("play",function(){if(!HF.run)hfStart();});
+    navigator.mediaSession.setActionHandler("pause",function(){if(HF.run)hfStop();});
+    navigator.mediaSession.setActionHandler("previoustrack",function(){hfPrev();});
+    navigator.mediaSession.setActionHandler("nexttrack",function(){hfNext();});
+  }catch(e){}
+}
+function mediaSessionClear(){
+  if(!("mediaSession" in navigator))return;
+  try{
+    navigator.mediaSession.playbackState="none";
+    navigator.mediaSession.setActionHandler("play",null);
+    navigator.mediaSession.setActionHandler("pause",null);
+    navigator.mediaSession.setActionHandler("previoustrack",null);
+    navigator.mediaSession.setActionHandler("nexttrack",null);
+  }catch(e){}
+}
+document.addEventListener("visibilitychange",function(){
+  if(document.visibilityState==="visible"&&HF.run){
+    try{if(navigator.wakeLock&&navigator.wakeLock.request){navigator.wakeLock.request("screen").then(function(w){HF.wake=w;}).catch(function(){});}}catch(e){}
+    keepAliveStart();
+  }
+});
+
+/* ============ 핸즈프리 ============ */
+var HF={run:false,idx:0,round:1,list:[],timer:null,resolve:null,wake:null};
+RENDER.hands=function(){
+  var h=S.hf;
+  function seg(label,key,opts){
+    return '<div style="margin-top:12px"><div class="sub">'+label+'</div><div class="seg">'
+    +opts.map(function(o){return '<button class="'+(h[key]===o[0]?"on":"")+'" onclick="setHF(\''+key+'\',\''+o[0]+'\')">'+o[1]+'</button>';}).join("")
+    +'</div></div>';
+  }
+  var out='<div class="card"><div class="row sp"><div style="font-size:20px;font-weight:900">🎧 핸즈프리 코스</div>'
+   +'<button class="mini" style="margin:0" onclick="go(\'home\')">닫기</button></div>'
+   +'<div class="sub" style="margin-top:6px">🔊 한국어 → ⏸ 생각 → 🔊 영어 → ⏸ 따라 말하기 → 🔊 영어 반복</div></div>';
+
+  out+='<div class="card"><div class="hfp">회차 '+HF.round+' · '+(HF.list.length?(HF.idx+1)+" / "+HF.list.length:"대기 중")+'</div>'
+   +'<div class="hfbig" id="hfEn">'+(HF.list[HF.idx]?esc(HF.list[HF.idx].en):"준비됨")+'</div>'
+   +'<div class="hfp" id="hfPr">'+(HF.list[HF.idx]?stress(HF.list[HF.idx].pr):"&nbsp;")+'</div>'
+   +'<div class="hfko" id="hfKo" style="margin-top:8px">'+(HF.list[HF.idx]?esc(HF.list[HF.idx].ko):"아래에서 설정하고 재생하세요")+'</div>'
+   +'<div class="hfp" id="hfSt">&nbsp;</div>'
+   +'<div class="ctl"><button onclick="hfPrev()">⏮</button>'
+   +'<button class="p" onclick="hfToggle()" id="hfPlay">'+(HF.run?"⏸":"▶")+'</button>'
+   +'<button onclick="hfNext()">⏭</button></div></div>';
+
+  out+='<div class="card">'
+   +seg("방식","mode",[["ko2en","한국어→영어 (회상)"],["en2ko","영어→한국어 (듣기)"]])
+   +seg("재생 범위","scope",[["today","오늘"],["week","이번 주차"],["due","복습 대상"],["fav","⭐즐겨찾기"],["all","배운 전체"]])
+   +seg("반복 횟수","rep",[["1","1회"],["2","2회"],["3","3회"]])
+   +seg("따라 말할 시간","gap",[["short","짧게"],["normal","보통"],["long","길게"]])
+   +seg("예문 포함","ex",[["false","단어만"],["true","예문까지"]])
+   +seg("순서 섞기","shuf",[["true","섞기"],["false","순서대로"]])
+   +seg("무한 반복","loop",[["true","켬"],["false","끔"]])
+   +'<div style="margin-top:12px"><div class="sub">말하기 속도 ('+S.rate+')</div>'
+   +'<input type="range" min="0.5" max="1.2" step="0.05" value="'+S.rate+'" oninput="S.rate=parseFloat(this.value);save();" style="padding:0"></div>'
+   +'</div>';
+
+  out+='<div class="note">🔒 화면을 꺼도 재생이 이어지도록 잠금화면 미디어 컨트롤을 사용해요. 재생 중 잠금화면에서 ▶⏸⏮⏭ 로 조작할 수 있어요. 기기·브라우저에 따라 잠시 후 멈출 수 있으니, 멈추면 화면을 한 번 켜서 이어가세요. 홈 화면에 추가해서 쓰면 더 안정적이에요.</div>';
+  return out;
+};
+function setHF(k,v){
+  if(v==="true")v=true;else if(v==="false")v=false;else if(/^[0-9]+$/.test(v))v=parseInt(v,10);
+  S.hf[k]=v;save();
+  if(k!=="rep"&&k!=="gap")hfStop();
+  go("hands");
+}
+function hfPool(){
+  var h=S.hf,L=learnedWords(),base;
+  if(h.scope==="today")base=wordsForDay(isExamDay(S.curDay)?S.curDay-1:S.curDay);
+  else if(h.scope==="week")base=weekWords(weekOf(S.curDay));
+  else if(h.scope==="due")base=dueWords();
+  else if(h.scope==="fav")base=L.filter(function(w){return S.fav[w.en];});
+  else base=L;
+  if(!base||!base.length)base=L.length?L:VOCAB.slice(0,3).map(W);
+  var items=[];
+  for(var i=0;i<base.length;i++){
+    items.push({en:base[i].en,ko:base[i].ko,pr:base[i].pr});
+    if(h.ex){for(var j=0;j<base[i].ex.length;j++){var e=base[i].ex[j];items.push({en:e[1],ko:e[2],pr:e[3]});}}
+  }
+  if(h.shuf)shuffle(items);
+  return items;
+}
+function hfPause(ms){return new Promise(function(res){HF.resolve=res;HF.timer=setTimeout(res,ms);});}
+function hfStat(t){var el=document.getElementById("hfSt");if(el)el.innerHTML=t;}
+function hfPaint(){
+  var it=HF.list[HF.idx];if(!it)return;
+  var a=document.getElementById("hfEn"),b=document.getElementById("hfPr"),c=document.getElementById("hfKo");
+  if(a)a.innerHTML=esc(it.en);if(b)b.innerHTML=stress(it.pr);if(c)c.innerHTML=esc(it.ko);
+  var p=document.getElementById("hfPlay");if(p)p.innerHTML=HF.run?"⏸":"▶";
+  mediaSessionSet(it.en,it.ko);
+}
+function gapMs(){return S.hf.gap==="short"?1800:(S.hf.gap==="long"?5000:3200);}
+async function hfLoop(){
+  while(HF.run){
+    var it=HF.list[HF.idx];
+    if(!it){hfStop();return;}
+    hfPaint();
+    if(S.hf.mode==="ko2en"){
+      hfStat("🔊 한국어");await say(it.ko,"ko-KR");if(!HF.run)return;
+      hfStat("🤔 영어로 뭘까요?");await hfPause(gapMs());if(!HF.run)return;
+      for(var r=0;r<(S.hf.rep||2);r++){
+        hfStat("🔊 영어 "+(r+1)+"회");await say(it.en,"en-US");if(!HF.run)return;
+        hfStat("🗣️ 따라 말하세요");await hfPause(gapMs());if(!HF.run)return;
+      }
+    }else{
+      hfStat("🔊 영어");await say(it.en,"en-US");if(!HF.run)return;
+      hfStat("🤔 무슨 뜻일까요?");await hfPause(gapMs());if(!HF.run)return;
+      hfStat("🔊 한국어");await say(it.ko,"ko-KR");if(!HF.run)return;
+      for(var r2=1;r2<(S.hf.rep||2);r2++){
+        hfStat("🔊 영어 반복");await say(it.en,"en-US");if(!HF.run)return;
+        hfStat("🗣️ 따라 말하세요");await hfPause(gapMs());if(!HF.run)return;
+      }
+    }
+    HF.idx++;
+    if(HF.idx>=HF.list.length){
+      if(!S.hf.loop){hfStop();hfStat("✅ 끝");return;}
+      HF.idx=0;HF.round++;
+      if(S.hf.shuf)shuffle(HF.list);
+      go("hands");
+    }
+  }
+}
+function hfToggle(){if(HF.run)hfStop();else hfStart();}
+function hfStart(){
+  if(!HF.list.length){HF.list=hfPool();HF.idx=0;HF.round=1;}
+  HF.run=true;hfPaint();
+  try{if(navigator.wakeLock&&navigator.wakeLock.request){navigator.wakeLock.request("screen").then(function(w){HF.wake=w;}).catch(function(){});}}catch(e){}
+  keepAliveStart();
+  hfLoop();
+}
+function hfStop(){
+  HF.run=false;
+  if(HF.timer){clearTimeout(HF.timer);HF.timer=null;}
+  if(HF.resolve){HF.resolve();HF.resolve=null;}
+  try{speechSynthesis.cancel();}catch(e){}
+  try{if(HF.wake){HF.wake.release();HF.wake=null;}}catch(e){}
+  keepAliveStop();mediaSessionClear();
+  hfPaint();hfStat("⏸ 정지");
+}
+function hfNext(){var was=HF.run;hfStop();if(!HF.list.length)HF.list=hfPool();HF.idx=(HF.idx+1)%HF.list.length;hfPaint();if(was)hfStart();else go("hands");}
+function hfPrev(){var was=HF.run;hfStop();if(!HF.list.length)HF.list=hfPool();HF.idx=(HF.idx-1+HF.list.length)%HF.list.length;hfPaint();if(was)hfStart();else go("hands");}
+AFTER.hands=function(){};
+
+/* ============ 설정 ============ */
+RENDER.settings=function(){
+  return '<div class="card"><div style="font-size:20px;font-weight:900">⚙️ 설정 · 백업</div>'
+  +'<div class="sub" style="margin-top:6px">진행상황은 이 기기에 저장돼요. 기기를 바꾸기 전에 꼭 내보내세요.</div>'
+  +'<button class="btn" onclick="doExport()">📤 진행상황 내보내기</button>'
+  +'<div class="sub" style="margin-top:14px">아래에 붙여넣고 불러오기</div>'
+  +'<textarea id="impbox" placeholder="여기에 백업 JSON 붙여넣기"></textarea>'
+  +'<button class="btn g" onclick="doImport()">📥 불러오기</button>'
+  +'<button class="btn o" onclick="doReset()" style="color:var(--bad)">🗑️ 전체 초기화</button></div>'
+  +'<div class="card"><h3 style="font-size:16px">현재 상태</h3>'
+  +'<div style="margin-top:8px"><span class="pill">🔥 '+S.streak+'일</span><span class="pill">'+weekOf(S.curDay)+'주차</span>'
+  +'<span class="pill">'+dayInWeek(S.curDay)+'/8일</span><span class="pill">배운 단어 '+learnedWords().length+'</span>'
+  +'<span class="pill">전체 단어 '+VOCAB.length+'</span></div></div>'
+  +'<button class="btn o" onclick="go(\'home\')">홈으로</button>';
+};
+function doExport(){
+  var t=JSON.stringify(S);
+  var b=document.getElementById("impbox");if(b)b.value=t;
+  try{navigator.clipboard.writeText(t);alert("복사했어요! 메모장 등에 붙여넣어 보관하세요.");}
+  catch(e){alert("아래 칸의 텍스트를 복사해 보관하세요.");}
+}
+function doImport(){
+  var b=document.getElementById("impbox");if(!b||!b.value.trim())return alert("붙여넣은 내용이 없어요.");
+  try{var o=JSON.parse(b.value);if(!o.curDay)throw 0;S=o;save();alert("불러왔어요!");go("home");}
+  catch(e){alert("형식이 올바르지 않아요.");}
+}
+function doReset(){if(confirm("정말 전부 초기화할까요? 되돌릴 수 없어요.")){S=fresh();save();go("home");}}
+
+/* ============ 부팅 ============ */
+document.getElementById("setbtn").onclick=function(){go("settings");};
+document.getElementById("thbtn").onclick=function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var nx=cur==="dark"?"light":(cur==="light"?"":"dark");
+  if(nx)document.documentElement.setAttribute("data-theme",nx);else document.documentElement.removeAttribute("data-theme");
+  S.theme=nx;save();
+};
+var nb=document.querySelectorAll(".nav button");
+for(var ni=0;ni<nb.length;ni++){(function(b){b.onclick=function(){if(HF.run&&b.getAttribute("data-v")!=="hands")hfStop();go(b.getAttribute("data-v"));};})(nb[ni]);}
+load();
+if(S.theme)document.documentElement.setAttribute("data-theme",S.theme);
+go("home");
+</script>
