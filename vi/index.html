@@ -694,7 +694,7 @@ function keepAliveStart(){
   }, 3000);
 }
 function keepAliveStop(){ if(hpAlive){ clearInterval(hpAlive); hpAlive=null; } }
-function HC(){ if(!S.hands||typeof S.hands!=="object") S.hands={}; var d={mode:"ko",rep:2,gap:2.5,set:"today",ex:true,shuffle:false}; for(var k in d){ if(S.hands[k]===undefined||S.hands[k]===null) S.hands[k]=d[k]; } return S.hands; }
+function HC(){ if(!S.hands||typeof S.hands!=="object") S.hands={}; var d={mode:"ko",rep:2,gap:2.5,set:"today",ex:true,shuffle:false,engine:"audio"}; for(var k in d){ if(S.hands[k]===undefined||S.hands[k]===null) S.hands[k]=d[k]; } return S.hands; }
 function koVoice(){ var vs=speechSynthesis?speechSynthesis.getVoices():[]; return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf("ko")===0;})[0]||null; }
 function learnedMax(){
   var d=dayInfo(S.currentDay);
@@ -778,10 +778,10 @@ function setupMediaSession(){
   if(!("mediaSession" in navigator)) return;
   try{
     navigator.mediaSession.metadata=new MediaMetadata({title:"베트남어 핸즈프리 학습",artist:"코치님",album:"Tiếng Việt"});
-    navigator.mediaSession.setActionHandler("play",function(){ __hPlay(); var b=document.getElementById("ppBtn"); if(b)b.textContent="⏸"; });
-    navigator.mediaSession.setActionHandler("pause",function(){ handsStop(); });
-    navigator.mediaSession.setActionHandler("previoustrack",function(){ __hJump(-1); });
-    navigator.mediaSession.setActionHandler("nexttrack",function(){ __hJump(1); });
+    navigator.mediaSession.setActionHandler("play",function(){ hfPlay(); });
+    navigator.mediaSession.setActionHandler("pause",function(){ hfStop(); });
+    navigator.mediaSession.setActionHandler("previoustrack",function(){ hfPrev(); });
+    navigator.mediaSession.setActionHandler("nexttrack",function(){ hfNext(); });
   }catch(e){}
 }
 function setMediaPlaybackState(state){
@@ -816,7 +816,7 @@ window.__hPlay=function(){
   HP.on=true; keepAwake(true); bgAudioStart(); setupMediaSession(); setMediaPlaybackState("playing"); keepAliveStart(); handsStep();
   var b=document.getElementById("ppBtn"); if(b) b.textContent="⏸";
 };
-window.__hToggle=function(){ if(HP.on){ handsStop(); } else { __hPlay(); } };
+window.__hToggle=function(){ if(hfPlaying()){ hfStop(); } else { hfPlay(); } };
 window.__hJump=function(dir){
   if(!HP.q.length) handsBuild();
   var cur=HP.q[HP.i]?HP.q[HP.i].k:0, target=cur+dir;
@@ -830,10 +830,73 @@ window.__hSet=function(key,val){
   if(key==="rep"||key==="gap") val=parseFloat(val);
   if(key==="ex"||key==="shuffle") val=!c[key];
   c[key]=val; save();
-  var wasOn=HP.on; handsStop(true); handsBuild(); renderHands();
-  if(wasOn){ __hPlay(); }
+  var wasOn=(key!=="engine") && hfPlaying();
+  handsStop(true); if(AP.on) audioStop();
+  handsBuild(); renderHands();
+  if(wasOn){ hfPlay(); }
 };
 function val_isOn(key){ return !!HC()[key]; }
+
+/* ===== 오디오 모드: 미리 만든 실제 MP3 재생 (화면 꺼짐/잠금에도 지속) ===== */
+var AP={audio:null, ids:[], idx:0, on:false};
+function ensureAudio(){
+  if(AP.audio) return AP.audio;
+  var a=new Audio(); a.preload="auto";
+  a.addEventListener("ended",function(){ audioAdvance(1); });
+  a.addEventListener("error",function(){ if(AP.on) audioAdvance(1,true); });
+  a.addEventListener("timeupdate",audioProgress);
+  AP.audio=a; return a;
+}
+function audioPlay(){
+  AP.ids=handsItems();
+  if(!AP.ids.length){ alert("들을 내용이 아직 없어요. 수업을 먼저 진행해주세요."); return; }
+  AP.idx=Math.min(AP.idx, AP.ids.length-1); AP.on=true;
+  var a=ensureAudio();
+  setupMediaSession(); setMediaPlaybackState("playing");
+  audioLoad(true);
+  var b=document.getElementById("ppBtn"); if(b) b.textContent="⏸";
+}
+function audioLoad(play){
+  var a=ensureAudio(), id=AP.ids[AP.idx];
+  a.src="audio/w"+id+".mp3";
+  renderAudioNow(id);
+  if(play){ var p=a.play(); if(p&&p.catch) p.catch(function(){}); }
+}
+var apErrStreak=0;
+function audioAdvance(dir,isErr){
+  if(!AP.on) return;
+  if(isErr){ apErrStreak++; if(apErrStreak>AP.ids.length){ AP.on=false; alert("오디오 파일을 불러오지 못했어요. 잠시 후 다시 시도하거나 인터랙티브 모드를 써보세요."); return; } }
+  else apErrStreak=0;
+  AP.idx+=dir; if(AP.idx>=AP.ids.length){ AP.idx=0; } if(AP.idx<0){ AP.idx=AP.ids.length-1; }
+  audioLoad(true);
+}
+function audioStop(){
+  AP.on=false; if(AP.audio){ try{AP.audio.pause();}catch(e){} }
+  setMediaPlaybackState("paused");
+  var b=document.getElementById("ppBtn"); if(b) b.textContent="▶";
+}
+function audioProgress(){
+  var a=AP.audio; if(!a||!a.duration) return;
+  var el=document.getElementById("apBar"); if(el) el.style.width=Math.round(a.currentTime/a.duration*100)+"%";
+}
+function renderAudioNow(id){
+  var el=document.getElementById("npBox"), w=VOCAB[id]; if(!el||!w) return;
+  el.className="np vi";
+  el.innerHTML='<div class="lang">▶ 재생 중 · '+TAGS[w[0]]+'</div>'
+    +'<div class="big">'+esc(w[1])+'</div><div class="say2">'+arrows(esc(w[3]))+'</div>'
+    +'<div class="kox">'+esc(w[2])+'</div>'
+    +'<div style="height:5px;background:var(--line);border-radius:20px;margin:14px 0 4px;overflow:hidden"><span id="apBar" style="display:block;height:100%;width:0;background:var(--jade)"></span></div>'
+    +'<div class="pos">'+(AP.idx+1)+' / '+AP.ids.length+' · 한국어→베트남어 반복</div>';
+  if("mediaSession" in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:w[1]+"  ("+w[2]+")",artist:"베트남어 오디오 코스",album:"Tiếng Việt"}); }catch(e){} }
+}
+/* ===== 엔진 통합 라우팅 ===== */
+function hfEngine(){ return HC().engine||"audio"; }
+function hfPlaying(){ return AP.on||HP.on; }
+function hfPlay(){ if(hfEngine()==="audio") audioPlay(); else __hPlay(); }
+function hfStop(){ if(AP.on) audioStop(); if(HP.on) handsStop(); }
+function hfNext(){ if(hfEngine()==="audio"){ if(!AP.ids.length){AP.ids=handsItems();AP.idx=0;} audioAdvance(1); } else __hJump(1); }
+function hfPrev(){ if(hfEngine()==="audio"){ if(!AP.ids.length){AP.ids=handsItems();AP.idx=0;} audioAdvance(-1); } else __hJump(-1); }
+window.__hNext=hfNext; window.__hPrev=hfPrev;
 function renderNow(a){
   var el=document.getElementById("npBox"); if(!el||!a) return;
   var w=VOCAB[a.id]; if(!w) return;
@@ -856,18 +919,26 @@ function renderHands(){
       return '<button class="chip'+(String(c[key])===String(o[0])?" on":"")+'" onclick="__hSet(\''+key+'\',\''+o[0]+'\')">'+o[1]+'</button>';
     }).join("");
   }
+  var audio=(c.engine!=="tts");
+  var cnt=handsItems().length;
   var h='<h1>🎧 핸즈프리 <span class="vn">오디오 코스</span></h1>'
     +'<p class="sub">걸으면서 들으세요. 뜻 → 생각 → 베트남어 → 따라 말하기 순으로 반복돼요.</p>'
-    +'<div class="np wait" id="npBox"><div class="lang">준비됨</div><div class="big">▶ 를 눌러 시작</div>'
-    +'<div class="kox">'+HP.ids.length+'개 단어 · 무한 반복</div></div>'
+    +'<div class="cfg-label">재생 방식</div><div class="chips">'
+    +'<button class="chip'+(audio?" on":"")+'" onclick="__hSet(\'engine\',\'audio\')">🎧 오디오 (화면 꺼짐 OK)</button>'
+    +'<button class="chip'+(!audio?" on":"")+'" onclick="__hSet(\'engine\',\'tts\')">⚡ 인터랙티브</button></div>'
+    +'<div class="np wait" id="npBox" style="margin-top:12px"><div class="lang">준비됨</div><div class="big">▶ 를 눌러 시작</div>'
+    +'<div class="kox">'+cnt+'개 단어 · 무한 반복</div></div>'
     +'<div class="ctrls">'
-    +'<button onclick="__hJump(-1)" aria-label="이전">⏮</button>'
-    +'<button class="pp" id="ppBtn" onclick="__hToggle()" aria-label="재생/정지">'+(HP.on?"⏸":"▶")+'</button>'
-    +'<button onclick="__hJump(1)" aria-label="다음">⏭</button></div>'
-    +'<div class="cfg-label">방식</div><div class="chips">'
-    + chips("mode",[["ko","한국어 → 베트남어 (회상)"],["vn","베트남어 → 한국어 (듣기)"]])+'</div>'
+    +'<button onclick="__hPrev()" aria-label="이전">⏮</button>'
+    +'<button class="pp" id="ppBtn" onclick="__hToggle()" aria-label="재생/정지">'+(hfPlaying()?"⏸":"▶")+'</button>'
+    +'<button onclick="__hNext()" aria-label="다음">⏭</button></div>'
     +'<div class="cfg-label">재생 범위</div><div class="chips">'
-    + chips("set",[["today","오늘"],["week","이번 주차"],["review","복습 대상"],["fav","⭐ 즐겨찾기"],["all","배운 전체"]])+'</div>'
+    + chips("set",[["today","오늘"],["week","이번 주차"],["review","복습 대상"],["fav","⭐ 즐겨찾기"],["all","배운 전체"]])+'</div>';
+  if(audio){
+    h+='<div class="hint" style="margin-top:16px">🎧 <b>오디오 모드</b> — 진짜 음성 파일이라 <b>화면을 꺼도(아이폰 잠금 포함) 계속 재생</b>되고, 잠금화면에 재생·이전·다음 컨트롤이 떠요. 발음도 뉴럴 음성이라 또렷해요.<br>· 형식: 한국어 뜻 → (생각) → 베트남어 → (따라 말하기) → 반복.<br>· 세밀한 조절(반복 횟수·방식·섞기)이 필요하면 <b>⚡ 인터랙티브</b>로 바꾸세요(단, 그 모드는 화면을 켜둬야 해요).</div>';
+  } else {
+    h+='<div class="cfg-label">방식</div><div class="chips">'
+    + chips("mode",[["ko","한국어 → 베트남어 (회상)"],["vn","베트남어 → 한국어 (듣기)"]])+'</div>'
     +'<div class="cfg-label">베트남어 반복 횟수</div><div class="chips">'
     + chips("rep",[["1","1번"],["2","2번"],["3","3번"]])+'</div>'
     +'<div class="cfg-label">따라 말할 시간</div><div class="chips">'
@@ -875,8 +946,9 @@ function renderHands(){
     +'<div class="cfg-label">옵션</div><div class="chips">'
     +'<button class="chip'+(c.ex?" on":"")+'" onclick="__hSet(\'ex\',1)">💬 예문 포함</button>'
     +'<button class="chip'+(c.shuffle?" on":"")+'" onclick="__hSet(\'shuffle\',1)">🔀 순서 섞기</button></div>'
-    +'<div class="hint" style="margin-top:16px">🚶 <b>걸으면서 들을 때</b><br>· 재생 중엔 화면이 자동으로 안 꺼지고, 잠금화면에도 재생 컨트롤이 떠요.<br>· <b>안드로이드</b>: 화면을 꺼도(전원 버튼) 대부분 계속 재생돼요.<br>· <b>아이폰(사파리)</b>: 화면을 잠그면 브라우저 정책상 소리가 멈출 수 있어요 — 화면을 켠 채 주머니에 넣거나 화면 밝기를 낮춰서 사용하세요.<br>· 소리가 안 나오면 무음 모드 해제 후 ▶ 를 다시 눌러주세요.</div>'
-    +'<button class="ghost" onclick="__go(\'home\')">홈으로</button>';
+    +'<div class="hint" style="margin-top:16px">⚡ <b>인터랙티브 모드</b> — 실시간 합성이라 옵션이 자유롭지만, 폰 화면을 <b>잠그면 소리가 멈춰요</b>(브라우저 제한). 화면 켠 채 사용하세요. 화면 꺼도 듣고 싶으면 🎧 오디오 모드로.</div>';
+  }
+  h+='<button class="ghost" onclick="__go(\'home\')">홈으로</button>';
   el.innerHTML=h;
 }
 
