@@ -107,6 +107,9 @@
   .tag.love{background:var(--lacquer-soft); color:var(--lacquer)}
   .tag.react{background:var(--jade-soft); color:var(--jade)}
   .tag.survive{background:var(--gold); color:#fff}
+  .tag.color{background:var(--lacquer-soft); color:var(--lacquer)}
+  .tag.dir{background:var(--jade-soft); color:var(--jade)}
+  .tag.taste{background:var(--gold); color:#fff}
   .vnw{font-size:21px; font-weight:700; letter-spacing:-.01em; line-height:1.2}
   .say{font-family:ui-monospace,Menlo,monospace; font-size:13px; color:var(--jade); font-weight:600; margin-top:2px}
   .mean{font-size:14px; color:var(--ink-soft); margin-top:3px}
@@ -288,8 +291,49 @@ var VOCAB = [
 /*VOCAB_END*/
 ];
 
-var TAGS={coach:"코칭",love:"연애",react:"리액션",survive:"생존"};
+var TAGS={coach:"코칭",love:"연애",react:"리액션",survive:"생존",color:"색상",dir:"방향",taste:"맛"};
 var EXT={q:"질문",a:"답변",c:"자주쓰는 말"};
+
+/* 주제별 팩 (메인 커리큘럼과 별개, 잠금 없음, 시험 제외 — 핸즈프리/치트에서 자유 학습) */
+var THEMES=[
+ {id:"colors", name:"색상", icon:"🎨", words:[
+  ["color","đỏ","빨강","더↘↗",[["c","màu đỏ","빨간색","마우↘ 더↘↗"],["c","Áo đỏ đẹp.","빨간 옷 예뻐요.","아오↗ 더↘↗ 뎁↓"]]],
+  ["color","cam","주황","깜",[["c","màu cam","주황색","마우↘ 깜"],["c","quả cam","오렌지","꽈↗ 깜"]]],
+  ["color","vàng","노랑","방↘",[["c","màu vàng","노란색","마우↘ 방↘"],["c","vàng kim","금색","방↘ 낌"]]],
+  ["color","xanh lá","초록","싸잉 라↗",[["c","màu xanh lá","초록색","마우↘ 싸잉 라↗"],["c","cây xanh","푸른 나무","꺼이 싸잉"]]],
+  ["color","xanh dương","파랑","싸잉 즈엉",[["c","màu xanh dương","파란색","마우↘ 싸잉 즈엉"],["c","trời xanh","파란 하늘","쩌이↘ 싸잉"]]],
+  ["color","tím","보라","띰↗",[["c","màu tím","보라색","마우↘ 띰↗"],["c","hoa tím","보라 꽃","화 띰↗"]]],
+  ["color","đen","검정","댄",[["c","màu đen","검은색","마우↘ 댄"],["c","tóc đen","검은 머리","똡↗ 댄"]]],
+  ["color","trắng","하양","짱↗",[["c","màu trắng","흰색","마우↘ 짱↗"],["c","áo trắng","흰 옷","아오↗ 짱↗"]]],
+  ["color","hồng","분홍","홍↘",[["c","màu hồng","분홍색","마우↘ 홍↘"],["c","hoa hồng","장미","화 홍↘"]]],
+  ["color","nâu","갈색","너우",[["c","màu nâu","갈색","마우↘ 너우"],["c","mắt nâu","갈색 눈","맏↗ 너우"]]]
+ ]},
+ {id:"directions", name:"방향", icon:"🧭", words:[
+  ["dir","trái","왼쪽","짜이↗",[["q","Rẽ trái?","왼쪽으로?","제˜ 짜이↗"],["c","bên trái","왼편","벤 짜이↗"]]],
+  ["dir","phải","오른쪽","파이↘↗",[["q","Rẽ phải?","오른쪽으로?","제˜ 파이↘↗"],["c","bên phải","오른편","벤 파이↘↗"]]],
+  ["dir","trên","위","쩬",[["c","ở trên","위에","어↘↗ 쩬"],["c","trên bàn","탁자 위","쩬 반↘"]]],
+  ["dir","dưới","아래","즈어이↗",[["c","ở dưới","아래에","어↘↗ 즈어이↗"],["c","dưới ghế","의자 아래","즈어이↗ 게↗"]]],
+  ["dir","trong","안","쫑",[["c","ở trong","안에","어↘↗ 쫑"],["c","trong nhà","집 안","쫑 냐↘"]]],
+  ["dir","ngoài","밖","응와이↘",[["c","ở ngoài","밖에","어↘↗ 응와이↘"],["c","ngoài trời","야외","응와이↘ 쩌이↘"]]],
+  ["dir","bên cạnh","옆","벤 까잉↓",[["c","ở bên cạnh","옆에","어↘↗ 벤 까잉↓"],["c","bên cạnh em","네 옆에","벤 까잉↓ 앰"]]],
+  ["dir","trước","앞","쯔억↗",[["c","ở trước","앞에","어↘↗ 쯔억↗"],["c","trước cửa","문 앞","쯔억↗ 끄어↘↗"]]],
+  ["dir","sau","뒤","사우",[["c","ở sau","뒤에","어↘↗ 사우"],["c","phía sau","뒤쪽","피어↗ 사우"]]],
+  ["dir","giữa","가운데","즈어˜",[["c","ở giữa","가운데에","어↘↗ 즈어˜"],["c","giữa đường","길 한가운데","즈어˜ 드엉↘"]]]
+ ]},
+ {id:"taste", name:"맛", icon:"👅", words:[
+  ["taste","ngon","맛있다","응온",[["c","Ngon quá!","정말 맛있어요!","응온 꽈↗"],["q","Ngon không?","맛있어요?","응온 콤"]]],
+  ["taste","đắng","쓰다","당↗",[["c","Cà phê đắng.","커피가 써요.","까↘ 페 당↗"],["c","vị đắng","쓴맛","비↓ 당↗"]]],
+  ["taste","mặn","짜다","만↓",[["c","Món này mặn.","이거 짜요.","몬↗ 나이↘ 만↓"],["c","hơi mặn","좀 짜요","허이 만↓"]]],
+  ["taste","ngọt","달다","응옫↓",[["c","Bánh ngọt.","단 빵/케이크.","바잉↗ 응옫↓"],["c","Ngọt quá.","너무 달아요.","응옫↓ 꽈↗"]]],
+  ["taste","nhạt","싱겁다","냗↓",[["c","Canh nhạt.","국이 싱거워요.","까잉 냗↓"],["c","hơi nhạt","좀 싱거워요","허이 냗↓"]]],
+  ["taste","chua","시다","쭈어",[["c","Chanh chua.","레몬이 셔요.","짜잉 쭈어"],["c","vị chua","신맛","비↓ 쭈어"]]],
+  ["taste","cay","맵다","까이",[["c","Ớt cay.","고추가 매워요.","얻↗ 까이"],["q","Cay không?","매워요?","까이 콤"]]],
+  ["taste","béo","느끼하다","베오↗",[["c","Món béo.","느끼한 음식.","몬↗ 베오↗"],["c","hơi béo","좀 느끼해요","허이 베오↗"]]],
+  ["taste","thơm","향긋하다","텀",[["c","Thơm quá!","냄새 좋다!","텀 꽈↗"],["c","mùi thơm","좋은 향","무이↘ 텀"]]],
+  ["taste","dở","맛없다","저↘↗",[["c","Món này dở.","이건 맛없어요.","몬↗ 나이↘ 저↘↗"],["c","hơi dở","좀 별로예요","허이 저↘↗"]]]
+ ]}
+];
+function themeById(id){ for(var i=0;i<THEMES.length;i++) if(THEMES[i].id===id) return THEMES[i]; return null; }
 var LESSONS_PER_WEEK=7, EXAM_QS=20;
 var GURL="https://claude.ai/code/artifact/953677b5-fd0e-4344-ae09-03c882553d78";
 
@@ -337,7 +381,7 @@ function speak(text,el){
   speechSynthesis.speak(u);
 }
 if(window.speechSynthesis) speechSynthesis.onvoiceschanged=viVoice;
-function gLink(t){ return GURL.indexOf("http")?"#":"https://translate.google.com/?sl=vi&tl=ko&op=translate&text="+encodeURIComponent(t); }
+function gLink(t){ return "https://translate.google.com/?sl=vi&tl=ko&op=translate&text="+encodeURIComponent(t); }
 function arrows(s){ return s.replace(/([↗↘↓˜]+)/g,'<span class="up">$1</span>'); }
 function esc(s){ return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
@@ -640,7 +684,6 @@ window.__cheat=function(q){
   q=(q||"").trim().toLowerCase(); var favOnly=document.getElementById("favOnly") && document.getElementById("favOnly").checked;
   var out="", n=0;
   VOCAB.forEach(function(w,id){
-    if(id>=S.currentDay*4 && id>=weekStartWord(Math.floor((S.currentDay-1)/8)+1)) {} // 노출 제한 없음: 배운 것 위주지만 전체 허용
     if(favOnly && S.fav.indexOf(id)<0) return;
     var hay=(w[1]+" "+w[2]+" "+w[3]).toLowerCase();
     var match=!q||hay.indexOf(q)>=0;
@@ -702,8 +745,15 @@ function learnedMax(){
         : weekStartWord(d.week)+LESSONS_PER_WEEK*wpdForWeek(d.week);
   return Math.min(Math.max(n,1), VOCAB.length);
 }
+function wobj(w,aud){ return {cat:w[0],vn:w[1],ko:w[2],say:w[3],ex:w[4]||[],aud:aud}; }
 function handsItems(){
-  var c=HC(), ids=[], max=learnedMax(), i;
+  var c=HC(), list=[], max=learnedMax(), i;
+  if(c.set && c.set.indexOf("theme:")===0){
+    var th=themeById(c.set.slice(6));
+    if(th) for(i=0;i<th.words.length;i++) list.push(wobj(th.words[i], th.id+"_"+i));
+    return c.shuffle? shuffle(list.slice()) : list;
+  }
+  var ids=[];
   if(c.set==="today"){
     var g=S.currentDay, info=dayInfo(g);
     if(info.type==="exam"||!info.ready){ for(var k=g-1;k>=1;k--){ var i2=dayInfo(k); if(i2.type==="lesson"&&i2.ready){ info=i2; break; } } }
@@ -716,27 +766,28 @@ function handsItems(){
   } else { for(i=0;i<max;i++) ids.push(i); }
   ids=ids.filter(function(id){ return VOCAB[id]; });
   if(!ids.length){ for(i=0;i<max;i++) ids.push(i); }
-  if(c.shuffle) ids=shuffle(ids.slice());
-  return ids;
+  for(i=0;i<ids.length;i++) list.push(wobj(VOCAB[ids[i]], "w"+ids[i]));
+  if(c.shuffle) list=shuffle(list.slice());
+  return list;
 }
-function itemActions(id,k){
-  var c=HC(), w=VOCAB[id], a=[], r;
+function itemActions(item,k){
+  var c=HC(), a=[], r;
   var think=Math.max(700, c.gap*700), shadow=Math.max(900, c.gap*1000);
-  function P(ms,cue,ex){ a.push({t:"pause",ms:ms,id:id,k:k,cue:cue,ex:ex}); }
-  function V(txt,cue,ex){ a.push({t:"vi",text:txt,id:id,k:k,cue:cue,ex:ex}); }
-  function K(txt,cue,ex){ a.push({t:"ko",text:txt,id:id,k:k,cue:cue,ex:ex}); }
+  function P(ms,cue,ex){ a.push({t:"pause",ms:ms,item:item,k:k,cue:cue,ex:ex}); }
+  function V(txt,cue,ex){ a.push({t:"vi",text:txt,item:item,k:k,cue:cue,ex:ex}); }
+  function K(txt,cue,ex){ a.push({t:"ko",text:txt,item:item,k:k,cue:cue,ex:ex}); }
   if(c.mode==="ko"){
-    K(w[2],"뜻을 듣고 베트남어를 떠올려보세요");
+    K(item.ko,"뜻을 듣고 베트남어를 떠올려보세요");
     P(think,"🤔 생각해보세요…");
-    for(r=0;r<c.rep;r++){ V(w[1],"🗣 따라 말해보세요"); P(shadow,"🗣 따라 말하기"); }
+    for(r=0;r<c.rep;r++){ V(item.vn,"🗣 따라 말해보세요"); P(shadow,"🗣 따라 말하기"); }
   } else {
-    V(w[1],"무슨 뜻일까요?");
+    V(item.vn,"무슨 뜻일까요?");
     P(think,"🤔 생각해보세요…");
-    K(w[2],"✓ 뜻 확인");
-    for(r=0;r<Math.max(1,c.rep-1);r++){ V(w[1],"🗣 따라 말해보세요"); P(shadow,"🗣 따라 말하기"); }
+    K(item.ko,"✓ 뜻 확인");
+    for(r=0;r<Math.max(1,c.rep-1);r++){ V(item.vn,"🗣 따라 말해보세요"); P(shadow,"🗣 따라 말하기"); }
   }
   if(c.ex){
-    w[4].forEach(function(e){
+    item.ex.forEach(function(e){
       if(c.mode==="ko"){ K(e[2],"예문 — 이걸 베트남어로?",e); P(think,"🤔 생각해보세요…",e); V(e[1],"🗣 따라 말해보세요",e); P(shadow,"🗣 따라 말하기",e); }
       else { V(e[1],"예문 — 무슨 뜻?",e); P(think,"🤔 생각해보세요…",e); K(e[2],"✓ 뜻 확인",e); V(e[1],"🗣 따라 말해보세요",e); P(shadow,"🗣 따라 말하기",e); }
     });
@@ -746,7 +797,7 @@ function itemActions(id,k){
 }
 function handsBuild(){
   HP.ids=handsItems(); HP.q=[];
-  HP.ids.forEach(function(id,k){ HP.q=HP.q.concat(itemActions(id,k)); });
+  HP.ids.forEach(function(item,k){ HP.q=HP.q.concat(itemActions(item,k)); });
   HP.i=0;
 }
 var wakeLock=null;
@@ -859,9 +910,9 @@ function audioPlay(){
   var b=document.getElementById("ppBtn"); if(b) b.textContent="⏸";
 }
 function audioLoad(play){
-  var a=ensureAudio(), id=AP.ids[AP.idx];
-  a.src="audio/w"+id+".mp3";
-  renderAudioNow(id);
+  var a=ensureAudio(), item=AP.ids[AP.idx]; if(!item) return;
+  a.src="audio/"+item.aud+".mp3";
+  renderAudioNow(item);
   if(play){ var p=a.play(); if(p&&p.catch) p.catch(function(){}); }
 }
 var apErrStreak=0;
@@ -881,15 +932,15 @@ function audioProgress(){
   var a=AP.audio; if(!a||!a.duration) return;
   var el=document.getElementById("apBar"); if(el) el.style.width=Math.round(a.currentTime/a.duration*100)+"%";
 }
-function renderAudioNow(id){
-  var el=document.getElementById("npBox"), w=VOCAB[id]; if(!el||!w) return;
+function renderAudioNow(w){
+  var el=document.getElementById("npBox"); if(!el||!w) return;
   el.className="np vi";
-  el.innerHTML='<div class="lang">▶ 재생 중 · '+TAGS[w[0]]+'</div>'
-    +'<div class="big">'+esc(w[1])+'</div><div class="say2">'+arrows(esc(w[3]))+'</div>'
-    +'<div class="kox">'+esc(w[2])+'</div>'
+  el.innerHTML='<div class="lang">▶ 재생 중 · '+(TAGS[w.cat]||"")+'</div>'
+    +'<div class="big">'+esc(w.vn)+'</div><div class="say2">'+arrows(esc(w.say))+'</div>'
+    +'<div class="kox">'+esc(w.ko)+'</div>'
     +'<div style="height:5px;background:var(--line);border-radius:20px;margin:14px 0 4px;overflow:hidden"><span id="apBar" style="display:block;height:100%;width:0;background:var(--jade)"></span></div>'
     +'<div class="pos">'+(AP.idx+1)+' / '+AP.ids.length+' · 한국어→베트남어 반복</div>';
-  if("mediaSession" in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:w[1]+"  ("+w[2]+")",artist:"베트남어 오디오 코스",album:"Tiếng Việt"}); }catch(e){} }
+  if("mediaSession" in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:w.vn+"  ("+w.ko+")",artist:"베트남어 오디오 코스",album:"Tiếng Việt"}); }catch(e){} }
 }
 /* ===== 엔진 통합 라우팅 ===== */
 function hfEngine(){ return HC().engine||"audio"; }
@@ -901,13 +952,13 @@ function hfPrev(){ if(hfEngine()==="audio"){ if(!AP.ids.length){AP.ids=handsItem
 window.__hNext=hfNext; window.__hPrev=hfPrev;
 function renderNow(a){
   var el=document.getElementById("npBox"); if(!el||!a) return;
-  var w=VOCAB[a.id]; if(!w) return;
+  var w=a.item; if(!w) return;
   var cls="np "+(a.t==="pause"?"wait":a.t);
   var h='<div class="lang">'+(a.t==="ko"?"한국어":(a.t==="vi"?"Tiếng Việt":"···"))+(a.ex?" · 예문":"")+'</div>';
   if(a.ex){
     h+='<div class="big">'+esc(a.ex[1])+'</div><div class="say2">'+arrows(esc(a.ex[3]))+'</div><div class="kox">'+esc(a.ex[2])+'</div>';
   } else {
-    h+='<div class="big">'+esc(w[1])+'</div><div class="say2">'+arrows(esc(w[3]))+'</div><div class="kox">'+esc(w[2])+'</div>';
+    h+='<div class="big">'+esc(w.vn)+'</div><div class="say2">'+arrows(esc(w.say))+'</div><div class="kox">'+esc(w.ko)+'</div>';
   }
   if(a.cue) h+='<div class="cue">'+a.cue+'</div>';
   h+='<div class="pos">'+((a.k|0)+1)+' / '+HP.ids.length+' · 반복 '+HP.loops+'회차</div>';
@@ -935,7 +986,9 @@ function renderHands(){
     +'<button class="pp" id="ppBtn" onclick="__hToggle()" aria-label="재생/정지">'+(hfPlaying()?"⏸":"▶")+'</button>'
     +'<button onclick="__hNext()" aria-label="다음">⏭</button></div>'
     +'<div class="cfg-label">재생 범위</div><div class="chips">'
-    + chips("set",[["today","오늘"],["week","이번 주차"],["review","복습 대상"],["fav","⭐ 즐겨찾기"],["all","배운 전체"]])+'</div>';
+    + chips("set",[["today","오늘"],["week","이번 주차"],["review","복습 대상"],["fav","⭐ 즐겨찾기"],["all","배운 전체"]])+'</div>'
+    +'<div class="cfg-label">주제팩 (커리큘럼과 별개 · 시험 제외)</div><div class="chips">'
+    + chips("set", THEMES.map(function(t){ return ["theme:"+t.id, t.icon+" "+t.name+" ("+t.words.length+")"]; }))+'</div>';
   if(audio){
     h+='<div class="hint" style="margin-top:16px">🎧 <b>오디오 모드</b> — 진짜 음성 파일이라 <b>화면을 꺼도(아이폰 잠금 포함) 계속 재생</b>되고, 잠금화면에 재생·이전·다음 컨트롤이 떠요. 발음도 뉴럴 음성이라 또렷해요.<br>· 형식: 한국어 뜻 → (생각) → 베트남어 → (따라 말하기) → 반복.<br>· 세밀한 조절(반복 횟수·방식·섞기)이 필요하면 <b>⚡ 인터랙티브</b>로 바꾸세요(단, 그 모드는 화면을 켜둬야 해요).</div>';
   } else {

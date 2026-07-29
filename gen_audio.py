@@ -57,8 +57,11 @@ def main():
     os.makedirs(outdir, exist_ok=True)
     here = os.path.dirname(os.path.abspath(__file__))
     vj = subprocess.check_output(["node", os.path.join(here, "dump_vocab.js"), lesson])
-    VOCAB = json.loads(vj.decode("utf-8"))
+    data = json.loads(vj.decode("utf-8"))
+    VOCAB = data.get("vocab", [])
+    THEMES = data.get("themes", [])
     made = 0
+    # 1) 메인 커리큘럼 단어
     for i, w in enumerate(VOCAB):
         outp = os.path.join(outdir, "w%d.mp3" % i)
         if os.path.exists(outp) and os.path.getsize(outp) > 500:
@@ -69,9 +72,24 @@ def main():
             print("  w%d.mp3  (%s)" % (i, w[1]), flush=True)
         except Exception as ex:
             print("  ! w%d FAILED: %s" % (i, ex), flush=True)
+    # 2) 주제팩 단어 (aud 이름 = <themeId>_<n>)
+    tcount = {}
+    for th in THEMES:
+        tid = th.get("id"); words = th.get("words", [])
+        tcount[tid] = len(words)
+        for n, w in enumerate(words):
+            outp = os.path.join(outdir, "%s_%d.mp3" % (tid, n))
+            if os.path.exists(outp) and os.path.getsize(outp) > 500:
+                continue
+            try:
+                encode(build_word(w, tv, kv), outp)
+                made += 1
+                print("  %s_%d.mp3  (%s)" % (tid, n, w[1]), flush=True)
+            except Exception as ex:
+                print("  ! %s_%d FAILED: %s" % (tid, n, ex), flush=True)
     with open(os.path.join(outdir, "manifest.json"), "w", encoding="utf-8") as f:
-        json.dump({"count": len(VOCAB)}, f)
-    print("DONE. new=%d total=%d" % (made, len(VOCAB)), flush=True)
+        json.dump({"count": len(VOCAB), "themes": tcount}, f)
+    print("DONE. new=%d vocab=%d themes=%d" % (made, len(VOCAB), sum(tcount.values())), flush=True)
 
 if __name__ == "__main__":
     main()
