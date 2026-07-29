@@ -909,7 +909,7 @@ function audioPlay(){
   audioLoad(true);
   var b=document.getElementById("ppBtn"); if(b) b.textContent="⏸";
 }
-var AUDIO_VER="2";
+var AUDIO_VER="3";
 function audioLoad(play){
   var a=ensureAudio(), item=AP.ids[AP.idx]; if(!item) return;
   a.src="audio/"+item.aud+".mp3?v="+AUDIO_VER;
