@@ -38,18 +38,20 @@ def pcm(text, voice):
 def sil(sec):
     return b"\x00\x00" * int(SR * sec)
 
-def build_pcm(w, tv, kv):
+def build_pcm(w, tv, kv, tv2=None):
+    # tv=주 목소리(여성), tv2=보조 목소리(남성). tv2가 있으면 여성→남성 번갈아.
     target, ko, exs = w[1], w[2], w[4]
-    segs = [pcm(ko, kv), sil(1.8)]
-    v = pcm(target, tv)
-    segs += [v, sil(1.5), v, sil(1.2)]
-    for e in exs:
-        segs += [pcm(e[2], kv), sil(1.5), pcm(e[1], tv), sil(1.4)]
+    vf = pcm(target, tv)
+    vm = pcm(target, tv2) if tv2 else vf
+    segs = [pcm(ko, kv), sil(1.8), vf, sil(1.5), vm, sil(1.2)]
+    for i, e in enumerate(exs):
+        voice = tv if (not tv2 or i % 2 == 0) else tv2
+        segs += [pcm(e[2], kv), sil(1.5), pcm(e[1], voice), sil(1.4)]
     segs += [sil(0.7)]
     return b"".join(segs)
 
-def write_word(w, tv, kv, outp):
-    data = build_pcm(w, tv, kv)
+def write_word(w, tv, kv, outp, tv2=None):
+    data = build_pcm(w, tv, kv, tv2)
     enc = lameenc.Encoder()
     enc.set_bit_rate(128); enc.set_in_sample_rate(SR); enc.set_channels(1); enc.set_quality(0)
     with open(outp, "wb") as f:
@@ -57,6 +59,7 @@ def write_word(w, tv, kv, outp):
 
 def main():
     lesson, outdir, tv, kv = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+    tv2 = sys.argv[5] if len(sys.argv) > 5 else None  # 보조(남성) 목소리
     os.makedirs(CACHE_DIR, exist_ok=True)
     os.makedirs(outdir, exist_ok=True)
     here = os.path.dirname(os.path.abspath(__file__))
@@ -69,7 +72,7 @@ def main():
         if os.path.exists(outp) and os.path.getsize(outp) > 500:
             continue
         try:
-            write_word(w, tv, kv, outp); made += 1
+            write_word(w, tv, kv, outp, tv2); made += 1
             print("  w%d.mp3  (%s)" % (i, w[1]), flush=True)
         except Exception as ex:
             print("  ! w%d FAILED: %s" % (i, ex), flush=True)
@@ -82,7 +85,7 @@ def main():
             if os.path.exists(outp) and os.path.getsize(outp) > 500:
                 continue
             try:
-                write_word(w, tv, kv, outp); made += 1
+                write_word(w, tv, kv, outp, tv2); made += 1
                 print("  %s_%d.mp3  (%s)" % (tid, n, w[1]), flush=True)
             except Exception as ex:
                 print("  ! %s_%d FAILED: %s" % (tid, n, ex), flush=True)

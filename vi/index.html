@@ -909,7 +909,7 @@ function audioPlay(){
   audioLoad(true);
   var b=document.getElementById("ppBtn"); if(b) b.textContent="⏸";
 }
-var AUDIO_VER="3";
+var AUDIO_VER="4";
 function audioLoad(play){
   var a=ensureAudio(), item=AP.ids[AP.idx]; if(!item) return;
   a.src="audio/"+item.aud+".mp3?v="+AUDIO_VER;
@@ -940,7 +940,7 @@ function renderAudioNow(w){
     +'<div class="big">'+esc(w.vn)+'</div><div class="say2">'+arrows(esc(w.say))+'</div>'
     +'<div class="kox">'+esc(w.ko)+'</div>'
     +'<div style="height:5px;background:var(--line);border-radius:20px;margin:14px 0 4px;overflow:hidden"><span id="apBar" style="display:block;height:100%;width:0;background:var(--jade)"></span></div>'
-    +'<div class="pos">'+(AP.idx+1)+' / '+AP.ids.length+' · 한국어→베트남어 반복</div>';
+    +'<div class="pos">'+(AP.idx+1)+' / '+AP.ids.length+' · 여성→남성 번갈아</div>';
   if("mediaSession" in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:w.vn+"  ("+w.ko+")",artist:"베트남어 오디오 코스",album:"Tiếng Việt"}); }catch(e){} }
 }
 /* ===== 엔진 통합 라우팅 ===== */
@@ -991,7 +991,7 @@ function renderHands(){
     +'<div class="cfg-label">주제팩 (커리큘럼과 별개 · 시험 제외)</div><div class="chips">'
     + chips("set", THEMES.map(function(t){ return ["theme:"+t.id, t.icon+" "+t.name+" ("+t.words.length+")"]; }))+'</div>';
   if(audio){
-    h+='<div class="hint" style="margin-top:16px">🎧 <b>오디오 모드</b> — 진짜 음성 파일이라 <b>화면을 꺼도(아이폰 잠금 포함) 계속 재생</b>되고, 잠금화면에 재생·이전·다음 컨트롤이 떠요. 발음도 뉴럴 음성이라 또렷해요.<br>· 형식: 한국어 뜻 → (생각) → 베트남어 → (따라 말하기) → 반복.<br>· 세밀한 조절(반복 횟수·방식·섞기)이 필요하면 <b>⚡ 인터랙티브</b>로 바꾸세요(단, 그 모드는 화면을 켜둬야 해요).</div>';
+    h+='<div class="hint" style="margin-top:16px">🎧 <b>오디오 모드</b> — 진짜 음성 파일이라 <b>화면을 꺼도(아이폰 잠금 포함) 계속 재생</b>되고, 잠금화면에 재생·이전·다음 컨트롤이 떠요. 발음도 뉴럴 음성이라 또렷해요.<br>· 형식: 한국어 뜻 → (생각) → 베트남어 <b>여성 → 남성</b> 번갈아.<br>· 세밀한 조절(반복 횟수·방식·섞기)이 필요하면 <b>⚡ 인터랙티브</b>로 바꾸세요(단, 그 모드는 화면을 켜둬야 해요).</div>';
   } else {
     h+='<div class="cfg-label">방식</div><div class="chips">'
     + chips("mode",[["ko","한국어 → 베트남어 (회상)"],["vn","베트남어 → 한국어 (듣기)"]])+'</div>'
