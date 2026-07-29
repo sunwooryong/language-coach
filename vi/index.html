@@ -839,6 +839,8 @@ function val_isOn(key){ return !!HC()[key]; }
 
 /* ===== 오디오 모드: 미리 만든 실제 MP3 재생 (화면 꺼짐/잠금에도 지속) ===== */
 var AP={audio:null, ids:[], idx:0, on:false};
+var audioAvailable=true;
+try{ fetch("audio/manifest.json",{cache:"no-store"}).then(function(r){ audioAvailable=!!r.ok; }).catch(function(){ audioAvailable=false; }); }catch(e){ audioAvailable=false; }
 function ensureAudio(){
   if(AP.audio) return AP.audio;
   var a=new Audio(); a.preload="auto";
@@ -892,7 +894,7 @@ function renderAudioNow(id){
 /* ===== 엔진 통합 라우팅 ===== */
 function hfEngine(){ return HC().engine||"audio"; }
 function hfPlaying(){ return AP.on||HP.on; }
-function hfPlay(){ if(hfEngine()==="audio") audioPlay(); else __hPlay(); }
+function hfPlay(){ if(hfEngine()==="audio" && audioAvailable) audioPlay(); else __hPlay(); }
 function hfStop(){ if(AP.on) audioStop(); if(HP.on) handsStop(); }
 function hfNext(){ if(hfEngine()==="audio"){ if(!AP.ids.length){AP.ids=handsItems();AP.idx=0;} audioAdvance(1); } else __hJump(1); }
 function hfPrev(){ if(hfEngine()==="audio"){ if(!AP.ids.length){AP.ids=handsItems();AP.idx=0;} audioAdvance(-1); } else __hJump(-1); }
