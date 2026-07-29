@@ -678,8 +678,23 @@ function renderBasics(){
 window.__rate=function(r){ rate=r; };
 
 /* ============ 핸즈프리 오디오 코스 ============ */
-var HP={q:[],i:0,on:false,timer:null,ids:[],loops:0};
-function HC(){ S.hands=Object.assign({mode:"ko",rep:2,gap:2.5,set:"today",ex:true,shuffle:false}, S.hands||{}); return S.hands; }
+var HP={q:[],i:0,on:false,timer:null,ids:[],loops:0,spokeAt:0,spokeIdx:-1};
+var hpAlive=null;
+function keepAliveStart(){
+  if(hpAlive) return;
+  hpAlive=setInterval(function(){
+    if(!HP.on){ return; }
+    try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(e){}
+    // 워치독: 말하기 항목이 너무 오래 끝나지 않으면(백그라운드에서 onend 유실 등) 강제로 다음으로
+    var a=HP.q[HP.i];
+    if(a && a.t!=="pause" && HP.spokeIdx===HP.i && Date.now()-HP.spokeAt>9000){
+      try{ speechSynthesis.cancel(); }catch(e){}
+      HP.i++; handsStep();
+    }
+  }, 3000);
+}
+function keepAliveStop(){ if(hpAlive){ clearInterval(hpAlive); hpAlive=null; } }
+function HC(){ if(!S.hands||typeof S.hands!=="object") S.hands={}; var d={mode:"ko",rep:2,gap:2.5,set:"today",ex:true,shuffle:false}; for(var k in d){ if(S.hands[k]===undefined||S.hands[k]===null) S.hands[k]=d[k]; } return S.hands; }
 function koVoice(){ var vs=speechSynthesis?speechSynthesis.getVoices():[]; return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf("ko")===0;})[0]||null; }
 function learnedMax(){
   var d=dayInfo(S.currentDay);
@@ -746,7 +761,7 @@ function keepAwake(on){
     else if(!on && wakeLock){ wakeLock.release(); wakeLock=null; }
   }catch(e){}
 }
-document.addEventListener("visibilitychange",function(){ if(!document.hidden && HP.on){ keepAwake(true); bgAudioStart(); } });
+document.addEventListener("visibilitychange",function(){ if(!document.hidden && HP.on){ keepAwake(true); bgAudioStart(); try{speechSynthesis.resume();}catch(e){} if(!speechSynthesis.speaking && !speechSynthesis.pending){ clearTimeout(HP.timer); handsStep(); } } });
 window.addEventListener("focus",function(){ if(HP.on){ keepAwake(true); bgAudioStart(); } });
 
 /* 무음 오디오를 계속 재생 → 브라우저가 "오디오 재생 중" 탭으로 취급해
@@ -780,23 +795,25 @@ function handsStep(){
   renderNow(a);
   if(a.t==="pause"){ HP.timer=setTimeout(function(){ HP.i++; handsStep(); }, a.ms); return; }
   try{ speechSynthesis.cancel(); }catch(e){}
+  var myIdx=HP.i; HP.spokeAt=Date.now(); HP.spokeIdx=HP.i;
   var u=new SpeechSynthesisUtterance(a.text);
   if(a.t==="ko"){ u.lang="ko-KR"; u.rate=1.0; var kv=koVoice(); if(kv)u.voice=kv; }
   else { u.lang="vi-VN"; u.rate=rate; var vv=viVoice(); if(vv)u.voice=vv; }
-  u.onend=u.onerror=function(){ if(!HP.on)return; HP.i++; HP.timer=setTimeout(handsStep,120); };
-  speechSynthesis.speak(u);
+  u.onend=u.onerror=function(){ if(!HP.on)return; if(HP.i!==myIdx)return; HP.i++; HP.timer=setTimeout(handsStep,120); };
+  try{ speechSynthesis.speak(u); }catch(e){}
+  try{ speechSynthesis.resume(); }catch(e){}
 }
 function handsStop(silent){
   HP.on=false; clearTimeout(HP.timer);
   try{ speechSynthesis.cancel(); }catch(e){}
-  keepAwake(false); bgAudioStop(); setMediaPlaybackState("paused");
+  keepAwake(false); bgAudioStop(); keepAliveStop(); setMediaPlaybackState("paused");
   if(!silent){ var b=document.getElementById("ppBtn"); if(b) b.textContent="▶"; }
 }
 window.__hands=function(){ show("hands"); };
 window.__hPlay=function(){
   if(!HP.q.length) handsBuild();
   if(!HP.q.length){ alert("들을 내용이 아직 없어요. 수업을 먼저 진행해주세요."); return; }
-  HP.on=true; keepAwake(true); bgAudioStart(); setupMediaSession(); setMediaPlaybackState("playing"); handsStep();
+  HP.on=true; keepAwake(true); bgAudioStart(); setupMediaSession(); setMediaPlaybackState("playing"); keepAliveStart(); handsStep();
   var b=document.getElementById("ppBtn"); if(b) b.textContent="⏸";
 };
 window.__hToggle=function(){ if(HP.on){ handsStop(); } else { __hPlay(); } };
@@ -811,7 +828,7 @@ window.__hJump=function(dir){
 window.__hSet=function(key,val){
   var c=HC();
   if(key==="rep"||key==="gap") val=parseFloat(val);
-  if(key==="ex"||key==="shuffle") val=!val_isOn(key);
+  if(key==="ex"||key==="shuffle") val=!c[key];
   c[key]=val; save();
   var wasOn=HP.on; handsStop(true); handsBuild(); renderHands();
   if(wasOn){ __hPlay(); }
