@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#FF6A2C">
+<title>성격 조준소 · MBTI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root{
+    --bg:#EEF1F5; --bg2:#E3E8EE; --card:#FFFFFF; --ink:#18222E; --ink2:#54606E;
+    --line:#D6DCE4; --accent:#FF6A2C; --accent2:#159C8C; --gold:#E0A43B;
+    --ring:#FFE0CE; --shadow:0 18px 40px -18px rgba(24,34,46,.28);
+    --radius:20px; --maxw:460px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0E141C; --bg2:#0A0F16; --card:#182230; --ink:#EAF0F6; --ink2:#9BABBC;
+      --line:#26333F; --accent:#FF7A42; --accent2:#2FC3B1; --gold:#E7B354; --ring:#3A2416; --shadow:0 22px 50px -18px rgba(0,0,0,.6); }
+  }
+  :root[data-theme="light"]{ --bg:#EEF1F5; --bg2:#E3E8EE; --card:#FFFFFF; --ink:#18222E; --ink2:#54606E;
+    --line:#D6DCE4; --accent:#FF6A2C; --accent2:#159C8C; --gold:#E0A43B; --ring:#FFE0CE; --shadow:0 18px 40px -18px rgba(24,34,46,.28); }
+  :root[data-theme="dark"]{ --bg:#0E141C; --bg2:#0A0F16; --card:#182230; --ink:#EAF0F6; --ink2:#9BABBC;
+    --line:#26333F; --accent:#FF7A42; --accent2:#2FC3B1; --gold:#E7B354; --ring:#3A2416; --shadow:0 22px 50px -18px rgba(0,0,0,.6); }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",Roboto,sans-serif;
+    background:radial-gradient(120% 80% at 50% -10%, var(--bg2), var(--bg) 60%);
+    color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+    padding:env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px);}
+  .wrap{width:100%;max-width:var(--maxw);flex:1;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 2px 6px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.02em;min-width:0}
+  .brand .tgt{width:22px;height:22px;flex:none}
+  .brand small{display:block;font-size:9.5px;font-weight:600;color:var(--ink2);letter-spacing:.12em}
+  .langsw{display:flex;gap:4px;flex:none}
+  .langbtn{font-family:inherit;font-weight:800;font-size:11px;letter-spacing:.02em;padding:6px 9px;border-radius:9px;
+    background:var(--card);border:1.5px solid var(--line);color:var(--ink2);cursor:pointer;transition:.15s}
+  .langbtn[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 15%,transparent);border-color:var(--accent);color:var(--accent)}
+
+  .screen{flex:1;display:none;flex-direction:column;justify-content:center;padding:8px 0 20px;animation:in .45s cubic-bezier(.2,.7,.2,1)}
+  .screen.active{display:flex}
+  @keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.screen,.ryong{animation:none}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1{font-size:30px;line-height:1.12;letter-spacing:-.03em;font-weight:850;text-wrap:balance}
+  h2{font-size:21px;letter-spacing:-.02em;font-weight:800;text-wrap:balance}
+  .lead{color:var(--ink2);font-size:15px;line-height:1.6;margin-top:14px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;font-weight:700;color:var(--accent);text-transform:uppercase}
+
+  .hero{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .heroTarget{align-self:center;margin:6px 0 20px;filter:drop-shadow(0 10px 24px color-mix(in srgb,var(--accent) 35%,transparent))}
+  .feat{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+  .featrow{display:flex;gap:11px;align-items:center;font-size:13.5px;color:var(--ink2)}
+  .featrow .ic{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+  .countline{text-align:center;font-size:12px;color:var(--ink2);margin-top:12px;font-variant-numeric:tabular-nums}
+  .countline b{color:var(--accent)}
+
+  .btn{appearance:none;border:none;cursor:pointer;font-family:inherit;font-weight:750;font-size:16px;border-radius:14px;padding:16px 20px;width:100%;color:#fff;letter-spacing:-.01em;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 88%,#fff),var(--accent));box-shadow:0 12px 24px -10px color-mix(in srgb,var(--accent) 70%,transparent);transition:transform .12s}
+  .btn:active{transform:scale(.98)}
+  .btn.sec{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btnrow{display:flex;gap:10px;align-items:center}
+  .helpbtn{flex:none;width:auto;padding:16px 18px;background:transparent;color:var(--ink2);border:1.5px solid var(--line);box-shadow:none;font-size:14px;font-weight:700}
+  .stickycta{margin-top:auto;padding-top:16px}
+
+  .field{margin-top:16px}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink2);margin-bottom:8px;letter-spacing:.02em}
+  .field input{width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--bg2);border:1.5px solid var(--line);border-radius:12px;padding:14px}
+  .field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{flex:1;min-width:60px;text-align:center;font-weight:700;font-size:14.5px;padding:13px 8px;border-radius:12px;background:var(--bg2);border:1.5px solid var(--line);color:var(--ink2);cursor:pointer;transition:.15s}
+  .chip[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent);color:var(--accent)}
+  .note{font-size:11.5px;color:var(--ink2);margin-top:18px;line-height:1.5;display:flex;gap:7px}
+  .note svg{flex:none;margin-top:1px}
+
+  .qhead{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .qring{width:44px;height:44px;flex:none}
+  .qmeta{font-size:12px;color:var(--ink2);font-weight:600;line-height:1.5}
+  .qmeta #q-count{color:var(--ink);font-variant-numeric:tabular-nums}
+  .qmeta #q-axis{color:var(--accent);font-weight:700}
+  .progress{height:6px;background:var(--bg2);border-radius:100px;overflow:hidden;margin:14px 0 26px}
+  .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:100px;transition:width .4s cubic-bezier(.3,.8,.3,1)}
+  .qtext{font-size:22px;line-height:1.35;font-weight:800;letter-spacing:-.02em;text-wrap:balance;min-height:84px}
+  .opts{display:flex;flex-direction:column;gap:11px;margin-top:22px}
+  .opt{display:flex;align-items:center;gap:13px;text-align:left;font-family:inherit;font-size:15.5px;font-weight:650;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:15px;padding:16px;cursor:pointer;transition:.15s}
+  .opt:hover{border-color:var(--accent);transform:translateX(2px)}
+  .opt .key{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;font-weight:800;background:var(--bg2);color:var(--ink2);font-size:14px;transition:.15s}
+  .opt:hover .key{background:var(--accent);color:#fff}
+  .qback{background:none;border:none;color:var(--ink2);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;margin-top:18px;align-self:flex-start}
+  .pole{font-size:15px;font-weight:700;line-height:1.45;padding:14px 15px;border-radius:14px;border:1.5px solid var(--line);display:flex;gap:9px;align-items:flex-start}
+  .poleA{background:color-mix(in srgb,var(--accent2) 9%,transparent);border-color:color-mix(in srgb,var(--accent2) 42%,transparent)}
+  .poleB{background:color-mix(in srgb,var(--accent) 9%,transparent);border-color:color-mix(in srgb,var(--accent) 42%,transparent)}
+  .ptag{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;margin-top:1px}
+  .ptag.a{background:var(--accent2)}.ptag.b{background:var(--accent)}
+  .scalehint{text-align:center;font-size:11.5px;color:var(--ink2);font-weight:600}
+  .fhint{font-size:11px;color:var(--ink2);margin-top:7px;line-height:1.45}
+  .dots{display:flex;align-items:flex-start;justify-content:center;gap:5px}
+  .dcol{display:flex;flex-direction:column;align-items:center;gap:8px;width:46px}
+  .dotlab{font-size:9px;color:var(--ink2);font-weight:600;text-align:center;line-height:1.2}
+  .dcol .d{margin:0 auto}
+  #r-weak{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-top:12px}
+  @media (max-width:360px){.dcol{width:40px}.dotlab{font-size:8px}}
+  .d{border-radius:50%;border:2.5px solid var(--line);background:transparent;cursor:pointer;transition:.15s;padding:0}
+  .d.a{border-color:var(--accent2)}.d.b{border-color:var(--accent)}
+  .d3{width:42px;height:42px}.d2{width:35px;height:35px}.d1{width:28px;height:28px}.d0{width:23px;height:23px}
+  .d.a:hover,.d.a.sel{background:color-mix(in srgb,var(--accent2) 40%,transparent)}
+  .d.b:hover,.d.b.sel{background:color-mix(in srgb,var(--accent) 40%,transparent)}
+  .d0:hover,.d0.sel{background:color-mix(in srgb,var(--ink2) 28%,transparent)}
+  .d:active{transform:scale(.92)}
+  #r-clarity{font-size:12.5px;color:var(--ink2);font-weight:700;margin-top:6px;text-align:center}
+  #r-clarity b{color:var(--accent);font-variant-numeric:tabular-nums}
+  .bar .lab{font-variant-numeric:tabular-nums}
+
+  .rtype{display:flex;align-items:center;gap:16px}
+  .rbadge{width:88px;height:88px;flex:none;border-radius:22px;display:grid;place-items:center;background:linear-gradient(150deg,var(--accent),var(--gold));color:#fff;box-shadow:0 14px 30px -12px color-mix(in srgb,var(--accent) 70%,transparent)}
+  .rbadge .code{font-size:24px;font-weight:850;letter-spacing:.02em}
+  .rnick{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+  .rtitle{font-size:24px;font-weight:850;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+  .rdesc{font-size:14.5px;line-height:1.65;color:var(--ink2);margin-top:16px}
+  .bars{display:flex;flex-direction:column;gap:13px;margin-top:22px}
+  .bar{font-size:12px;font-weight:700}
+  .bar .lab{display:flex;justify-content:space-between;color:var(--ink2);margin-bottom:6px}
+  .bar .lab .on{color:var(--ink)}
+  .bar .track{height:8px;background:var(--bg2);border-radius:100px;position:relative;overflow:hidden}
+  .bar .track i{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:100px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:16px}
+  .mini{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}
+  .mini .cap{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);font-weight:700}
+  .mini .big{font-size:17px;font-weight:800;margin-top:5px;display:flex;align-items:center;gap:7px}
+  .mini p{font-size:12px;line-height:1.55;color:var(--ink2);margin-top:8px}
+  .combo{margin-top:16px;padding:16px;border-radius:16px;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+  .combo .cap{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:800}
+  .combo p{font-size:13.5px;line-height:1.6;margin-top:8px;color:var(--ink)}
+  .ractions{display:flex;gap:10px;margin-top:20px}
+  .pad{padding:22px}.center{text-align:center}
+  .footnote{text-align:center;font-size:11px;color:var(--ink2);padding:14px 0 4px;line-height:1.5}
+
+  .ryongwrap{display:flex;justify-content:center;padding:20px 0 6px}
+  .ryong{background:none;border:none;cursor:pointer;font-family:"Segoe UI",Arial,sans-serif;font-weight:900;font-size:15px;letter-spacing:.42em;padding:6px 10px 6px 16px;border-radius:10px;
+    color:var(--accent);text-shadow:0 0 10px color-mix(in srgb,var(--accent) 70%,transparent),0 0 22px color-mix(in srgb,var(--accent) 45%,transparent);animation:glow 2.4s ease-in-out infinite}
+  @keyframes glow{0%,100%{opacity:.72;text-shadow:0 0 8px color-mix(in srgb,var(--accent) 55%,transparent),0 0 18px color-mix(in srgb,var(--accent) 30%,transparent)}
+    50%{opacity:1;text-shadow:0 0 14px color-mix(in srgb,var(--accent) 85%,transparent),0 0 30px color-mix(in srgb,var(--accent) 55%,transparent)}}
+
+  .previewtag{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:9;font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--accent);background:var(--card);border:1px solid var(--accent);border-radius:100px;padding:4px 12px;box-shadow:var(--shadow)}
+
+  .adminlogin{max-width:340px;margin:auto}
+  .lock{width:56px;height:56px;margin:0 auto 16px;border-radius:16px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+  .pinbox{letter-spacing:.5em;text-align:center;font-size:22px !important;font-weight:800}
+  .err{color:#e5484d;font-size:12.5px;font-weight:600;text-align:center;margin-top:12px;min-height:16px}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);margin-top:14px}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:560px}
+  th,td{padding:11px 12px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+  th{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);background:var(--bg2);position:sticky;top:0}
+  td.mb{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+  tr:last-child td{border-bottom:none}
+  .adbar{display:flex;gap:8px;align-items:center;margin-top:14px}
+  .adbar input{flex:1;font-family:inherit;font-size:14px;background:var(--bg2);border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;color:var(--ink)}
+  .adstat{display:flex;gap:10px;margin-top:14px}
+  .adstat .s{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px}
+  .adstat .s b{font-size:22px;font-weight:850;display:block;font-variant-numeric:tabular-nums}
+  .adstat .s span{font-size:11px;color:var(--ink2);letter-spacing:.04em}
+
+  .helpmodal{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(10,15,22,.55)}
+  .helpmodal.open{display:flex}
+  .helpcard{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);max-width:380px;width:100%;padding:24px}
+  .helpcard h2{margin-bottom:4px}
+  .hlist{display:flex;flex-direction:column;gap:14px;margin:18px 0}
+  .hitem{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.5;color:var(--ink)}
+  .hitem .n{width:26px;height:26px;flex:none;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:13px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <svg class="tgt" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="var(--accent)" stroke-width="2"/><circle cx="12" cy="12" r="5.5" stroke="var(--accent2)" stroke-width="2"/><circle cx="12" cy="12" r="1.6" fill="var(--accent)"/></svg>
+      <div><span id="brand-tag">성격 조준소</span><small id="brand-sub">PERSONALITY RANGE</small></div>
+    </div>
+    <div class="langsw">
+      <button class="langbtn" id="lang-ko" onclick="setLang('ko')">한</button>
+      <button class="langbtn" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="langbtn" id="lang-vi" onclick="setLang('vi')">VI</button>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="screen active" id="s-intro">
+    <div class="hero">
+      <svg class="heroTarget" width="122" height="122" viewBox="0 0 128 128" fill="none">
+        <circle cx="64" cy="64" r="60" stroke="var(--line)" stroke-width="2"/><circle cx="64" cy="64" r="46" stroke="var(--accent2)" stroke-width="3"/>
+        <circle cx="64" cy="64" r="30" stroke="var(--accent)" stroke-width="3"/><circle cx="64" cy="64" r="14" fill="color-mix(in srgb,var(--accent) 18%,transparent)"/>
+        <circle cx="64" cy="64" r="5" fill="var(--accent)"/><line x1="64" y1="2" x2="64" y2="20" stroke="var(--ink2)" stroke-width="2"/>
+        <line x1="64" y1="108" x2="64" y2="126" stroke="var(--ink2)" stroke-width="2"/><line x1="2" y1="64" x2="20" y2="64" stroke="var(--ink2)" stroke-width="2"/>
+        <line x1="108" y1="64" x2="126" y2="64" stroke="var(--ink2)" stroke-width="2"/></svg>
+      <span class="eyebrow" id="i-eyebrow">MBTI · 별자리 · 혈액형</span>
+      <h1 id="i-title">당신의 성격,<br>정중앙에 조준한다</h1>
+      <p class="lead" id="i-lead"></p>
+      <div class="feat">
+        <div class="featrow"><span class="ic">◎</span> <span id="i-f1"></span></div>
+        <div class="featrow"><span class="ic">★</span> <span id="i-f2"></span></div>
+        <div class="featrow"><span class="ic">✦</span> <span id="i-f3"></span></div>
+      </div>
+    </div>
+    <div class="stickycta">
+      <div class="btnrow">
+        <button class="btn" id="i-start" onclick="go('reg')">검사 시작하기 →</button>
+        <button class="helpbtn" id="i-help" onclick="openHelp()">도움말</button>
+      </div>
+      <div class="countline" id="count-line"></div>
+    </div>
+    <div class="ryongwrap"><button class="ryong" onclick="go('adminlogin')">RYONG</button></div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="screen" id="s-reg">
+    <span class="eyebrow" id="r-eyebrow">STEP 1</span>
+    <h2 style="margin-top:8px" id="r-title"></h2>
+    <p class="lead" style="margin-top:8px" id="r-lead"></p>
+    <div class="card pad" style="margin-top:18px">
+      <div class="field"><label id="l-country">나라</label><div class="chips" id="f-country">
+        <div class="chip" role="button" aria-pressed="false" data-v="ko">🇰🇷 한국어</div>
+        <div class="chip" role="button" aria-pressed="false" data-v="en">🇺🇸 English</div>
+        <div class="chip" role="button" aria-pressed="false" data-v="vi">🇻🇳 Tiếng Việt</div></div></div>
+      <div class="field"><label id="l-name">실명 (실제 이름)</label><input id="f-name" type="text" autocomplete="off"><div class="fhint" id="name-help"></div></div>
+      <div class="field"><label id="l-cat">구분</label><div class="chips" id="f-cat">
+        <div class="chip" role="button" aria-pressed="false" data-v="일반"><span id="cat1">일반</span></div>
+        <div class="chip" role="button" aria-pressed="false" data-v="동호인"><span id="cat2">동호인</span></div>
+        <div class="chip" role="button" aria-pressed="false" data-v="선수"><span id="cat3">선수</span></div></div></div>
+      <div class="field"><label id="l-sex">성별</label><div class="chips" id="f-sex">
+        <div class="chip" role="button" aria-pressed="false" data-v="남"><span id="sex1">남</span></div>
+        <div class="chip" role="button" aria-pressed="false" data-v="여"><span id="sex2">여</span></div>
+        <div class="chip" role="button" aria-pressed="false" data-v="비공개"><span id="sex3">비공개</span></div></div></div>
+      <div class="field"><label id="l-birth">생년월일</label><input id="f-birth" type="date" min="1930-01-01" max="2025-12-31"></div>
+      <div class="field"><label id="l-blood">혈액형</label><div class="chips" id="f-blood">
+        <div class="chip" role="button" aria-pressed="false" data-v="A">A</div>
+        <div class="chip" role="button" aria-pressed="false" data-v="B">B</div>
+        <div class="chip" role="button" aria-pressed="false" data-v="O">O</div>
+        <div class="chip" role="button" aria-pressed="false" data-v="AB">AB</div></div></div>
+      <div class="note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 017 7c0 5-7 13-7 13S5 14 5 9a7 7 0 017-7z" stroke="var(--accent2)" stroke-width="2"/><circle cx="12" cy="9" r="2.5" fill="var(--accent2)"/></svg>
+        <span id="r-privacy"></span>
+      </div>
+    </div>
+    <div class="stickycta"><button class="btn" id="reg-next" onclick="startQuiz()" disabled><span id="reg-next-t">검사 시작 →</span></button></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="s-quiz">
+    <div class="qhead">
+      <svg class="qring" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--bg2)" stroke-width="4"/><circle id="ring" cx="22" cy="22" r="18" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113" transform="rotate(-90 22 22)"/></svg>
+      <div class="qmeta"><span id="q-count"></span><br><span id="q-axis"></span></div>
+    </div>
+    <div class="progress"><i id="bar" style="width:0%"></i></div>
+    <div class="qtext" id="q-text"></div>
+    <div class="opts" id="q-opts"></div>
+    <button class="qback" id="q-back" onclick="prevQ()" style="display:none"></button>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="s-result">
+    <span class="eyebrow center" style="display:block" id="res-eyebrow"></span>
+    <div id="r-clarity"></div>
+    <div class="card pad" style="margin-top:14px">
+      <div class="rtype"><div class="rbadge"><span class="code" id="r-code">INFP</span></div>
+        <div><div class="rnick" id="r-nick"></div><div class="rtitle" id="r-title"></div></div></div>
+      <p class="rdesc" id="r-desc"></p>
+      <div class="bars" id="r-bars"></div>
+      <div id="r-weak" style="display:none"></div>
+    </div>
+    <div class="card pad" style="margin-top:12px">
+      <div class="cap" id="trait-cap" style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);font-weight:700"></div>
+      <div class="bars" id="r-traits"></div>
+    </div>
+    <div class="grid2">
+      <div class="mini"><div class="cap" id="z-cap">별자리</div><div class="big"><span id="z-emoji"></span><span id="z-name"></span></div><p id="z-desc"></p></div>
+      <div class="mini"><div class="cap" id="b-cap">혈액형</div><div class="big"><span id="b-name"></span></div><p id="b-desc"></p></div>
+    </div>
+    <div class="combo"><div class="cap" id="combo-cap"></div><p id="r-combo"></p></div>
+    <div class="ractions">
+      <button class="btn sec" onclick="restart()"><span id="retry-t">다시 하기</span></button>
+      <button class="btn" onclick="saveResult()" id="save-btn"></button>
+    </div>
+    <button class="btn sec" style="margin-top:12px;font-size:13px" onclick="openSci()" id="sci-open"></button>
+    <div class="footnote" id="res-foot"></div>
+  </section>
+
+  <!-- ADMIN LOGIN -->
+  <section class="screen" id="s-adminlogin">
+    <div class="adminlogin">
+      <div class="lock"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg></div>
+      <h2 class="center" id="al-title">관리자 접속</h2>
+      <p class="lead center" style="margin-top:8px" id="al-lead">비밀번호를 입력하세요</p>
+      <div class="field"><input id="pin" class="pinbox" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off"></div>
+      <div class="err" id="pin-err"></div>
+      <button class="btn" onclick="tryLogin()" id="al-login">접속</button>
+      <button class="btn sec" style="margin-top:10px" onclick="go('intro')" id="al-back">← 돌아가기</button>
+    </div>
+  </section>
+
+  <!-- ADMIN DASH -->
+  <section class="screen" id="s-admin">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
+      <h2 id="ad-title">검사 명단</h2>
+      <button class="btn sec" style="width:auto;padding:9px 14px;font-size:13px" onclick="go('intro')" id="ad-out">나가기</button>
+    </div>
+    <div class="adstat">
+      <div class="s"><b id="a-total">0</b><span id="st-total-l">총 응답</span></div>
+      <div class="s"><b id="a-athlete">0</b><span id="st-ath-l">선수</span></div>
+      <div class="s"><b id="a-today">0</b><span id="st-today-l">오늘</span></div>
+    </div>
+    <div class="adbar">
+      <input id="a-search" oninput="renderTable()">
+      <button class="btn sec" style="width:auto;padding:11px 14px;font-size:13px" onclick="loadList()" id="ad-refresh">새로고침</button>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th id="th0">날짜</th><th id="th1">이름</th><th id="th2">구분</th><th id="th3">성별</th><th id="th4">생일</th><th id="th5">MBTI</th><th id="th6">별자리</th><th id="th7">혈액형</th></tr></thead>
+      <tbody id="a-rows"></tbody>
+    </table></div>
+    <div class="footnote" id="a-note"></div>
+  </section>
+</div>
+
+<!-- SCIENCE / ACCURACY MODAL -->
+<div class="helpmodal" id="sci" onclick="if(event.target===this)closeSci()">
+  <div class="helpcard">
+    <h2 id="sci-title"></h2>
+    <div id="sci-body" style="display:flex;flex-direction:column;gap:12px;margin:16px 0;font-size:13px;line-height:1.6;color:var(--ink)"></div>
+    <button class="btn" onclick="closeSci()" id="sci-close"></button>
+  </div>
+</div>
+
+<!-- CHECKPOINT CHEER -->
+<div class="helpmodal" id="cheer">
+  <div class="helpcard center" style="max-width:340px">
+    <div id="cheer-emoji" style="font-size:52px;line-height:1;margin-bottom:6px"></div>
+    <div id="cheer-bar" style="height:8px;background:var(--bg2);border-radius:100px;overflow:hidden;margin:10px 0 18px"><i id="cheer-fill" style="display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:100px;transition:width .6s cubic-bezier(.3,.8,.3,1)"></i></div>
+    <p id="cheer-msg" style="font-size:16px;font-weight:750;line-height:1.45;color:var(--ink)"></p>
+    <button class="btn" style="margin-top:18px" onclick="hideCheer()" id="cheer-go"></button>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="helpmodal" id="helpmodal" onclick="if(event.target===this)closeHelp()">
+  <div class="helpcard">
+    <h2 id="h-title">이렇게 하면 돼요</h2>
+    <div class="hlist">
+      <div class="hitem"><span class="n">1</span><span id="h-1"></span></div>
+      <div class="hitem"><span class="n">2</span><span id="h-2"></span></div>
+      <div class="hitem"><span class="n">3</span><span id="h-3"></span></div>
+      <div class="hitem"><span class="n">4</span><span id="h-4"></span></div>
+    </div>
+    <button class="btn" onclick="closeHelp()" id="h-close">닫기</button>
+  </div>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const GAS_URL="";              // 배포 시 구글 GAS 웹앱 URL 입력 (비면 이 기기 임시저장)
+const ADMIN_PIN="312427";
+
+/* ===== I18N (UI) ===== */
+const I18N={
+ ko:{tagline:"성격 조준소",sub:"PERSONALITY RANGE",
+  count:n=>`지금까지 <b>${n}</b>명이 검사했어요`,
+  intro_eyebrow:"MBTI · 별자리 · 혈액형",intro_title:"당신의 성격,<br>정중앙에 조준한다",
+  intro_lead:"40개의 질문으로 나의 MBTI를 알아보고, 별자리와 혈액형 특징까지 한 번에 확인해요. 3~5분이면 충분해요.",
+  f1:"16가지 성격 유형을 알려줘요",f2:"생년월일로 별자리 특징까지",f3:"혈액형 성격 · 조합 이야기",
+  start:"검사 시작하기 →",help:"도움말",
+  help_title:"이렇게 하면 돼요",help_1:"나라와 이름, 생년월일, 혈액형을 골라요.",help_2:"질문 40개를 '얼마나 그런지' 7단계로 답해요. 정답은 없어요!",help_3:"내 성격 유형과 별자리·혈액형 결과가 나와요.",help_4:"결과는 자동으로 저장돼요.",help_close:"닫기",
+  scale_hint:"나와 더 가까운 쪽을 골라요",scale_labels:["확실","보통","조금","중간","조금","보통","확실"],
+  trait_cap:"성향 척도",trait:["사교성","상상력","공감력","계획성"],
+  weak_note:ax=>`※ '${ax}' 축은 선호가 뚜렷하지 않아, 다시 검사하면 바뀔 수 있어요.`,
+  sci_open:"ⓘ 정확도 · 검사 주기 안내",sci_title:"이 검사의 정확도와 주기",sci_close:"닫기",
+  sci_body:[
+   "세계적으로 쓰이는 성격 척도 방식(7단계 응답 · 40문항 · 각 축 10문항)을 따랐어요. 연구상 이런 척도의 축별 측정 신뢰도는 상관 0.8 안팎으로 높은 편이에요.",
+   "다만 'MBTI 4글자 유형'은 점수가 경계(50%)에 가까우면 재검사 때 바뀌기 쉬워요(연구상 몇 주 뒤 약 50%가 한 글자 이상 달라짐). 그래서 이 앱은 유형뿐 아니라 %·성향 척도·선명도를 함께 보여줘 더 정확히 파악해요.",
+   "성격은 비교적 안정적이라 재검사는 3~6개월 간격을 권해요. 며칠~몇 주 안의 재검사는 실제 변화보다 측정 오차일 가능성이 커요.",
+   "가장 정확하게: 조용하고 컨디션 좋은 상태에서, 이상적인 내가 아니라 '평소의 나'로 솔직하게 답하기."
+  ],
+  clarity:v=>`이 결과의 선명도 <b>${v}%</b> · 응답이 뚜렷할수록 정확해져요`,
+  cheer:["🎯 10문항 명중! 벌써 4분의 1 완료, 아주 잘하고 있어요!","🔥 20문항 돌파! 절반 통과, 집중력이 살아있네요!","⭐ 30문항 클리어! 마지막 10발만 남았어요, 조금만 더!"],cheer_go:"계속하기 →",
+  reg_step:"STEP 1 · 등록",reg_title:"검사 전에 알려주세요",reg_lead:"결과를 별자리·혈액형과 이어주고 기록으로 남기기 위해 조금만 알려주세요.",
+  f_country:"나라 (언어)",f_name:"실명 (실제 이름)",name_ph:"예: 홍길동",name_help:"서로 구별할 수 있도록 꼭 실제 이름을 적어주세요. (별명 X)",f_cat:"구분",cat1:"일반",cat2:"동호인",cat3:"선수",
+  f_sex:"성별",sex1:"남",sex2:"여",sex3:"비공개",f_birth:"생년월일",f_blood:"혈액형",
+  privacy:"알려주신 정보는 결과 제공과 통계에만 사용돼요.",reg_next:"검사 시작 →",
+  q_of:(a,b)=>`질문 ${a} / ${b}`,q_back:"← 이전 질문",
+  axis:{EI:"에너지",SN:"인식",TF:"판단",JP:"생활"},
+  pole:{E:"외향",I:"내향",S:"감각",N:"직관",T:"사고",F:"감정",J:"판단",P:"인식"},
+  res_eyebrow:"결과가 나왔어요",combo_cap:"◎ 조합 이야기",z_cap:"별자리",b_cap:"혈액형",
+  retry:"다시 하기",save:"결과 저장 →",saving:"저장 중…",saved:"✓ 저장됐어요",res_foot:"이 결과는 재미로 보는 성격 참고 자료예요.",
+  admin_title:"관리자 접속",admin_lead:"비밀번호를 입력하세요",admin_login:"접속",admin_back:"← 돌아가기",admin_wrong:"비밀번호가 올바르지 않아요.",
+  list_title:"검사 명단",list_out:"나가기",st_total:"총 응답",st_ath:"선수",st_today:"오늘",
+  search_ph:"이름 · MBTI 검색",refresh:"새로고침",th:["날짜","이름","구분","성별","생일","MBTI","별자리","혈액형"],
+  nodata:"아직 데이터가 없어요.",linked:"구글 시트 연동됨",mock:"미리보기 · 이 기기 임시 데이터",loading:"불러오는 중…",failed:"연결 실패 — GAS URL을 확인하세요.",
+  combo:(nm,nk,c,z,b,bl)=>`${nm}님은 «${nk}» ${c} · ${z} · ${b} 조합이에요. ${c.includes("N")?"직관과 상상":"현실과 감각"}을 바탕으로 ${c.includes("F")?"따뜻한 공감":"똑부러진 판단"}이 돋보이고, ${z} 기질과 ${bl}형 특유의 색이 더해져 자기만의 리듬을 지닌 사람이에요.`},
+ en:{tagline:"Personality Range",sub:"AIM AT YOUR TRUE SELF",
+  count:n=>`<b>${n}</b> people have taken it so far`,
+  intro_eyebrow:"MBTI · ZODIAC · BLOOD TYPE",intro_title:"Take aim at<br>your true self",
+  intro_lead:"Find your MBTI in 40 quick questions, plus your zodiac and blood-type traits — all in one go. Just 3–5 minutes.",
+  f1:"Reveals your 16-type personality",f2:"Zodiac traits from your birthday",f3:"Blood-type nature & combo story",
+  start:"Start the test →",help:"Help",
+  help_title:"How it works",help_1:"Pick your country, name, birthday and blood type.",help_2:"Answer 40 questions on a 7-point scale — how much it's you. No wrong answers!",help_3:"See your personality type with zodiac & blood-type results.",help_4:"Your result is saved automatically.",help_close:"Got it",
+  scale_hint:"Tap the side that's more like you",scale_labels:["Strongly","Fairly","A little","Neutral","A little","Fairly","Strongly"],
+  trait_cap:"Trait meter",trait:["Sociability","Imagination","Empathy","Planning"],
+  weak_note:ax=>`※ Your '${ax}' preference is slight, so it may change on retest.`,
+  sci_open:"ⓘ Accuracy & retest guide",sci_title:"Accuracy & how often to retest",sci_close:"Close",
+  sci_body:[
+   "This follows widely used personality-scale methods (7-point answers, 40 items, 10 per axis). In research, per-axis reliability of such scales is high (correlations around 0.8).",
+   "But the MBTI 4-letter type can flip on retest when a score sits near the 50% border (studies find about 50% change at least one letter after a few weeks). So this app shows the %, trait meter and clarity too — not just the type — for a more accurate picture.",
+   "Personality is fairly stable, so retest every 3–6 months. Retaking within days or weeks mostly reflects measurement noise, not real change.",
+   "For best accuracy: answer honestly as your everyday self (not your ideal self), calm and rested."
+  ],
+  clarity:v=>`Result clarity <b>${v}%</b> · the clearer your answers, the more precise`,
+  cheer:["🎯 10 down! A quarter done — you're doing great!","🔥 Halfway there! 20 done — nice focus!","⭐ 30 cleared! Just 10 to go — almost there!"],cheer_go:"Continue →",
+  reg_step:"STEP 1 · SIGN UP",reg_title:"Tell us a little first",reg_lead:"Just a few details so we can link your result to your zodiac & blood type and keep a record.",
+  f_country:"Country (language)",f_name:"Full name (real)",name_ph:"e.g. Alex Kim",name_help:"Please use your real name so everyone can be told apart. (no nicknames)",f_cat:"Group",cat1:"General",cat2:"Hobbyist",cat3:"Athlete",
+  f_sex:"Gender",sex1:"Male",sex2:"Female",sex3:"Private",f_birth:"Date of birth",f_blood:"Blood type",
+  privacy:"Your info is used only to show results and for statistics.",reg_next:"Start the test →",
+  q_of:(a,b)=>`Question ${a} / ${b}`,q_back:"← Previous",
+  axis:{EI:"Energy",SN:"Perception",TF:"Decision",JP:"Lifestyle"},
+  pole:{E:"Extrovert",I:"Introvert",S:"Sensing",N:"Intuition",T:"Thinking",F:"Feeling",J:"Judging",P:"Perceiving"},
+  res_eyebrow:"Here's your result",combo_cap:"◎ Combo story",z_cap:"Zodiac",b_cap:"Blood type",
+  retry:"Retake",save:"Save result →",saving:"Saving…",saved:"✓ Saved",res_foot:"This result is a fun personality reference, just for you.",
+  admin_title:"Admin access",admin_lead:"Enter the password",admin_login:"Enter",admin_back:"← Back",admin_wrong:"Incorrect password.",
+  list_title:"Responses",list_out:"Exit",st_total:"Total",st_ath:"Athletes",st_today:"Today",
+  search_ph:"Search name · MBTI",refresh:"Refresh",th:["Date","Name","Group","Gender","Birthday","MBTI","Zodiac","Blood"],
+  nodata:"No data yet.",linked:"Linked to Google Sheet",mock:"Preview · local data on this device",loading:"Loading…",failed:"Connection failed — check the GAS URL.",
+  combo:(nm,nk,c,z,b,bl)=>`${nm} is «${nk}» ${c} · ${z} · ${b}. Guided by ${c.includes("N")?"intuition & imagination":"realism & the senses"} and shining with ${c.includes("F")?"warm empathy":"clear judgment"}, blended with ${z} traits and Type ${bl} flavor — someone with their own rhythm.`},
+ vi:{tagline:"Trường Bắn Tính Cách",sub:"NHẮM TRÚNG BẢN THÂN",
+  count:n=>`Đã có <b>${n}</b> người làm bài`,
+  intro_eyebrow:"MBTI · CUNG HOÀNG ĐẠO · NHÓM MÁU",intro_title:"Nhắm trúng<br>bản thân bạn",
+  intro_lead:"Tìm ra MBTI qua 40 câu hỏi nhanh, kèm đặc điểm cung hoàng đạo và nhóm máu — tất cả trong một lần. Chỉ 3–5 phút.",
+  f1:"Cho biết 1 trong 16 kiểu tính cách",f2:"Đặc điểm cung hoàng đạo theo ngày sinh",f3:"Tính cách nhóm máu & câu chuyện kết hợp",
+  start:"Bắt đầu →",help:"Hướng dẫn",
+  help_title:"Cách làm",help_1:"Chọn quốc gia, tên, ngày sinh và nhóm máu.",help_2:"Trả lời 40 câu theo thang 7 mức — giống bạn đến đâu. Không có đáp án sai!",help_3:"Xem kiểu tính cách cùng kết quả cung hoàng đạo & nhóm máu.",help_4:"Kết quả được lưu tự động.",help_close:"Đã hiểu",
+  scale_hint:"Chọn phía giống bạn hơn",scale_labels:["Chắc chắn","Khá","Một chút","Trung lập","Một chút","Khá","Chắc chắn"],
+  trait_cap:"Thang tính cách",trait:["Hòa đồng","Tưởng tượng","Đồng cảm","Kế hoạch"],
+  weak_note:ax=>`※ Xu hướng '${ax}' chưa rõ nên có thể đổi khi làm lại.`,
+  sci_open:"ⓘ Độ chính xác & chu kỳ",sci_title:"Độ chính xác và bao lâu làm lại",sci_close:"Đóng",
+  sci_body:[
+   "Bài test theo phương pháp thang tính cách phổ biến (7 mức, 40 câu, 10 câu mỗi trục). Nghiên cứu cho thấy độ tin cậy từng trục khá cao (tương quan khoảng 0.8).",
+   "Nhưng kiểu '4 chữ cái MBTI' dễ đổi khi điểm gần ngưỡng 50% (nghiên cứu: khoảng 50% đổi ít nhất một chữ sau vài tuần). Vì vậy app hiển thị cả %, thang tính cách và độ rõ — không chỉ kiểu — để chính xác hơn.",
+   "Tính cách khá ổn định, nên làm lại sau 3–6 tháng. Làm lại trong vài ngày hoặc vài tuần chủ yếu phản ánh sai số đo, không phải thay đổi thật.",
+   "Chính xác nhất: trả lời thật lòng như con người thường ngày (không phải bản thân lý tưởng), lúc yên tĩnh và tỉnh táo."
+  ],
+  clarity:v=>`Độ rõ kết quả <b>${v}%</b> · trả lời càng rõ, càng chính xác`,
+  cheer:["🎯 Xong 10 câu! Được 1/4 rồi — bạn làm tốt lắm!","🔥 Nửa chặng đường! 20 câu — tập trung tốt!","⭐ Xong 30 câu! Chỉ còn 10 — sắp xong rồi!"],cheer_go:"Tiếp tục →",
+  reg_step:"BƯỚC 1 · ĐĂNG KÝ",reg_title:"Cho chúng tôi biết đôi chút",reg_lead:"Vài thông tin nhỏ để nối kết quả với cung hoàng đạo & nhóm máu và lưu lại.",
+  f_country:"Quốc gia (ngôn ngữ)",f_name:"Họ tên thật",name_ph:"vd: Nguyễn Văn Minh",name_help:"Vui lòng dùng tên thật để phân biệt mọi người. (không dùng biệt danh)",f_cat:"Nhóm",cat1:"Thường",cat2:"Nghiệp dư",cat3:"Vận động viên",
+  f_sex:"Giới tính",sex1:"Nam",sex2:"Nữ",sex3:"Riêng tư",f_birth:"Ngày sinh",f_blood:"Nhóm máu",
+  privacy:"Thông tin của bạn chỉ dùng để hiện kết quả và thống kê.",reg_next:"Bắt đầu →",
+  q_of:(a,b)=>`Câu ${a} / ${b}`,q_back:"← Câu trước",
+  axis:{EI:"Năng lượng",SN:"Nhận thức",TF:"Quyết định",JP:"Lối sống"},
+  pole:{E:"Hướng ngoại",I:"Hướng nội",S:"Giác quan",N:"Trực giác",T:"Lý trí",F:"Cảm xúc",J:"Nguyên tắc",P:"Linh hoạt"},
+  res_eyebrow:"Kết quả của bạn",combo_cap:"◎ Câu chuyện kết hợp",z_cap:"Cung hoàng đạo",b_cap:"Nhóm máu",
+  retry:"Làm lại",save:"Lưu kết quả →",saving:"Đang lưu…",saved:"✓ Đã lưu",res_foot:"Kết quả này chỉ để tham khảo tính cách cho vui.",
+  admin_title:"Quản trị viên",admin_lead:"Nhập mật khẩu",admin_login:"Vào",admin_back:"← Quay lại",admin_wrong:"Mật khẩu không đúng.",
+  list_title:"Danh sách",list_out:"Thoát",st_total:"Tổng",st_ath:"VĐV",st_today:"Hôm nay",
+  search_ph:"Tìm tên · MBTI",refresh:"Làm mới",th:["Ngày","Tên","Nhóm","Giới tính","Ngày sinh","MBTI","Cung","Nhóm máu"],
+  nodata:"Chưa có dữ liệu.",linked:"Đã kết nối Google Sheet",mock:"Xem thử · dữ liệu tạm trên máy này",loading:"Đang tải…",failed:"Kết nối thất bại — kiểm tra GAS URL.",
+  combo:(nm,nk,c,z,b,bl)=>`${nm} là «${nk}» ${c} · ${z} · ${b}. Dựa trên ${c.includes("N")?"trực giác & tưởng tượng":"thực tế & giác quan"} và nổi bật với ${c.includes("F")?"sự đồng cảm ấm áp":"óc phán đoán rõ ràng"}, hòa cùng nét ${z} và màu sắc nhóm ${bl} — một người có nhịp điệu riêng.`}
+};
+
+/* ===== QUESTIONS (40) ===== */
+const Q=[
+ {ax:"EI",s:["E","I"],ko:["처음 보는 친구들이 많은 곳에 가면?","내가 먼저 다가가 인사한다","조용히 지켜본다"],en:["At a place full of new faces, I…","Walk up and say hi first","Quietly watch for a bit"],vi:["Ở nơi có nhiều người lạ, tôi…","Chủ động lại chào trước","Lặng lẽ quan sát"]},
+ {ax:"EI",s:["E","I"],ko:["신나게 논 다음, 힘을 채우려면?","친구들이랑 더 논다","혼자 조용히 쉰다"],en:["After lots of fun, I recharge by…","Playing more with friends","Resting quietly alone"],vi:["Sau khi chơi vui, tôi lấy lại sức bằng cách…","Chơi tiếp với bạn bè","Nghỉ ngơi một mình"]},
+ {ax:"EI",s:["E","I"],ko:["좋은 생각이 떠오르면?","바로 말한다","마음속으로 먼저 정리한다"],en:["When a good idea pops up, I…","Say it right away","Sort it out in my head first"],vi:["Khi có ý tưởng hay, tôi…","Nói ra ngay","Sắp xếp trong đầu trước"]},
+ {ax:"EI",s:["E","I"],ko:["쉬는 날엔 뭐가 더 좋아?","친구랑 놀 약속을 잡는다","집에서 편하게 쉰다"],en:["On a day off, I prefer to…","Make plans with friends","Relax at home"],vi:["Ngày nghỉ, tôi thích…","Hẹn đi chơi với bạn","Thư giãn ở nhà"]},
+ {ax:"EI",s:["E","I"],ko:["여러 명이 모이면 나는?","이 친구 저 친구랑 다 논다","친한 친구랑만 논다"],en:["In a big group, I…","Hang out with everyone","Stick with close friends"],vi:["Trong nhóm đông, tôi…","Chơi với tất cả mọi người","Chỉ chơi với bạn thân"]},
+ {ax:"EI",s:["E","I"],ko:["모르는 게 생기면?","바로 물어본다","혼자 먼저 찾아본다"],en:["When I don't know something, I…","Ask right away","Look it up myself first"],vi:["Khi không biết điều gì, tôi…","Hỏi ngay","Tự tìm hiểu trước"]},
+ {ax:"EI",s:["E","I"],ko:["새로운 곳에 가면 나는?","금방 친구를 사귄다","좀 부끄럽다"],en:["In a new place, I…","Make friends quickly","Feel a bit shy"],vi:["Ở nơi mới, tôi…","Kết bạn rất nhanh","Hơi ngại ngùng"]},
+ {ax:"EI",s:["E","I"],ko:["친구랑 이야기할 때?","전화가 좋다","문자가 좋다"],en:["To talk with a friend, I like…","A phone call","Texting"],vi:["Khi nói chuyện với bạn, tôi thích…","Gọi điện","Nhắn tin"]},
+ {ax:"EI",s:["E","I"],ko:["기운이 넘칠 때 나는?","밖에 나가 논다","조용한 곳이 좋다"],en:["When I'm full of energy, I…","Go out and play","Prefer a quiet place"],vi:["Khi tràn đầy năng lượng, tôi…","Ra ngoài chơi","Thích nơi yên tĩnh"]},
+ {ax:"EI",s:["E","I"],ko:["내 생각을 알릴 때?","말로 하는 게 쉽다","글로 쓰는 게 쉽다"],en:["To share my thoughts, it's easier to…","Say them out loud","Write them down"],vi:["Để bày tỏ suy nghĩ, tôi thấy dễ hơn khi…","Nói ra","Viết ra"]},
+ {ax:"SN",s:["S","N"],ko:["새 장난감이 생기면?","어떻게 갖고 노는지 본다","이걸로 뭘 할까 상상한다"],en:["With a new toy, I…","Check how to play with it","Imagine what I can do with it"],vi:["Có đồ chơi mới, tôi…","Xem cách chơi thế nào","Tưởng tượng có thể làm gì"]},
+ {ax:"SN",s:["S","N"],ko:["설명을 들을 때?","예를 하나하나 들어주면 좋다","큰 그림으로 말해주면 좋다"],en:["When someone explains, I like…","Clear examples one by one","The big picture"],vi:["Khi được giải thích, tôi thích…","Từng ví dụ cụ thể","Bức tranh tổng thể"]},
+ {ax:"SN",s:["S","N"],ko:["나는 어느 쪽이야?","실제로 본 걸 믿는다","느낌과 상상을 믿는다"],en:["Which is me?","I trust what I've seen","I trust feelings and imagination"],vi:["Tôi là kiểu nào?","Tin điều mắt thấy","Tin cảm giác và tưởng tượng"]},
+ {ax:"SN",s:["S","N"],ko:["이야기할 때 나는?","있었던 일을 그대로 말한다","이런 뜻 아닐까 생각을 보탠다"],en:["When I talk, I…","Tell what actually happened","Add what I think it means"],vi:["Khi kể chuyện, tôi…","Kể đúng như đã xảy ra","Thêm ý nghĩa mình đoán"]},
+ {ax:"SN",s:["S","N"],ko:["지난 일을 떠올리면?","있던 일이 하나하나 생각난다","전체 느낌이 생각난다"],en:["Recalling the past, I remember…","Each thing that happened","The overall feeling"],vi:["Nhớ lại chuyện cũ, tôi nhớ…","Từng việc đã xảy ra","Cảm giác tổng thể"]},
+ {ax:"SN",s:["S","N"],ko:["더 재밌는 이야기는?","진짜 있을 것 같은 이야기","마법 같은 상상 이야기"],en:["The more fun story is…","One that could really happen","A magical, imaginary one"],vi:["Câu chuyện thú vị hơn là…","Chuyện như thật","Chuyện tưởng tượng kỳ diệu"]},
+ {ax:"SN",s:["S","N"],ko:["새로운 방법을 들으면?","진짜 될까 먼저 생각한다","재밌겠다 먼저 생각한다"],en:["Hearing a new way, I first think…","Will it really work?","That sounds fun!"],vi:["Nghe cách mới, tôi nghĩ trước…","Có thật sự được không?","Nghe vui đấy!"]},
+ {ax:"SN",s:["S","N"],ko:["나는 뭘 더 잘 기억해?","자세한 장면","전체 느낌"],en:["I remember better…","Detailed scenes","The overall feeling"],vi:["Tôi nhớ rõ hơn…","Chi tiết cụ thể","Cảm giác chung"]},
+ {ax:"SN",s:["S","N"],ko:["무언가 할 때 나는?","지금 할 일에 집중한다","나중 일을 상상한다"],en:["When doing something, I…","Focus on the task now","Imagine what's next"],vi:["Khi làm việc gì, tôi…","Tập trung việc hiện tại","Tưởng tượng chuyện sắp tới"]},
+ {ax:"SN",s:["S","N"],ko:["새 물건을 조립할 때?","설명서를 순서대로 본다","그냥 감으로 한다"],en:["Building something new, I…","Follow the manual in order","Just go by feel"],vi:["Khi lắp đồ mới, tôi…","Làm theo hướng dẫn từng bước","Làm theo cảm tính"]},
+ {ax:"TF",s:["T","F"],ko:["친구가 실수했을 때?","왜 그런지 알려준다","괜찮아? 먼저 물어본다"],en:["When a friend makes a mistake, I…","Explain why it happened","Ask 'are you okay?' first"],vi:["Khi bạn mắc lỗi, tôi…","Chỉ ra vì sao","Hỏi 'ổn không?' trước"]},
+ {ax:"TF",s:["T","F"],ko:["무언가 정할 때 더 중요한 건?","맞는지 아닌지","친구 마음"],en:["When deciding, what matters more?","Whether it's right","People's feelings"],vi:["Khi quyết định, điều nào quan trọng hơn?","Đúng hay sai","Cảm xúc mọi người"]},
+ {ax:"TF",s:["T","F"],ko:["내 생각을 말할 때?","솔직하게 말한다","상처 안 주게 말한다"],en:["When sharing my opinion, I…","Say it honestly","Say it kindly"],vi:["Khi nói ý kiến, tôi…","Nói thẳng thật","Nói nhẹ nhàng"]},
+ {ax:"TF",s:["T","F"],ko:["친구랑 다툴 때 나는?","누가 맞는지가 중요","사이좋게 지내는 게 중요"],en:["In an argument, I care about…","Who is right","Staying friends"],vi:["Khi tranh cãi, tôi coi trọng…","Ai đúng","Giữ hòa khí"]},
+ {ax:"TF",s:["T","F"],ko:["친구가 고민을 말하면?","어떻게 하면 좋을지 알려준다","같이 속상해하며 위로한다"],en:["When a friend shares a worry, I…","Give advice on what to do","Feel with them and comfort"],vi:["Khi bạn tâm sự, tôi…","Khuyên nên làm gì","Đồng cảm và an ủi"]},
+ {ax:"TF",s:["T","F"],ko:["칭찬받을 때 더 좋은 건?","잘했다고 해줄 때","내 마음 알아줄 때"],en:["I like praise more when it's…","'You did great!'","'I understand you'"],vi:["Tôi thích được khen khi…","'Làm tốt lắm!'","'Hiểu lòng bạn'"]},
+ {ax:"TF",s:["T","F"],ko:["규칙과 친구 사정이 부딪히면?","규칙을 지킨다","친구 사정을 봐준다"],en:["Rules vs a friend's situation, I…","Follow the rules","Give my friend a break"],vi:["Luật và hoàn cảnh bạn xung đột, tôi…","Giữ đúng luật","Thông cảm cho bạn"]},
+ {ax:"TF",s:["T","F"],ko:["나를 움직이는 건?","맞는 것","좋아하는 것"],en:["What moves me is…","What's right","What I love"],vi:["Điều thúc đẩy tôi là…","Điều đúng đắn","Điều mình thích"]},
+ {ax:"TF",s:["T","F"],ko:["누굴 칭찬할 때 나는?","잘했나 못했나로 본다","얼마나 애썼나로 본다"],en:["When I praise someone, I look at…","How well they did","How hard they tried"],vi:["Khi khen ai, tôi nhìn vào…","Làm tốt hay không","Đã cố gắng thế nào"]},
+ {ax:"TF",s:["T","F"],ko:["다툼이 생기면 나는?","차분히 따져본다","분위기를 살핀다"],en:["In a conflict, I…","Calmly weigh the facts","Read the mood"],vi:["Khi có mâu thuẫn, tôi…","Bình tĩnh phân tích","Để ý bầu không khí"]},
+ {ax:"JP",s:["J","P"],ko:["할 일이 있으면 나는?","계획을 세우고 지킨다","그때그때 한다"],en:["With things to do, I…","Make a plan and follow it","Do it as it comes"],vi:["Khi có việc, tôi…","Lập kế hoạch và làm theo","Làm tùy lúc"]},
+ {ax:"JP",s:["J","P"],ko:["여행 가기 전에 나는?","짐이랑 계획을 다 챙긴다","일단 가서 정한다"],en:["Before a trip, I…","Pack and plan everything","Just go and decide there"],vi:["Trước chuyến đi, tôi…","Chuẩn bị đồ và kế hoạch đầy đủ","Cứ đi rồi tính"]},
+ {ax:"JP",s:["J","P"],ko:["숙제할 때 나는?","미리 끝낸다","마지막에 몰아서 한다"],en:["With homework, I…","Finish early","Cram at the last minute"],vi:["Khi làm bài tập, tôi…","Làm xong sớm","Dồn đến phút chót"]},
+ {ax:"JP",s:["J","P"],ko:["내 방 정리는?","늘 깔끔하게 해둔다","필요할 때 한다"],en:["My room is…","Always tidy","Cleaned when needed"],vi:["Phòng của tôi…","Luôn gọn gàng","Dọn khi cần"]},
+ {ax:"JP",s:["J","P"],ko:["무언가 고를 때 나는?","빨리 정해야 편하다","천천히 고르는 게 좋다"],en:["When choosing, I…","Feel better deciding fast","Like taking my time"],vi:["Khi lựa chọn, tôi…","Quyết nhanh cho thoải mái","Thích từ từ chọn"]},
+ {ax:"JP",s:["J","P"],ko:["약속 시간에 나는?","딱 맞춰서 간다","좀 여유 있게 간다"],en:["For appointments, I…","Arrive right on time","Take it easy"],vi:["Với giờ hẹn, tôi…","Đến đúng giờ","Thong thả một chút"]},
+ {ax:"JP",s:["J","P"],ko:["할 일이 많으면 나는?","할 일을 적어둔다","그냥 기억한다"],en:["With lots to do, I…","Write a to-do list","Just remember it"],vi:["Khi nhiều việc, tôi…","Ghi danh sách việc","Chỉ ghi nhớ trong đầu"]},
+ {ax:"JP",s:["J","P"],ko:["계획이 갑자기 바뀌면?","조금 불편하다","오히려 신난다"],en:["If plans change suddenly, I…","Feel a bit uneasy","Get kind of excited"],vi:["Nếu kế hoạch đổi đột ngột, tôi…","Hơi khó chịu","Lại thấy hào hứng"]},
+ {ax:"JP",s:["J","P"],ko:["일을 할 때 나는?","하나 끝내고 다음","여러 개를 같이"],en:["When working, I…","Finish one, then the next","Do several at once"],vi:["Khi làm việc, tôi…","Xong cái này tới cái khác","Làm nhiều thứ cùng lúc"]},
+ {ax:"JP",s:["J","P"],ko:["주말엔 나는?","정한 대로 논다","그때 기분대로 논다"],en:["On weekends, I…","Stick to the plan","Go with my mood"],vi:["Cuối tuần, tôi…","Chơi theo kế hoạch","Chơi theo tâm trạng"]}
+];
+
+/* ===== TYPES ===== */
+const TYPES={
+ INTJ:{ko:["전략가","냉철한 설계자","목표를 정하면 조용히 판을 짜고 정확히 명중시켜요. 통찰력과 독립심이 강하고 비효율을 싫어해요."],en:["The Strategist","Cool-headed Planner","Sets a goal, quietly builds a plan, and hits the mark. Insightful, independent, impatient with inefficiency."],vi:["Nhà Chiến Lược","Người Hoạch Định Lạnh Lùng","Đặt mục tiêu, âm thầm lên kế hoạch và bắn trúng đích. Sâu sắc, độc lập, ghét sự kém hiệu quả."]},
+ INTP:{ko:["논리 탐구자","호기심의 사색가","'왜'라는 질문을 멈추지 않아요. 원리를 파고들고 새 아이디어를 즐기며 틀에 얽매이지 않아요."],en:["The Thinker","Curious Analyst","Never stops asking why. Digs into how things work and loves new ideas, free from rigid rules."],vi:["Nhà Tư Duy","Người Phân Tích Tò Mò","Không ngừng hỏi tại sao. Đào sâu nguyên lý, yêu ý tưởng mới, không thích khuôn khổ."]},
+ ENTJ:{ko:["지휘관","타고난 리더","목표를 향해 팀을 이끄는 추진력이 있어요. 결단이 빠르고 큰 그림을 잘 그려요."],en:["The Commander","Natural Leader","Drives a team toward the goal. Decisive and great at seeing the big picture."],vi:["Nhà Chỉ Huy","Thủ Lĩnh Bẩm Sinh","Dẫn dắt cả nhóm tới mục tiêu. Quyết đoán và giỏi nhìn bức tranh lớn."]},
+ ENTP:{ko:["아이디어 뱅크","재기발랄 토론가","순발력과 아이디어가 넘쳐요. 새로운 도전을 즐기고 변화를 두려워하지 않아요."],en:["The Debater","Quick-witted Spark","Bursting with ideas and quick thinking. Loves new challenges, unafraid of change."],vi:["Nhà Tranh Luận","Người Nhanh Trí","Đầy ý tưởng và phản xạ nhanh. Thích thử thách mới, không ngại thay đổi."]},
+ INFJ:{ko:["통찰의 조언자","조용한 이상주의자","깊은 통찰과 따뜻함을 지녔어요. 사람의 마음을 읽고 의미 있는 목표에 헌신해요."],en:["The Advocate","Quiet Idealist","Deeply insightful and warm. Reads people's hearts and devotes to meaningful goals."],vi:["Người Cố Vấn","Nhà Lý Tưởng Thầm Lặng","Sâu sắc và ấm áp. Thấu hiểu lòng người và cống hiến cho mục tiêu ý nghĩa."]},
+ INFP:{ko:["가치의 수호자","마음의 예술가","자기만의 신념이 뚜렷해요. 조용하지만 내면은 뜨겁고 진정성을 가장 중요하게 여겨요."],en:["The Dreamer","Artist of the Heart","Holds firm personal values. Quiet outside but warm within, treasuring sincerity most."],vi:["Người Mơ Mộng","Nghệ Sĩ Của Trái Tim","Có giá trị sống rõ ràng. Trầm lặng bên ngoài nhưng ấm áp bên trong, trân trọng sự chân thành."]},
+ ENFJ:{ko:["사람의 멘토","따뜻한 리더","타인의 성장을 돕는 재능이 있어요. 공감 능력이 뛰어나고 팀을 하나로 묶어요."],en:["The Mentor","Warm Leader","Gifted at helping others grow. Empathetic and brings a team together."],vi:["Người Dẫn Dắt","Thủ Lĩnh Ấm Áp","Có tài giúp người khác trưởng thành. Đồng cảm và gắn kết cả nhóm."]},
+ ENFP:{ko:["열정 스파크","자유로운 영혼","에너지와 상상력이 넘쳐요. 사람과 가능성에 설레고 열정으로 몰입해요."],en:["The Spark","Free Spirit","Full of energy and imagination. Excited by people and possibilities."],vi:["Tia Nhiệt Huyết","Tâm Hồn Tự Do","Tràn đầy năng lượng và trí tưởng tượng. Hào hứng với con người và khả năng mới."]},
+ ISTJ:{ko:["원칙의 관리자","믿음직한 살림꾼","맡은 일을 끝까지 해내요. 규칙과 책임을 중시하고 흔들림이 없어요."],en:["The Inspector","Reliable Organizer","Sees things through to the end. Values rules and responsibility, steady and unshaken."],vi:["Người Nguyên Tắc","Nhà Quản Lý Đáng Tin","Làm việc đến cùng. Coi trọng luật lệ và trách nhiệm, vững vàng."]},
+ ISFJ:{ko:["헌신의 수호자","조용한 지원군","묵묵히 주변을 챙기는 따뜻한 사람이에요. 섬세하고 책임감 있으며 신뢰를 줘요."],en:["The Protector","Quiet Supporter","Quietly looks after others. Gentle, responsible, and trustworthy."],vi:["Người Bảo Vệ","Hậu Phương Thầm Lặng","Âm thầm chăm lo cho mọi người. Dịu dàng, trách nhiệm và đáng tin."]},
+ ESTJ:{ko:["실행 관리자","현실의 지휘관","체계와 효율로 결과를 만들어요. 명확한 기준을 세우고 팀을 이끌어요."],en:["The Executive","Practical Director","Gets results with structure and efficiency. Sets clear standards and leads."],vi:["Nhà Điều Hành","Người Chỉ Đạo Thực Tế","Tạo kết quả bằng hệ thống và hiệu quả. Đặt tiêu chuẩn rõ ràng và dẫn dắt."]},
+ ESFJ:{ko:["화합의 조율자","따뜻한 살림꾼","사람들 사이를 살뜰히 챙겨요. 협력과 조화를 만들고 분위기를 데워요."],en:["The Host","Warm Caretaker","Looks after everyone around. Builds harmony and warms the mood."],vi:["Người Hòa Giải","Người Chăm Sóc Ấm Áp","Quan tâm mọi người xung quanh. Tạo sự hòa hợp và ấm áp."]},
+ ISTP:{ko:["장인","과묵한 해결사","손과 감각으로 문제를 풀어요. 침착하고 위기에 강하며 군더더기가 없어요."],en:["The Craftsman","Quiet Problem-Solver","Solves problems with hands and instinct. Calm, strong in a crisis, no fuss."],vi:["Người Thợ Lành Nghề","Người Giải Quyết Trầm Lặng","Xử lý vấn đề bằng đôi tay và bản năng. Điềm tĩnh, mạnh mẽ khi khó khăn."]},
+ ISFP:{ko:["감각의 예술가","조용한 자유인","자기만의 미감을 지닌 온화한 사람이에요. 지금 이 순간을 소중히 하고 강요를 싫어해요."],en:["The Artist","Quiet Free Soul","Has a gentle, personal sense of beauty. Treasures the moment, dislikes being forced."],vi:["Nghệ Sĩ Cảm Quan","Tâm Hồn Tự Do Trầm Lặng","Có gu thẩm mỹ riêng dịu dàng. Trân trọng hiện tại, không thích bị ép buộc."]},
+ ESTP:{ko:["승부사","순간의 해결사","현장에서 빛나는 행동파예요. 대담하고 재빠르며 스릴을 즐겨요."],en:["The Doer","Bold Player","Shines in action. Bold, quick, and loves a thrill."],vi:["Người Hành Động","Tay Chơi Bản Lĩnh","Tỏa sáng trong hành động. Táo bạo, nhanh nhẹn và thích cảm giác mạnh."]},
+ ESFP:{ko:["무대의 주인공","타고난 엔터테이너","어디서든 주목받는 활력을 지녔어요. 사람들과 어울리며 순간을 즐길 줄 알아요."],en:["The Performer","Natural Entertainer","The life of the party. Enjoys people and living in the moment."],vi:["Ngôi Sao Sân Khấu","Người Giải Trí Bẩm Sinh","Linh hồn của bữa tiệc. Thích giao lưu và tận hưởng khoảnh khắc."]}
+};
+
+/* ===== ZODIAC ===== */
+const ZOD=[
+ {e:"♑",from:[12,22],to:[1,19],ko:["염소자리","책임감 강하고 끈기 있는 목표 지향형. 느려도 확실하게 정상에 올라요."],en:["Capricorn","A responsible, persistent goal-getter. Slow but sure to the top."],vi:["Ma Kết","Trách nhiệm và bền bỉ, hướng tới mục tiêu. Chậm mà chắc lên đỉnh."]},
+ {e:"♒",from:[1,20],to:[2,18],ko:["물병자리","독창적이고 자유로운 생각의 소유자. 남과 다른 시선으로 세상을 봐요."],en:["Aquarius","Original and free-thinking. Sees the world from a unique angle."],vi:["Bảo Bình","Sáng tạo và tư duy tự do. Nhìn thế giới theo cách riêng."]},
+ {e:"♓",from:[2,19],to:[3,20],ko:["물고기자리","감수성 풍부하고 공감을 잘하는 몽상가. 따뜻한 마음을 지녔어요."],en:["Pisces","A sensitive, empathetic dreamer with a warm heart."],vi:["Song Ngư","Người mơ mộng giàu cảm xúc và đồng cảm, trái tim ấm áp."]},
+ {e:"♈",from:[3,21],to:[4,19],ko:["양자리","열정적이고 도전적인 선두주자. 결단이 빠르고 추진력이 넘쳐요."],en:["Aries","Passionate, bold, and a natural front-runner."],vi:["Bạch Dương","Nhiệt huyết, dám thử thách, luôn dẫn đầu."]},
+ {e:"♉",from:[4,20],to:[5,20],ko:["황소자리","안정감 있고 인내심 강한 실속파. 한번 정하면 뚝심 있게 밀어붙여요."],en:["Taurus","Steady and patient, with real staying power."],vi:["Kim Ngưu","Vững vàng và kiên nhẫn, thực tế và bền bỉ."]},
+ {e:"♊",from:[5,21],to:[6,21],ko:["쌍둥이자리","재치 있고 호기심 많은 소통가. 다재다능하고 적응이 빨라요."],en:["Gemini","Witty, curious, and a great communicator."],vi:["Song Tử","Lanh lợi, tò mò và giỏi giao tiếp."]},
+ {e:"♋",from:[6,22],to:[7,22],ko:["게자리","정 많고 보호본능이 강한 사람. 가까운 이들을 살뜰히 챙겨요."],en:["Cancer","Caring and protective of those close to them."],vi:["Cự Giải","Giàu tình cảm và luôn che chở người thân."]},
+ {e:"♌",from:[7,23],to:[8,22],ko:["사자자리","당당하고 카리스마 넘치는 주인공. 자신감과 리더십이 돋보여요."],en:["Leo","Confident and charismatic, a natural star."],vi:["Sư Tử","Tự tin và cuốn hút, luôn là tâm điểm."]},
+ {e:"♍",from:[8,23],to:[9,22],ko:["처녀자리","꼼꼼하고 분석적인 완벽주의자. 디테일을 놓치지 않아요."],en:["Virgo","Careful, analytical, and a perfectionist."],vi:["Xử Nữ","Tỉ mỉ, phân tích và cầu toàn."]},
+ {e:"♎",from:[9,23],to:[10,22],ko:["천칭자리","균형과 조화를 추구하는 평화주의자. 세련된 감각과 공정함을 지녔어요."],en:["Libra","Seeks balance and harmony, fair and refined."],vi:["Thiên Bình","Yêu sự cân bằng và hài hòa, công bằng và tinh tế."]},
+ {e:"♏",from:[10,23],to:[11,21],ko:["전갈자리","강렬하고 집중력 있는 몰입형. 한번 빠지면 끝을 봐요."],en:["Scorpio","Intense and focused, all-in once committed."],vi:["Bọ Cạp","Mãnh liệt và tập trung, đã làm là dốc hết mình."]},
+ {e:"♐",from:[11,22],to:[12,21],ko:["사수자리","자유롭고 낙천적인 모험가. 넓은 세상을 향해 화살을 쏴요."],en:["Sagittarius","A free, optimistic adventurer."],vi:["Nhân Mã","Nhà thám hiểm tự do và lạc quan."]}
+];
+
+/* ===== BLOOD ===== */
+const BLD={
+ A:{ko:["A형","신중하고 성실한 완벽주의. 배려심이 깊고 책임감이 강하지만 스스로에게 엄격한 편이에요."],en:["Type A","Careful, sincere perfectionist. Considerate and responsible, but hard on themselves."],vi:["Nhóm A","Cầu toàn, cẩn thận và chân thành. Chu đáo, trách nhiệm nhưng khắt khe với bản thân."]},
+ B:{ko:["B형","자유롭고 개성 강한 마이웨이. 창의적이고 몰입력이 뛰어나며 솔직한 매력이 있어요."],en:["Type B","Free and full of character. Creative, focused, with honest charm."],vi:["Nhóm B","Tự do và cá tính. Sáng tạo, tập trung cao và chân thật đáng yêu."]},
+ O:{ko:["O형","목표 지향적이고 사교적인 리더형. 추진력과 승부욕이 강하고 인간관계가 넓어요."],en:["Type O","Goal-driven, sociable leader. Strong drive, competitive, and well-connected."],vi:["Nhóm O","Thủ lĩnh hướng mục tiêu và hòa đồng. Quyết liệt, thích cạnh tranh, quan hệ rộng."]},
+ AB:{ko:["AB형","이성과 감성을 오가는 반전 매력. 냉철하면서도 예술적이고 독특한 시각을 지녔어요."],en:["Type AB","A mix of logic and emotion. Cool yet artistic, with a unique view."],vi:["Nhóm AB","Kết hợp lý trí và cảm xúc. Tỉnh táo mà nghệ thuật, góc nhìn độc đáo."]}
+};
+
+/* ===== STATE ===== */
+let L="ko",profile={},answers=[],idx=0,adminData=[],lastResult=null;
+const $=s=>document.querySelector(s);
+const T=()=>I18N[L];
+const setTxt=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+const screens=["intro","reg","quiz","result","adminlogin","admin"];
+function go(id){screens.forEach(s=>$("#s-"+s).classList.toggle("active",s===id));window.scrollTo(0,0);}
+
+function setLang(l){
+ L=l;localStorage.setItem("mbti_lang",l);
+ ["ko","en","vi"].forEach(x=>$("#lang-"+x).setAttribute("aria-pressed",x===l));
+ document.querySelectorAll('#f-country .chip').forEach(c=>c.setAttribute("aria-pressed",c.dataset.v===l));
+ applyLang();validate();
+}
+function applyLang(){
+ const t=T();document.documentElement.lang=L;
+ setTxt("brand-tag",t.tagline);setTxt("brand-sub",t.sub);
+ renderCount();
+ setTxt("i-eyebrow",t.intro_eyebrow);$("#i-title").innerHTML=t.intro_title;setTxt("i-lead",t.intro_lead);
+ setTxt("i-f1",t.f1);setTxt("i-f2",t.f2);setTxt("i-f3",t.f3);setTxt("i-start",t.start);setTxt("i-help",t.help);
+ setTxt("h-title",t.help_title);setTxt("h-1",t.help_1);setTxt("h-2",t.help_2);setTxt("h-3",t.help_3);setTxt("h-4",t.help_4);setTxt("h-close",t.help_close);
+ setTxt("r-eyebrow",t.reg_step);setTxt("r-title",t.reg_title);setTxt("r-lead",t.reg_lead);
+ setTxt("l-country",t.f_country);setTxt("l-name",t.f_name);$("#f-name").placeholder=t.name_ph;setTxt("name-help",t.name_help);setTxt("trait-cap",t.trait_cap);
+ setTxt("l-cat",t.f_cat);setTxt("cat1",t.cat1);setTxt("cat2",t.cat2);setTxt("cat3",t.cat3);
+ setTxt("l-sex",t.f_sex);setTxt("sex1",t.sex1);setTxt("sex2",t.sex2);setTxt("sex3",t.sex3);
+ setTxt("l-birth",t.f_birth);setTxt("l-blood",t.f_blood);setTxt("r-privacy",t.privacy);setTxt("reg-next-t",t.reg_next);
+ setTxt("res-eyebrow",t.res_eyebrow);setTxt("combo-cap",t.combo_cap);setTxt("z-cap",t.z_cap);setTxt("b-cap",t.b_cap);
+ setTxt("retry-t",t.retry);setTxt("res-foot",t.res_foot);setTxt("sci-open",t.sci_open);
+ setTxt("al-title",t.admin_title);setTxt("al-lead",t.admin_lead);setTxt("al-login",t.admin_login);setTxt("al-back",t.admin_back);
+ setTxt("ad-title",t.list_title);setTxt("ad-out",t.list_out);setTxt("st-total-l",t.st_total);setTxt("st-ath-l",t.st_ath);setTxt("st-today-l",t.st_today);
+ $("#a-search").placeholder=t.search_ph;setTxt("ad-refresh",t.refresh);t.th.forEach((h,i)=>setTxt("th"+i,h));
+ if($("#s-quiz").classList.contains("active"))renderQ();
+ if(lastResult){renderResultText();setSaveBtn();}
+ if($("#s-admin").classList.contains("active"))renderTable();
+}
+function renderCount(){$("#count-line").innerHTML=T().count(+(localStorage.getItem("mbti_count")||0));}
+
+/* chips */
+document.querySelectorAll(".chips").forEach(g=>g.addEventListener("click",e=>{
+ const c=e.target.closest(".chip");if(!c)return;
+ g.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c));
+ if(g.id==="f-country")setLang(c.dataset.v);
+ validate();
+}));
+["f-name","f-birth"].forEach(id=>$("#"+id).addEventListener("input",validate));
+function pick(g){const c=document.querySelector("#"+g+' .chip[aria-pressed="true"]');return c?c.dataset.v:null;}
+function validate(){$("#reg-next").disabled=!($("#f-name").value.trim().length>=2&&pick("f-country")&&pick("f-cat")&&pick("f-sex")&&$("#f-birth").value&&pick("f-blood"));}
+
+function openHelp(){$("#helpmodal").classList.add("open");}
+function closeHelp(){$("#helpmodal").classList.remove("open");}
+function openSci(){const t=T();setTxt("sci-title",t.sci_title);setTxt("sci-close",t.sci_close);$("#sci-body").innerHTML=t.sci_body.map(p=>'<p>'+p+'</p>').join("");$("#sci").classList.add("open");}
+function closeSci(){$("#sci").classList.remove("open");}
+
+function startQuiz(){
+ profile={name:$("#f-name").value.trim(),lang:L,cat:pick("f-cat"),sex:pick("f-sex"),birth:$("#f-birth").value,blood:pick("f-blood"),saved:false};
+ answers=[];idx=0;go("quiz");renderQ();
+}
+function renderQ(){
+ const q=Q[idx],t=T();
+ setTxt("q-count",t.q_of(idx+1,Q.length));setTxt("q-axis",t.axis[q.ax]);
+ $("#bar").style.width=(idx/Q.length*100)+"%";$("#ring").style.strokeDashoffset=113-(113*idx/Q.length);
+ setTxt("q-text",q[L][0]);
+ const sel=answers[idx]?answers[idx].w:null,lb=t.scale_labels;
+ const col=(w,cls,lab)=>'<div class="dcol"><button class="d '+cls+(sel===w?' sel':'')+'" data-w="'+w+'" aria-label="'+lab+'"></button><span class="dotlab">'+lab+'</span></div>';
+ $("#q-opts").innerHTML=
+  '<div class="pole poleA"><span class="ptag a">A</span><span>'+q[L][1]+'</span></div>'+
+  '<div class="scalehint">'+t.scale_hint+'</div>'+
+  '<div class="dots">'+col(3,'d3 a',lb[0])+col(2,'d2 a',lb[1])+col(1,'d1 a',lb[2])+col(0,'d0',lb[3])+col(-1,'d1 b',lb[4])+col(-2,'d2 b',lb[5])+col(-3,'d3 b',lb[6])+'</div>'+
+  '<div class="pole poleB"><span class="ptag b">B</span><span>'+q[L][2]+'</span></div>';
+ $("#q-opts").querySelectorAll('.d').forEach(b=>b.onclick=()=>answer(+b.dataset.w));
+ setTxt("q-back",t.q_back);$("#q-back").style.display=idx>0?"block":"none";
+}
+function answer(w){
+ answers[idx]={ax:Q[idx].ax,w};idx++;
+ if(idx>=Q.length){finish();}
+ else if(idx%10===0){showCheer(idx/10-1);}
+ else renderQ();
+}
+function prevQ(){if(idx>0){idx--;renderQ();}}
+function showCheer(n){
+ const t=T();$("#cheer-emoji").textContent=["🎯","🔥","⭐"][n]||"🎯";
+ setTxt("cheer-msg",t.cheer[n]);setTxt("cheer-go",t.cheer_go);
+ $("#cheer-fill").style.width="0";$("#cheer").classList.add("open");
+ setTimeout(()=>{$("#cheer-fill").style.width=(idx/Q.length*100)+"%";},60);
+}
+function hideCheer(){$("#cheer").classList.remove("open");renderQ();}
+
+function finish(){
+ $("#bar").style.width="100%";$("#ring").style.strokeDashoffset="0";
+ const P1={EI:"E",SN:"S",TF:"T",JP:"J"},P2={EI:"I",SN:"N",TF:"F",JP:"P"},AX=["EI","SN","TF","JP"];
+ const sums={EI:0,SN:0,TF:0,JP:0};answers.forEach(a=>sums[a.ax]+=a.w);
+ const left={},weak=[];
+ const code=AX.map(ax=>{let lp=Math.round(50+(sums[ax]/30)*50);lp=Math.max(2,Math.min(98,lp));left[ax]=lp;if(Math.abs(lp-50)<=8)weak.push(ax);return sums[ax]>=0?P1[ax]:P2[ax];}).join("");
+ const clarity=Math.round(AX.reduce((s,ax)=>s+Math.abs(left[ax]-50)*2,0)/4);
+ profile.mbti=code;profile.saved=false;lastResult={code,left,clarity,weak,P1,P2};
+ renderResultText();go("result");saveResult(); // 저장모드: 자동 저장
+}
+function zodiacOf(m,d){for(const z of ZOD){const [fm,fd]=z.from,[tm,td]=z.to;
+ if(fm===12){if((m===12&&d>=fd)||(m===1&&d<=td))return z;}else if((m===fm&&d>=fd)||(m===tm&&d<=td))return z;}return ZOD[0];}
+function pctv(a,b){const t=a+b;return t?Math.round(a/t*100):50;}
+function renderResultText(){
+ const t=T(),{code,left}=lastResult,ty=TYPES[code][L];
+ setTxt("r-code",code);setTxt("r-nick",ty[0]);setTxt("r-title",ty[1]);setTxt("r-desc",ty[2]);
+ $("#r-clarity").innerHTML=t.clarity(lastResult.clarity);
+ const bars=$("#r-bars");bars.innerHTML="";
+ [["EI","E","I"],["SN","S","N"],["TF","T","F"],["JP","J","P"]].forEach(([ax,l,r])=>{
+  const lp=left[ax],win=lp>=50;
+  bars.innerHTML+='<div class="bar"><div class="lab"><span class="'+(win?'on':'')+'">'+l+' '+t.pole[l]+' '+lp+'%</span><span class="'+(!win?'on':'')+'">'+(100-lp)+'% '+r+' '+t.pole[r]+'</span></div><div class="track"><i style="left:0;width:'+lp+'%"></i></div></div>';
+ });
+ const tr=$("#r-traits");tr.innerHTML="";
+ [[t.trait[0],left.EI],[t.trait[1],100-left.SN],[t.trait[2],100-left.TF],[t.trait[3],left.JP]].forEach(([nm,v])=>{
+  tr.innerHTML+='<div class="bar"><div class="lab"><span class="on">'+nm+'</span><span>'+v+'%</span></div><div class="track"><i style="left:0;width:'+v+'%"></i></div></div>';
+ });
+ const wk=$("#r-weak");
+ if(lastResult.weak&&lastResult.weak.length){wk.style.display="block";wk.innerHTML=lastResult.weak.map(ax=>t.weak_note(t.axis[ax])).join("<br>");}
+ else{wk.style.display="none";wk.innerHTML="";}
+ const [m,d]=profile.birth.split("-").slice(1).map(Number),z=zodiacOf(m,d);
+ profile.zodiac=z.ko[0];profile.zodiac_i18n=z[L][0];
+ setTxt("z-emoji",z.e+" ");setTxt("z-name",z[L][0]);setTxt("z-desc",z[L][1]);
+ const bl=BLD[profile.blood][L];setTxt("b-name",bl[0]);setTxt("b-desc",bl[1]);
+ setTxt("r-combo",t.combo(profile.name,ty[0],code,z[L][0],bl[0],profile.blood));
+}
+function setSaveBtn(){const t=T(),b=$("#save-btn");b.textContent=profile.saved?t.saved:t.save;b.disabled=profile.saved;}
+
+function saveResult(){
+ if(profile.saved)return;
+ const t=T(),btn=$("#save-btn");btn.disabled=true;btn.textContent=t.saving;
+ const payload={ts:new Date().toISOString(),name:profile.name,lang:profile.lang,cat:profile.cat,sex:profile.sex,birth:profile.birth,blood:profile.blood,mbti:profile.mbti,zodiac:profile.zodiac};
+ const finishSave=()=>{profile.saved=true;let c=+(localStorage.getItem("mbti_count")||0)+1;localStorage.setItem("mbti_count",c);renderCount();setSaveBtn();};
+ if(GAS_URL){fetch(GAS_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)}).then(finishSave).catch(finishSave);}
+ else{const arr=JSON.parse(localStorage.getItem("mbti_rows")||"[]");arr.push(payload);localStorage.setItem("mbti_rows",JSON.stringify(arr));setTimeout(finishSave,450);}
+}
+function restart(){
+ document.querySelectorAll('#f-cat .chip,#f-sex .chip,#f-blood .chip').forEach(c=>c.setAttribute("aria-pressed","false"));
+ $("#f-name").value="";$("#f-birth").value="";lastResult=null;validate();go("intro");
+}
+
+/* ADMIN */
+$("#pin").addEventListener("keydown",e=>{if(e.key==="Enter")tryLogin();});
+function tryLogin(){if($("#pin").value===ADMIN_PIN){$("#pin").value="";$("#pin-err").textContent="";go("admin");loadList();}else{$("#pin-err").textContent=T().admin_wrong;}}
+function loadList(){
+ $("#a-note").textContent=T().loading;
+ if(GAS_URL){const cb="__mbti_cb_"+Date.now();window[cb]=res=>{adminData=(res&&res.rows)||[];renderTable();delete window[cb];};
+  const s=document.createElement("script");s.src=GAS_URL+"?action=list&pw="+encodeURIComponent(ADMIN_PIN)+"&callback="+cb;
+  s.onerror=()=>{$("#a-note").textContent=T().failed;};document.body.appendChild(s);}
+ else{adminData=JSON.parse(localStorage.getItem("mbti_rows")||"[]").slice().reverse();renderTable();}
+}
+function renderTable(){
+ const t=T(),q=($("#a-search").value||"").trim().toLowerCase();
+ const rows=adminData.filter(r=>!q||(r.name||"").toLowerCase().includes(q)||(r.mbti||"").toLowerCase().includes(q));
+ const tb=$("#a-rows");tb.innerHTML="";
+ const today=new Date().toISOString().slice(0,10);let todayN=0,athN=0;
+ adminData.forEach(r=>{if((r.ts||"").slice(0,10)===today)todayN++;if(r.cat==="선수")athN++;});
+ setTxt("a-total",adminData.length);setTxt("a-athlete",athN);setTxt("a-today",todayN);
+ if(!rows.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--ink2);padding:26px">'+t.nodata+'</td></tr>';$("#a-note").textContent="";return;}
+ rows.forEach(r=>{tb.innerHTML+='<tr><td>'+(r.ts||"").slice(0,10)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.cat)+'</td><td>'+esc(r.sex)+'</td><td>'+esc(r.birth)+'</td><td class="mb">'+esc(r.mbti)+'</td><td>'+esc(r.zodiac)+'</td><td>'+esc(r.blood)+'</td></tr>';});
+ $("#a-note").textContent=GAS_URL?t.linked:t.mock;
+}
+function esc(v){return (v==null?"":String(v)).replace(/[<>&]/g,m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m]));}
+
+/* INIT */
+setLang(localStorage.getItem("mbti_lang")||"ko");
+</script>
+
+</html>
