@@ -19,12 +19,19 @@ def synth_path(text, voice):
     key = hashlib.md5((voice + "|" + text).encode("utf-8")).hexdigest()
     path = os.path.join(CACHE_DIR, key + ".mp3")
     if not os.path.exists(path) or os.path.getsize(path) < 200:
-        if voice == "google":
-            gTTS(text, lang="vi").save(path)
-        elif voice == "google-ko":
-            gTTS(text, lang="ko").save(path)
-        else:
-            asyncio.run(edge_tts.Communicate(text, voice).save(path))
+        klang = "ko" if (voice == "google-ko" or voice.lower().startswith("ko")) else "vi"
+        try:
+            if voice == "google":
+                gTTS(text, lang="vi").save(path)
+            elif voice == "google-ko":
+                gTTS(text, lang="ko").save(path)
+            else:
+                asyncio.run(edge_tts.Communicate(text, voice).save(path))
+        except Exception:
+            pass  # 아래에서 폴백 처리
+        # edge/gTTS 실패(예외 또는 빈 파일) 시 gTTS로 폴백
+        if not os.path.exists(path) or os.path.getsize(path) < 200:
+            gTTS(text, lang=klang).save(path)
     return path
 
 def pcm(text, voice):
