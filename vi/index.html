@@ -115,6 +115,11 @@
   .tag.pharm{background:var(--lacquer-soft); color:var(--lacquer)}
   .tag.grab{background:var(--gold); color:#fff}
   .tag.basic{background:var(--jade-soft); color:var(--jade)}
+  .tag.airport{background:var(--jade-soft); color:var(--jade)}
+  .tag.bank{background:var(--gold); color:#fff}
+  .tag.salon{background:var(--lacquer-soft); color:var(--lacquer)}
+  .tag.mart{background:var(--jade-soft); color:var(--jade)}
+  .tag.sos{background:var(--lacquer); color:#fff}
   .tgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .tcard{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 12px;
     cursor:pointer; text-align:center; font:inherit; color:inherit; box-shadow:0 1px 2px var(--shadow)}
@@ -346,7 +351,7 @@ var VOCAB = [
 /*VOCAB_END*/
 ];
 
-var TAGS={coach:"코칭",love:"연애",react:"리액션",survive:"생존",color:"색상",dir:"방향",taste:"맛",food:"식당",hotel:"호텔",pharm:"약국",grab:"그랩",basic:"기본"};
+var TAGS={coach:"코칭",love:"연애",react:"리액션",survive:"생존",color:"색상",dir:"방향",taste:"맛",food:"식당",hotel:"호텔",pharm:"약국",grab:"그랩",basic:"기본",airport:"공항",bank:"은행",salon:"미용실",mart:"마트",sos:"긴급"};
 var EXT={q:"질문",a:"답변",c:"자주쓰는 말"};
 
 /* 주제별 팩 (메인 커리큘럼과 별개, 잠금 없음, 시험 제외 — 핸즈프리/치트에서 자유 학습) */
@@ -438,6 +443,56 @@ var THEMES=[
   ["basic","Đắt quá!","너무 비싸요!","닫↗ 꽈↗",[["c","Giảm giá đi.","깎아주세요.","잠↘↗ 자↗ 디"],["q","Bao nhiêu tiền?","얼마예요?","바오 니에우 띠엔↘"]]],
   ["basic","Tôi tên là...","제 이름은 ...예요","또이 뗀 라↘",[["q","Anh tên gì?","이름이 뭐예요?","아잉 뗀 지↘"],["c","Rất vui được gặp.","반가워요.","젇↗ 부이 드억↓ 갑↓"]]],
   ["basic","Tôi là người Hàn.","저는 한국 사람이에요","또이 라↘ 응어이↘ 한↘",[["q","Người nước nào?","어느 나라 사람이에요?","응어이↘ 느억↗ 나오↘"],["c","Tôi sống ở Đà Nẵng.","다낭에 살아요.","또이 송↗ 어↘↗ 다↘ 낭˜"]]]
+ ]},
+ {id:"airport", name:"공항", icon:"✈️", words:[
+  ["airport","Cửa số mấy?","몇 번 게이트예요?","끄어↘↗ 소↗ 머이↗",[["q","Cổng lên máy bay?","탑승구요?","꽁↗ 렌 마이↗ 바이"],["a","Ở đằng kia.","저쪽이에요.","어↘↗ 당↘ 끼어"]]],
+  ["airport","Hộ chiếu đây.","여권 여기요","호↓ 찌에우↗ 더이",[["q","Cho xem hộ chiếu.","여권 보여주세요.","쩌 쌤 호↓ 찌에우↗"],["c","Vé đây.","표 여기요.","베↗ 더이"]]],
+  ["airport","Lấy hành lý ở đâu?","짐 찾는 곳 어디예요?","러이↗ 하잉↘ 리↗ 어↘↗ 더우",[["c","Mất hành lý.","짐을 잃어버렸어요.","먿↗ 하잉↘ 리↗"],["q","Băng chuyền nào?","몇 번 벨트예요?","방 쭈옌↘ 나오↘"]]],
+  ["airport","Chuyến bay bị trễ.","비행기가 지연됐어요","쭈옌↗ 바이 비↓ 쩨˜",[["q","Bay lúc mấy giờ?","몇 시 비행기예요?","바이 룩↗ 머이↗ 저↘"],["c","Hoãn chuyến.","결항이요.","호안˜ 쭈옌↗"]]],
+  ["airport","Ký gửi hành lý.","수하물 부칠게요","끼↗ 그이↘↗ 하잉↘ 리↗",[["q","Mấy ký?","몇 킬로예요?","머이↗ 끼↗"],["c","Quá cân rồi.","무게 초과예요.","꽈↗ 껀 조이↘"]]],
+  ["airport","Ghế bên cửa sổ.","창가 자리요","게↗ 벤 끄어↘↗ 소↘↗",[["c","Ghế lối đi.","통로 자리요.","게↗ 로이↗ 디"],["q","Còn ghế không?","자리 있어요?","꼰↘ 게↗ 콤"]]],
+  ["airport","Đổi tiền ở đâu?","환전 어디서 해요?","도이↘↗ 띠엔↘ 어↘↗ 더우",[["c","Đổi đô la.","달러 환전이요.","도이↘↗ 도 라"],["q","Tỷ giá bao nhiêu?","환율 얼마예요?","띠↘↗ 자↗ 바오 니에우"]]],
+  ["airport","Phòng chờ ở đâu?","대기실 어디예요?","퐁↘ 쩌↘ 어↘↗ 더우",[["q","Nhà vệ sinh ở đâu?","화장실 어디예요?","냐↘ 베↓ 신 어↘↗ 더우"],["a","Đằng kia.","저쪽이요.","당↘ 끼어"]]]
+ ]},
+ {id:"bank", name:"은행", icon:"🏦", words:[
+  ["bank","Tôi muốn đổi tiền.","환전하고 싶어요","또이 무온↗ 도이↘↗ 띠엔↘",[["q","Đổi bao nhiêu?","얼마 환전해요?","도이↘↗ 바오 니에우"],["c","Đổi sang tiền Việt.","베트남 돈으로요.","도이↘↗ 상 띠엔↘ 비엗↓"]]],
+  ["bank","Tỷ giá hôm nay?","오늘 환율이요?","띠↘↗ 자↗ 홈 나이",[["q","Bao nhiêu một đô?","1달러에 얼마예요?","바오 니에우 몯↓ 도"],["c","Cho tôi tiền lẻ.","잔돈으로 주세요.","쩌 또이 띠엔↘ 레↘↗"]]],
+  ["bank","Máy ATM ở đâu?","ATM 어디예요?","마이 아테엠 어↘↗ 더우",[["q","Rút tiền ở đâu?","출금 어디서 해요?","줃↗ 띠엔↘ 어↘↗ 더우"],["a","Đằng kia.","저쪽이요.","당↘ 끼어"]]],
+  ["bank","Mở tài khoản.","계좌 개설이요","머↘↗ 따이↘ 콴↘↗",[["q","Cần giấy tờ gì?","서류 뭐 필요해요?","껀↘ 저이↗ 떠↘ 지↘"],["c","Hộ chiếu đây.","여권 여기요.","호↓ 찌에우↗ 더이"]]],
+  ["bank","Chuyển tiền.","송금이요","쭈옌↘↗ 띠엔↘",[["q","Phí bao nhiêu?","수수료 얼마예요?","피↗ 바오 니에우"],["c","Chuyển sang đây.","여기로 보내주세요.","쭈옌↘↗ 상 더이"]]],
+  ["bank","Thẻ không dùng được.","카드가 안 돼요","테↘↗ 콤 중↘ 드억↓",[["c","Thẻ bị khóa.","카드가 막혔어요.","테↘↗ 비↓ 콰↗"],["q","Làm sao đây?","어떻게 해요?","람↘ 사오 더이"]]],
+  ["bank","Mất thẻ rồi.","카드를 잃어버렸어요","먿↗ 테↘↗ 조이↘",[["c","Khóa thẻ giúp tôi.","카드 정지해주세요.","콰↗ 테↘↗ 줍↗ 또이"],["q","Cấp lại được không?","재발급 돼요?","껍↗ 라이↓ 드억↓ 콤"]]],
+  ["bank","Mấy giờ mở cửa?","몇 시에 열어요?","머이↗ 저↘ 머↘↗ 끄어↘↗",[["a","Chín giờ.","9시요.","찐↗ 저↘"],["q","Mấy giờ đóng cửa?","몇 시에 닫아요?","머이↗ 저↘ 동↗ 끄어↘↗"]]]
+ ]},
+ {id:"salon", name:"미용실", icon:"💇", words:[
+  ["salon","Cắt tóc.","머리 잘라주세요","깓↗ 똡↗",[["q","Cắt ngắn không?","짧게 할까요?","깓↗ 응안↗ 콤"],["c","Cắt ngắn thôi.","짧게요.","깓↗ 응안↗ 토이"]]],
+  ["salon","Đừng cắt ngắn quá.","너무 짧게 하지 마세요","등↘ 깓↗ 응안↗ 꽈↗",[["c","Ngắn một chút thôi.","조금만요.","응안↗ 몯↓ 쭏↗ 토이"],["c","Giữ dài.","길게 유지요.","즈˜ 자이↘"]]],
+  ["salon","Gội đầu.","머리 감겨주세요","고이↓ 더우↘",[["q","Gội đầu không?","머리 감을까요?","고이↓ 더우↘ 콤"],["c","Gội luôn nhé.","감아주세요.","고이↓ 루온 냬↗"]]],
+  ["salon","Nhuộm tóc.","염색이요","뉴옴↓ 똡↗",[["q","Màu gì?","무슨 색이요?","마우↘ 지↘"],["c","Màu nâu.","갈색이요.","마우↘ 너우"]]],
+  ["salon","Cắt tóc bao nhiêu?","커트 얼마예요?","깓↗ 똡↗ 바오 니에우",[["a","Năm mươi nghìn.","5만 동이요.","남 므어이 응인↘"],["q","Có nhuộm không?","염색도 돼요?","꼬↗ 뉴옴↓ 콤"]]],
+  ["salon","Cạo râu.","면도해주세요","까오↓ 저우",[["c","Cạo sạch nhé.","깔끔하게요.","까오↓ 사익↓ 냬↗"],["q","Cạo râu không?","면도할까요?","까오↓ 저우 콤"]]],
+  ["salon","Để kiểu này.","이 스타일로요","데↘ 끼에우↘↗ 나이↘",[["c","Giống hình này.","이 사진처럼요.","종↗ 힌↘ 나이↘"],["q","Kiểu nào đẹp?","어떤 게 예뻐요?","끼에우↘↗ 나오↘ 뎁↓"]]],
+  ["salon","Đẹp quá, cảm ơn!","예뻐요, 감사해요!","뎁↓ 꽈↗ 깜↘↗ 언",[["c","Vừa ý rồi.","마음에 들어요.","브어↘ 이↗ 조이↘"],["a","Rất đẹp.","아주 예뻐요.","젇↗ 뎁↓"]]]
+ ]},
+ {id:"mart", name:"마트", icon:"🛒", words:[
+  ["mart","Cái này ở đâu?","이거 어디 있어요?","까이↗ 나이↘ 어↘↗ 더우",[["q","Có cái này không?","이거 있어요?","꼬↗ 까이↗ 나이↘ 콤"],["c","Hết hàng rồi.","다 팔렸어요.","헫↗ 항↘ 조이↘"]]],
+  ["mart","Cái này bao nhiêu?","이거 얼마예요?","까이↗ 나이↘ 바오 니에우",[["q","Bao nhiêu một cái?","하나에 얼마예요?","바오 니에우 몯↓ 까이↗"],["a","Mười nghìn.","만 동이요.","므어이↘ 응인↘"]]],
+  ["mart","Có giảm giá không?","할인 있어요?","꼬↗ 잠↘↗ 자↗ 콤",[["c","Khuyến mãi gì không?","행사 있어요?","쿠옌↗ 마이˜ 지↘ 콤"],["a","Mua một tặng một.","1+1이요.","무어 몯↓ 땅↓ 몯↓"]]],
+  ["mart","Tính tiền ở đâu?","계산대 어디예요?","띤↗ 띠엔↘ 어↘↗ 더우",[["c","Quầy thu ngân.","계산대요.","꾸어이↘ 투 응언"],["q","Xếp hàng ở đây?","여기 줄 서요?","셉↗ 항↘ 어↘↗ 더이"]]],
+  ["mart","Cho túi nữa.","봉투 주세요","쩌 뚜이↗ 느어˜",[["q","Có túi không?","봉투 있어요?","꼬↗ 뚜이↗ 콤"],["c","Không cần túi.","봉투 필요 없어요.","콤 껀↘ 뚜이↗"]]],
+  ["mart","Trả bằng thẻ.","카드로 결제요","짜↘ 방↘ 테↘↗",[["q","Trả tiền mặt được không?","현금 돼요?","짜↘ 띠엔↘ 맏↓ 드억↓ 콤"],["c","Trả tiền mặt.","현금이요.","짜↘ 띠엔↘ 맏↓"]]],
+  ["mart","Cho hóa đơn.","영수증 주세요","쩌 화↗ 던",[["c","Không cần hóa đơn.","영수증 필요 없어요.","콤 껀↘ 화↗ 던"],["q","Đổi được không?","교환 돼요?","도이↘↗ 드억↓ 콤"]]],
+  ["mart","Còn hạn không?","유통기한 남았어요?","꼰↘ 한↓ 콤",[["q","Hạn sử dụng?","유통기한이요?","한↓ 스↘↗ 중↓"],["a","Còn mới.","신선해요.","꼰↘ 머이↗"]]]
+ ]},
+ {id:"sos", name:"긴급", icon:"🚨", words:[
+  ["sos","Giúp tôi với!","도와주세요!","줍↗ 또이 버이↗",[["c","Cứu với!","살려주세요!","끄우↗ 버이↗"],["q","Ai giúp tôi!","누구 좀 도와줘요!","아이 줍↗ 또이"]]],
+  ["sos","Gọi cấp cứu.","구급차 불러주세요","고이↓ 껍↗ 끄우↗",[["c","Gọi xe cứu thương.","앰뷸런스요.","고이↓ 쌔 끄우↗ 트엉"],["q","Số mấy?","몇 번이요?","소↗ 머이↗"]]],
+  ["sos","Gọi cảnh sát.","경찰 불러주세요","고이↓ 까잉↘↗ 삳↗",[["c","Báo công an.","경찰에 신고해주세요.","바오↗ 꽁 안"],["q","Đồn ở đâu?","경찰서 어디예요?","돈↘ 어↘↗ 더우"]]],
+  ["sos","Tôi bị mất ví.","지갑을 잃어버렸어요","또이 비↓ 먿↗ 비↗",[["c","Bị móc túi.","소매치기당했어요.","비↓ 목↗ 뚜이↗"],["c","Mất điện thoại.","핸드폰 잃어버렸어요.","먿↗ 디엔↓ 토아이↓"]]],
+  ["sos","Tôi bị thương.","다쳤어요","또이 비↓ 트엉",[["c","Chảy máu rồi.","피가 나요.","짜이↘↗ 마우↗ 조이↘"],["q","Bệnh viện gần nhất?","가까운 병원이요?","베잉↓ 비엔↓ 건↘ 녇↗"]]],
+  ["sos","Tôi bị lạc.","길을 잃었어요","또이 비↓ 락↓",[["q","Đây là đâu?","여기 어디예요?","더이 라↘ 더우"],["c","Chỉ đường giúp tôi.","길 좀 알려주세요.","찌↘↗ 드엉↘ 줍↗ 또이"]]],
+  ["sos","Cho mượn điện thoại.","전화 좀 빌려주세요","쩌 므언↓ 디엔↓ 토아이↓",[["c","Gọi giúp tôi.","전화 좀 걸어주세요.","고이↓ 줍↗ 또이"],["q","Có ai nói tiếng Anh?","영어 하는 사람 있어요?","꼬↗ 아이 노이↗ 띠엥↗ 아잉"]]],
+  ["sos","Nguy hiểm!","위험해요!","응우이 히엠↘↗",[["c","Cẩn thận!","조심해요!","껀↘↗ 턴↓"],["c","Tránh ra!","비켜요!","짜잉↗ 자"]]]
  ]}
 ];
 function themeById(id){ for(var i=0;i<THEMES.length;i++) if(THEMES[i].id===id) return THEMES[i]; return null; }
@@ -547,7 +602,7 @@ function renderHome(){
     +'<button onclick="__hands()"><span class="i">🎧</span>핸즈프리 듣기</button>'
     +'<button onclick="__phrases()"><span class="i">📖</span>상용 표현집</button>'
     +'<button onclick="__go(\'cheat\')"><span class="i">⚡</span>실전 치트시트</button>'
-    +'<button onclick="__go(\'basics\')"><span class="i">🔊</span>발음 기초</button></div>';
+    +'<button onclick="__go(\'basics\')"><span class="i">👤</span>호칭·발음</button></div>';
   h+='<h2>학습 경로</h2><div class="path" id="pathWrap"></div>';
   document.getElementById("v-home").innerHTML=h;
   renderPath();
@@ -816,10 +871,29 @@ function renderBasics(){
   var el=document.getElementById("v-basics");
   var tones=[["ma","— 평평","귀신"],["má","↗ 올림","엄마·뺨"],["mà","↘ 내림","그런데"],["mả","↘↗ 물음","무덤"],["mã","˜↗ 끊고올림","말(馬)"],["mạ","↓ 뚝 끊음","모(벼)"]];
   var nums=[["một","몯↓","1"],["hai","하이","2"],["ba","바","3"],["bốn","본↗","4"],["năm","남","5"],["sáu","사우↗","6"],["bảy","바이↘↗","7"],["tám","땀↗","8"],["chín","찐↗","9"],["mười","므어이↘","10"]];
-  var h='<h1>발음 <span class="vn">기초</span></h1><p class="sub">베트남어의 핵심은 성조 6개. 눌러서 듣고 따라하세요.</p>'
+  var pron1=[
+    ["Tôi","또이","저 — 처음 본 사람 · 점원 · 기사 · 공무원 등 모르는/공식 사이. 제일 안전."],
+    ["Anh","아잉","나 — 남자가 연하·여성(연애)에게. 친근함. (코치님 연애·사교 때 나 = Anh)"],
+    ["Thầy","터이","나 — 코치·선생이 선수·제자에게. (사격 지도 때 나 = Thầy)"]
+  ];
+  var pron2=[
+    ["Anh","아잉","나보다 나이 많은 남자 (형·오빠뻘)"],
+    ["Chị","찌","나보다 나이 많은 여자 (누나·언니뻘)"],
+    ["Em","앰","나보다 어린 사람 (여성 · 선수 · 연인). 여럿은 các em(깍 앰)"],
+    ["Bạn","반","또래 친구"]
+  ];
+  function pcard(p){ return '<div class="wcard"><div class="main" onclick="__say(\''+p[0]+'\',null)"><div class="spk">🔊</div>'
+    +'<div class="body"><div class="vnw">'+p[0]+' <span style="font-size:13px;color:var(--jade);font-weight:600">'+p[1]+'</span></div>'
+    +'<div class="mean">'+p[2]+'</div></div></div></div>'; }
+  var h='<h1>발음 · <span class="vn">호칭</span></h1><p class="sub">주어(호칭)와 성조 — 베트남어 회화의 두 핵심. 눌러서 듣고 따라하세요.</p>'
     +'<div style="display:flex;gap:10px;align-items:center;margin-bottom:14px"><span style="font-size:13px;font-weight:600">재생 속도</span>'
     +'<button class="ghost" style="width:auto;margin:0;padding:7px 14px" onclick="__rate(0.55,this)">천천히</button>'
     +'<button class="ghost" style="width:auto;margin:0;padding:7px 14px" onclick="__rate(0.82,this)">보통</button></div>'
+    +'<h2>👤 주어·호칭 <span style="font-size:13px;color:var(--lacquer)">(아주 중요)</span></h2>'
+    +'<p class="sub" style="margin:-4px 0 10px">베트남어는 <b>나·너를 관계에 따라 다르게</b> 불러요. 코치님(남성) 기준이에요.</p>'
+    +'<div class="cfg-label">나를 가리킬 때 (저 · 나)</div>'+pron1.map(pcard).join("")
+    +'<div class="cfg-label">상대를 부를 때 (너 · 당신)</div>'+pron2.map(pcard).join("")
+    +'<div class="hint" style="margin-bottom:18px">🎯 <b>코치님 요령</b><br>· 식당·호텔·택시·공무 = <b>Tôi(또이, 저)</b> 그대로 OK<br>· 여성에게·연애 = 나는 <b>Anh(아잉)</b>, 상대는 <b>Em(앰)</b><br>· 선수 지도 = 나는 <b>Thầy(터이)</b> 또는 Anh, 선수는 <b>Em / các em</b></div>'
     +'<h2>성조 6개</h2><div class="tones">';
   tones.forEach(function(t){ h+='<button class="tone" onclick="__say(\''+t[0]+'\')"><div class="w">'+t[0]+'</div><div class="a">'+t[1]+'</div><div class="m">'+t[2]+'</div></button>'; });
   h+='</div><h2>숫자 1–10</h2><div class="tones">';
@@ -836,6 +910,7 @@ function renderPhrases(){
   if(!phraseTheme){
     var h='<h1>📖 상용 <span class="vn">표현집</span></h1>'
       +'<p class="sub">상황별로 바로 쓰는 표현 모음. 카드를 누르면 발음이 나와요. (수업·시험과 무관한 기본 참고용)</p>'
+      +'<div class="hint" style="margin-bottom:14px">👤 <b>Tôi(또이)=저</b> 는 모르는 사이·점원·기사에게 쓰는 기본 호칭이에요. 여성에게·연애·선수 지도 땐 <b>Anh(아잉)</b>·<b>Thầy(터이)</b>로 바꿔요 → <b>발음·호칭</b> 탭 참고.</div>'
       +'<div class="tgrid">';
     THEMES.forEach(function(t){
       h+='<button class="tcard" onclick="__openTheme(\''+t.id+'\')"><span class="ti">'+t.icon+'</span>'
