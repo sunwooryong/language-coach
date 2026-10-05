@@ -110,6 +110,18 @@
   .tag.color{background:var(--lacquer-soft); color:var(--lacquer)}
   .tag.dir{background:var(--jade-soft); color:var(--jade)}
   .tag.taste{background:var(--gold); color:#fff}
+  .tag.food{background:var(--lacquer-soft); color:var(--lacquer)}
+  .tag.hotel{background:var(--jade-soft); color:var(--jade)}
+  .tag.pharm{background:var(--lacquer-soft); color:var(--lacquer)}
+  .tag.grab{background:var(--gold); color:#fff}
+  .tag.basic{background:var(--jade-soft); color:var(--jade)}
+  .tgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .tcard{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 12px;
+    cursor:pointer; text-align:center; font:inherit; color:inherit; box-shadow:0 1px 2px var(--shadow)}
+  .tcard:active{transform:scale(.97)}
+  .tcard .ti{font-size:30px; display:block}
+  .tcard .tn{font-size:15px; font-weight:700; display:block; margin-top:6px}
+  .tcard .tc{font-size:12px; color:var(--ink-soft); display:block; margin-top:2px}
   .vnw{font-size:21px; font-weight:700; letter-spacing:-.01em; line-height:1.2}
   .say{font-family:ui-monospace,Menlo,monospace; font-size:13px; color:var(--jade); font-weight:600; margin-top:2px}
   .mean{font-size:14px; color:var(--ink-soft); margin-top:3px}
@@ -234,6 +246,7 @@
   <div class="view hide" id="v-cheat"></div>
   <div class="view hide" id="v-basics"></div>
   <div class="view hide" id="v-hands"></div>
+  <div class="view hide" id="v-phrases"></div>
 
   <div class="nav" id="nav">
     <button data-nav="home" class="on"><span class="ni">🏠</span><span class="nl">홈</span></button>
@@ -333,7 +346,7 @@ var VOCAB = [
 /*VOCAB_END*/
 ];
 
-var TAGS={coach:"코칭",love:"연애",react:"리액션",survive:"생존",color:"색상",dir:"방향",taste:"맛"};
+var TAGS={coach:"코칭",love:"연애",react:"리액션",survive:"생존",color:"색상",dir:"방향",taste:"맛",food:"식당",hotel:"호텔",pharm:"약국",grab:"그랩",basic:"기본"};
 var EXT={q:"질문",a:"답변",c:"자주쓰는 말"};
 
 /* 주제별 팩 (메인 커리큘럼과 별개, 잠금 없음, 시험 제외 — 핸즈프리/치트에서 자유 학습) */
@@ -373,6 +386,58 @@ var THEMES=[
   ["taste","béo","느끼하다","베오↗",[["c","Món béo.","느끼한 음식.","몬↗ 베오↗"],["c","hơi béo","좀 느끼해요","허이 베오↗"]]],
   ["taste","thơm","향긋하다","텀",[["c","Thơm quá!","냄새 좋다!","텀 꽈↗"],["c","mùi thơm","좋은 향","무이↘ 텀"]]],
   ["taste","dở","맛없다","저↘↗",[["c","Món này dở.","이건 맛없어요.","몬↗ 나이↘ 저↘↗"],["c","hơi dở","좀 별로예요","허이 저↘↗"]]]
+ ]},
+ {id:"food", name:"식당", icon:"🍜", words:[
+  ["food","Cho tôi xem thực đơn.","메뉴 보여주세요","쩌 또이 쌤 특↓ 던",[["q","Có thực đơn không?","메뉴 있어요?","꼬↗ 특↓ 던 콤"],["c","Thực đơn đây.","메뉴 여기요.","특↓ 던 더이"]]],
+  ["food","Cho tôi món này.","이거 주세요","쩌 또이 몬↗ 나이↘",[["c","Cho tôi hai cái.","두 개 주세요.","쩌 또이 하이 까이↗"],["q","Món gì ngon?","뭐가 맛있어요?","몬↗ 지↘ 응온"]]],
+  ["food","Món này cay không?","이거 매워요?","몬↗ 나이↘ 까이 콤",[["a","Hơi cay.","좀 매워요.","허이 까이"],["c","Không cay.","안 매워요.","콤 까이"]]],
+  ["food","Cho tôi ít cay thôi.","덜 맵게 해주세요","쩌 또이 읻↗ 까이 토이",[["c","Đừng cho ớt.","고추 넣지 마세요.","등↘ 쩌 얻↗"],["c","Không hành.","파 빼주세요.","콤 하잉↘"]]],
+  ["food","Tính tiền.","계산해주세요","띤↗ 띠엔↘",[["q","Bao nhiêu tiền?","얼마예요?","바오 니에우 띠엔↘"],["c","Tính riêng nhé.","따로 계산이요.","띤↗ 지엥 냬↗"]]],
+  ["food","Cho thêm nước.","물 더 주세요","쩌 템 느억↗",[["c","Cho thêm đá.","얼음 더요.","쩌 템 다↗"],["c","Cho cái này nữa.","이거 더요.","쩌 까이↗ 나이↘ 느어˜"]]],
+  ["food","Ngon quá!","맛있어요!","응온 꽈↗",[["q","Ngon không?","맛있어요?","응온 콤"],["a","Rất ngon.","아주 맛있어요.","젇↗ 응온"]]],
+  ["food","Cho tôi mang về.","포장해주세요","쩌 또이 망 베↘",[["c","Gói lại giúp tôi.","싸주세요.","고이↗ 라이↓ 줍↗ 또이"],["q","Mang về được không?","포장 돼요?","망 베↘ 드억↓ 콤"]]]
+ ]},
+ {id:"hotel", name:"호텔", icon:"🏨", words:[
+  ["hotel","Tôi đặt phòng rồi.","예약했어요","또이 닫↓ 퐁↘ 조이↘",[["q","Còn phòng không?","방 있어요?","꼰↘ 퐁↘ 콤"],["c","Tên tôi là...","제 이름은...","뗀 또이 라↘"]]],
+  ["hotel","Một đêm bao nhiêu?","1박에 얼마예요?","몯↓ 뎀 바오 니에우",[["a","Năm trăm nghìn.","50만 동이요.","남 짬 응인↘"],["q","Có giảm giá không?","할인 돼요?","잠↘↗ 자↗ 콤"]]],
+  ["hotel","Cho tôi nhận phòng.","체크인 할게요","쩌 또이 년↓ 퐁↘",[["q","Mấy giờ nhận phòng?","체크인 몇 시예요?","머이↗ 저↘ 년↓ 퐁↘"],["c","Phòng số mấy?","몇 호실이요?","퐁↘ 소↗ 머이↗"]]],
+  ["hotel","Wifi mật khẩu gì?","와이파이 비번 뭐예요?","와이파이 먿↓ 커우↘↗ 지↘",[["q","Có wifi không?","와이파이 있어요?","꼬↗ 와이파이 콤"],["c","Wifi yếu quá.","와이파이 느려요.","와이파이 이에우↗ 꽈↗"]]],
+  ["hotel","Phòng có điều hòa không?","에어컨 있어요?","퐁↘ 꼬↗ 디에우↘ 화↘ 콤",[["c","Điều hòa hỏng rồi.","에어컨 고장났어요.","디에우↘ 화↘ 홍↘↗ 조이↘"],["q","Có nước nóng không?","온수 나와요?","꼬↗ 느억↗ 농↗ 콤"]]],
+  ["hotel","Mấy giờ trả phòng?","체크아웃 몇 시예요?","머이↗ 저↘ 짜↘ 퐁↘",[["q","Trả phòng muộn được không?","늦게 체크아웃 돼요?","짜↘ 퐁↘ 무온↓ 드억↓ 콤"],["c","Tôi trả phòng.","체크아웃이요.","또이 짜↘ 퐁↘"]]],
+  ["hotel","Dọn phòng giúp tôi.","방 청소해주세요","존↓ 퐁↘ 줍↗ 또이",[["c","Cho thêm khăn.","수건 더 주세요.","쩌 템 칸"],["c","Thiếu khăn tắm.","샤워타월 없어요.","티에우↗ 칸 땀↗"]]],
+  ["hotel","Gọi taxi giúp tôi.","택시 불러주세요","고이↓ 딱씨 줍↗ 또이",[["q","Gần đây có gì?","근처에 뭐 있어요?","건↘ 더이 꼬↗ 지↘"],["c","Cảm ơn nhiều.","감사합니다.","깜↘↗ 언 니에우↘"]]]
+ ]},
+ {id:"pharm", name:"약국", icon:"💊", words:[
+  ["pharm","Tôi bị đau đầu.","머리가 아파요","또이 비↓ 다우 더우↘",[["q","Có thuốc đau đầu không?","두통약 있어요?","꼬↗ 투옥↗ 다우 더우↘ 콤"],["a","Có đây.","여기요.","꼬↗ 더이"]]],
+  ["pharm","Tôi bị đau bụng.","배가 아파요","또이 비↓ 다우 붕↓",[["q","Có thuốc đau bụng?","배탈약 있어요?","꼬↗ 투옥↗ 다우 붕↓"],["c","Đau từ sáng.","아침부터 아파요.","다우 뜨↘ 상↗"]]],
+  ["pharm","Tôi bị cảm.","감기 걸렸어요","또이 비↓ 깜↘↗",[["q","Có thuốc cảm không?","감기약 있어요?","꼬↗ 투옥↗ 깜↘↗ 콤"],["c","Bị ho nữa.","기침도 나요.","비↓ 호 느어˜"]]],
+  ["pharm","Tôi bị sốt.","열이 나요","또이 비↓ 솓↗",[["q","Có thuốc hạ sốt?","해열제 있어요?","꼬↗ 투옥↗ 하↓ 솓↗"],["c","Sốt cao.","열이 높아요.","솓↗ 까오"]]],
+  ["pharm","Uống mấy viên?","몇 알 먹어요?","우옹↗ 머이↗ 비엔",[["a","Hai viên.","두 알이요.","하이 비엔"],["q","Khi nào uống?","언제 먹어요?","키 나오↘ 우옹↗"]]],
+  ["pharm","Ngày uống mấy lần?","하루에 몇 번 먹어요?","응아이↘ 우옹↗ 머이↗ 런↘",[["a","Ngày ba lần.","하루 세 번이요.","응아이↘ 바 런↘"],["c","Sau khi ăn.","식후에요.","사우 키 안"]]],
+  ["pharm","Tôi dị ứng thuốc.","약 알레르기가 있어요","또이 지↓ 응↗ 투옥↗",[["q","Có dị ứng không?","알레르기 있어요?","꼬↗ 지↓ 응↗ 콤"],["a","Không có.","없어요.","콤 꼬↗"]]],
+  ["pharm","Bao nhiêu tiền?","얼마예요?","바오 니에우 띠엔↘",[["c","Cảm ơn.","감사합니다.","깜↘↗ 언"],["q","Có cần toa không?","처방전 필요해요?","꼬↗ 껀↘ 똬 콤"]]]
+ ]},
+ {id:"grab", name:"그랩", icon:"🛵", words:[
+  ["grab","Đi đến đây.","여기로 가주세요","디 덴↗ 더이",[["c","Địa chỉ đây.","주소 여기요.","디어↓ 찌↘↗ 더이"],["q","Biết đường không?","길 아세요?","비엗↗ 드엉↘ 콤"]]],
+  ["grab","Bao nhiêu tiền?","얼마예요?","바오 니에우 띠엔↘",[["q","Bao xa?","얼마나 멀어요?","바오 싸"],["q","Mất bao lâu?","얼마나 걸려요?","먿↗ 바오 러우"]]],
+  ["grab","Đi thẳng.","직진이요","디 탕↘↗",[["c","Thẳng nữa.","계속 직진이요.","탕↘↗ 느어˜"],["c","Qua ngã tư.","사거리 지나서요.","꽈 응아˜ 뜨"]]],
+  ["grab","Rẽ phải.","우회전이요","제˜ 파이↘↗",[["c","Rẽ phải phía trước.","앞에서 우회전이요.","제˜ 파이↘↗ 피어↗ 쯔억↗"],["c","Rẽ trái.","좌회전이요.","제˜ 짜이↗"]]],
+  ["grab","Dừng ở đây.","여기서 세워주세요","증↘ 어↘↗ 더이",[["c","Dừng phía trước.","앞에서 세워요.","증↘ 피어↗ 쯔억↗"],["c","Đến nơi rồi.","다 왔어요.","덴↗ 너이 조이↘"]]],
+  ["grab","Nhanh một chút.","좀 빨리요","냐잉 몯↓ 쭏↗",[["c","Từ từ thôi.","천천히요.","뜨↘ 뜨↘ 토이"],["c","Cẩn thận nhé.","조심해서요.","껀↘↗ 턴↓ 냬↗"]]],
+  ["grab","Mở cốp giúp tôi.","트렁크 열어주세요","머↘↗ 꼽↗ 줍↗ 또이",[["q","Có áo mưa không?","우비 있어요?","꼬↗ 아오↗ 므어 콤"],["c","Hai người.","두 명이요.","하이 응어이↘"]]],
+  ["grab","Cảm ơn tài xế.","기사님 감사해요","깜↘↗ 언 따이↘ 세↗",[["c","Đợi một chút.","잠깐만요.","더이↓ 몯↓ 쭏↗"],["c","Đến nơi chưa?","다 왔어요?","덴↗ 너이 쯔어"]]]
+ ]},
+ {id:"basic", name:"기본 표현", icon:"💬", words:[
+  ["basic","Xin chào.","안녕하세요","씬 짜오↘",[["c","Chào buổi sáng.","좋은 아침이에요.","짜오↘ 부오이↘↗ 상↗"],["c","Tạm biệt.","안녕히 가세요.","땀↓ 비엗↓"]]],
+  ["basic","Cảm ơn.","감사합니다","깜↘↗ 언",[["c","Cảm ơn nhiều.","정말 감사해요.","깜↘↗ 언 니에우↘"],["a","Không có gì.","천만에요.","콤 꼬↗ 지↘"]]],
+  ["basic","Xin lỗi.","죄송합니다","씬 로이˜",[["c","Xin lỗi nhé.","미안해요.","씬 로이˜ 냬↗"],["a","Không sao.","괜찮아요.","콤 사오"]]],
+  ["basic","Giúp tôi với.","도와주세요","줍↗ 또이 버이↗",[["q","Giúp được không?","도와줄 수 있어요?","줍↗ 드억↓ 콤"],["a","Được chứ.","그럼요.","드억↓ 쯔↗"]]],
+  ["basic","Tôi không hiểu.","모르겠어요","또이 콤 히에우↘↗",[["c","Nói chậm thôi.","천천히 말해주세요.","노이↗ 쩜↓ 토이"],["c","Nói lại được không?","다시 말해줄래요?","노이↗ 라이↓ 드억↓ 콤"]]],
+  ["basic","Cái này là gì?","이게 뭐예요?","까이↗ 나이↘ 라↘ 지↘",[["q","Tên gì?","이름이 뭐예요?","뗀 지↘"],["c","Nói sao?","뭐라고요?","노이↗ 사오"]]],
+  ["basic","Nhà vệ sinh ở đâu?","화장실 어디예요?","냐↘ 베↓ 신 어↘↗ 더우",[["q","Ở đâu?","어디예요?","어↘↗ 더우"],["a","Đằng kia.","저쪽이요.","당↘ 끼어"]]],
+  ["basic","Đắt quá!","너무 비싸요!","닫↗ 꽈↗",[["c","Giảm giá đi.","깎아주세요.","잠↘↗ 자↗ 디"],["q","Bao nhiêu tiền?","얼마예요?","바오 니에우 띠엔↘"]]],
+  ["basic","Tôi tên là...","제 이름은 ...예요","또이 뗀 라↘",[["q","Anh tên gì?","이름이 뭐예요?","아잉 뗀 지↘"],["c","Rất vui được gặp.","반가워요.","젇↗ 부이 드억↓ 갑↓"]]],
+  ["basic","Tôi là người Hàn.","저는 한국 사람이에요","또이 라↘ 응어이↘ 한↘",[["q","Người nước nào?","어느 나라 사람이에요?","응어이↘ 느억↗ 나오↘"],["c","Tôi sống ở Đà Nẵng.","다낭에 살아요.","또이 송↗ 어↘↗ 다↘ 낭˜"]]]
  ]}
 ];
 function themeById(id){ for(var i=0;i<THEMES.length;i++) if(THEMES[i].id===id) return THEMES[i]; return null; }
@@ -428,7 +493,7 @@ function arrows(s){ return s.replace(/([↗↘↓˜]+)/g,'<span class="up">$1</s
 function esc(s){ return (s+"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
 /* ============ 화면 전환 ============ */
-var VIEWS=["home","lesson","review","exam","cheat","basics","hands"];
+var VIEWS=["home","lesson","review","exam","cheat","basics","hands","phrases"];
 function show(v){
   VIEWS.forEach(function(x){ var el=document.getElementById("v-"+x); if(el) el.classList.toggle("hide",x!==v); });
   document.querySelectorAll("#nav button").forEach(function(b){ b.classList.toggle("on",b.dataset.nav===v); });
@@ -436,6 +501,7 @@ function show(v){
   if(v==="home")renderHome(); else if(v==="lesson")renderLesson(); else if(v==="review")renderReview();
   else if(v==="exam")renderExam(); else if(v==="cheat")renderCheat(); else if(v==="basics")renderBasics();
   else if(v==="hands")renderHands();
+  else if(v==="phrases")renderPhrases();
   if(v!=="hands") handsStop(true);
 }
 document.getElementById("nav").addEventListener("click",function(e){ var b=e.target.closest("button"); if(b) show(b.dataset.nav); });
@@ -479,6 +545,7 @@ function renderHome(){
   h+='<div class="quick">'
     +'<button onclick="__go(\'review\')"><span class="i">🔁</span>복습하기'+(due?(' · '+due+'개'):' · 없음')+'</button>'
     +'<button onclick="__hands()"><span class="i">🎧</span>핸즈프리 듣기</button>'
+    +'<button onclick="__phrases()"><span class="i">📖</span>상용 표현집</button>'
     +'<button onclick="__go(\'cheat\')"><span class="i">⚡</span>실전 치트시트</button>'
     +'<button onclick="__go(\'basics\')"><span class="i">🔊</span>발음 기초</button></div>';
   h+='<h2>학습 경로</h2><div class="path" id="pathWrap"></div>';
@@ -761,6 +828,52 @@ function renderBasics(){
   el.innerHTML=h;
 }
 window.__rate=function(r){ rate=r; };
+
+/* ============ 상용 표현집 (상황별 팩 브라우징) ============ */
+var phraseTheme=null;
+function renderPhrases(){
+  var el=document.getElementById("v-phrases");
+  if(!phraseTheme){
+    var h='<h1>📖 상용 <span class="vn">표현집</span></h1>'
+      +'<p class="sub">상황별로 바로 쓰는 표현 모음. 카드를 누르면 발음이 나와요. (수업·시험과 무관한 기본 참고용)</p>'
+      +'<div class="tgrid">';
+    THEMES.forEach(function(t){
+      h+='<button class="tcard" onclick="__openTheme(\''+t.id+'\')"><span class="ti">'+t.icon+'</span>'
+        +'<span class="tn">'+t.name+'</span><span class="tc">'+t.words.length+'개</span></button>';
+    });
+    h+='</div>';
+    el.innerHTML=h; return;
+  }
+  var th=themeById(phraseTheme);
+  if(!th){ phraseTheme=null; renderPhrases(); return; }
+  var h='<button class="ghost" style="width:auto;margin:0 0 12px;padding:8px 16px" onclick="__closeTheme()">← 표현집</button>'
+    +'<h1>'+th.icon+' <span class="vn">'+th.name+'</span></h1>'
+    +'<p class="sub">'+th.words.length+'개 표현 · 카드를 누르면 발음 · 💬로 예문 더보기</p>';
+  th.words.forEach(function(w,i){ h+=phraseCard(w, th.id+"_"+i); });
+  h+='<button class="ghost" onclick="__phrasesHands(\''+th.id+'\')">🎧 이 팩 핸즈프리로 듣기</button>';
+  el.innerHTML=h;
+}
+function phraseCard(w,id){
+  var h='<div class="wcard"><div class="main" onclick="__say(\''+jsq(w[1])+'\',null)"><div class="spk">🔊</div>'
+    +'<div class="body"><span class="tag '+w[0]+'">'+(TAGS[w[0]]||"")+'</span>'
+    +'<div class="vnw">'+esc(w[1])+'</div><div class="say">'+arrows(esc(w[3]))+'</div>'
+    +'<div class="mean">'+esc(w[2])+'</div></div></div>'
+    +'<div class="wc-actions"><button onclick="__togTex(\''+id+'\')">💬 예문</button>'
+    +'<a class="g" href="'+gLink(w[1])+'" target="_blank" rel="noopener">🌐 구글</a></div>'
+    +'<div class="examples" id="tex'+id+'">';
+  w[4].forEach(function(e){
+    h+='<div class="ex" onclick="__say(\''+jsq(e[1])+'\')"><div class="exicon">🔊</div><div>'
+      +'<div class="et">'+(EXT[e[0]]||"")+'</div><div class="evn">'+esc(e[1])+'</div>'
+      +'<div class="esay">'+arrows(esc(e[3]))+'</div><div class="eko">'+esc(e[2])+'</div></div></div>';
+  });
+  h+='</div></div>';
+  return h;
+}
+window.__openTheme=function(id){ phraseTheme=id; renderPhrases(); window.scrollTo(0,0); };
+window.__closeTheme=function(){ phraseTheme=null; renderPhrases(); window.scrollTo(0,0); };
+window.__togTex=function(id){ var e=document.getElementById("tex"+id); if(e) e.classList.toggle("open"); };
+window.__phrases=function(){ phraseTheme=null; show("phrases"); };
+window.__phrasesHands=function(id){ var c=HC(); c.set="theme:"+id; c.engine="audio"; save(); show("hands"); };
 
 /* ============ 핸즈프리 오디오 코스 ============ */
 var HP={q:[],i:0,on:false,timer:null,ids:[],loops:0,spokeAt:0,spokeIdx:-1};
