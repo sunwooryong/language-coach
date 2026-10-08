@@ -102,6 +102,17 @@
   .note{background:var(--gold);color:#3a2a06;border-radius:14px;padding:15px 16px;font-size:13.5px;line-height:1.7;margin-top:22px}
   .note b{font-weight:800}
   .footer{text-align:center;color:var(--sub);font-size:12px;margin-top:24px;line-height:1.7}
+  .modebar{display:flex;gap:8px;margin:12px 0 0}
+  .modebar button{flex:1;font:inherit;font-weight:700;font-size:14px;padding:9px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);cursor:pointer}
+  .modebar button.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .bgrp{margin:18px 0 8px;font-weight:800;font-size:15px}
+  .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .bw{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 11px;cursor:pointer;box-shadow:0 1px 2px var(--sh)}
+  .bw:active{background:var(--vn-s)}
+  .bw .v{font-size:16px;font-weight:700;line-height:1.2}
+  .bw .s{font-family:ui-monospace,monospace;font-size:11px;color:var(--jade);font-weight:600}
+  .bw .k{font-size:12.5px;color:var(--sub)}
+  .bw .up{color:var(--vn);font-weight:800}
 </style>
 </head>
 <body class="vn">
@@ -116,6 +127,14 @@
     <div class="lessons" id="lessonTabs"></div>
   </div>
 
+  <div class="modebar">
+    <button id="mLesson" class="on" onclick="showView('lesson')">📖 레슨</button>
+    <button id="mBest" onclick="showView('best')">📚 베스트 100</button>
+  </div>
+
+  <div id="best100View" style="display:none"></div>
+
+  <div id="lessonView">
   <h1>레슨 · <span class="hl" id="patTitle"></span></h1>
   <p class="lead" id="patLead"></p>
   <div class="speed"><span>속도</span>
@@ -191,8 +210,13 @@
     <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe width="100%" height="210" src="https://www.youtube.com/embed/k7YJHCR9JBE" title="Ước Gì" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
     <div style="font-weight:700;margin:14px 0 6px;font-size:16px">🎤 50 Năm Về Sau</div>
     <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe width="100%" height="210" src="https://www.youtube.com/embed/UPeh8jGkMjE" title="50 Năm Về Sau" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
+    <div style="font-weight:700;margin:18px 0 6px;font-size:16px;color:var(--en)">🎸 English Pop (영어 팝송)</div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe width="100%" height="210" src="https://www.youtube.com/embed/960wzRtcl-Y" title="English Pop 1" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-top:12px"><iframe width="100%" height="210" src="https://www.youtube.com/embed/4jfR7FenovI" title="English Pop 2" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-top:12px"><iframe width="100%" height="210" src="https://www.youtube.com/embed/RhmBn0PbkoI" title="English Pop 3" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
     <div class="note" style="margin-top:12px">🎶 완성본에선 각 노래의 <b>후렴·핵심 표현</b>을 뜻·발음·성조 카드로 만들어, 외워서 노래방에서 부를 수 있게 해드릴게요. (전체 가사는 위 영상 자막으로 보며 연습)</div>
   </div>
+  </div><!--/lessonView-->
 
   <div class="footer">
     위 탭에서 <b>식당 · 사격 · 연애 · 상담</b> 4개 레슨을 둘러보세요. 🇻🇳↔🇬🇧 토글로 영어도 같은 방식이에요.<br>
@@ -427,9 +451,43 @@ window.buildPick=buildPick;
 window.sayDia=function(i){var l=D().dia[i];speak(l.t,document.querySelectorAll(".line")[i]);};
 window.playDialogue=function(){var ds=D().dia,i=0;(function nx(){if(i>=ds.length)return;speak(ds[i].t,document.querySelectorAll(".line")[i]);var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,450);}},200);})();};
 
+/* ===== 베스트 100 필수단어 (색깔·방향·명령어 포함) ===== */
+var BEST100=[
+ {g:"🎨 색깔",w:[["đỏ","더↘↗","빨강"],["cam","깜→","주황"],["vàng","방↘","노랑"],["xanh lá","싸잉→ 라↗","초록"],["xanh dương","싸잉→ 즈엉→","파랑"],["tím","띰↗","보라"],["đen","댄→","검정"],["trắng","짱↗","하양"]]},
+ {g:"🧭 방향·위치",w:[["trái","짜이↗","왼쪽"],["phải","파이↘↗","오른쪽"],["trên","쩬→","위"],["dưới","즈어이↗","아래"],["trong","쫑→","안"],["ngoài","응와이↘","밖"],["trước","쯔억↗","앞"],["sau","사우→","뒤"],["giữa","즈어~↗","가운데"],["bên cạnh","벤→ 까잉↧","옆"]]},
+ {g:"🗣 명령어 (지도·일상)",w:[["giữ","즈↘↗","유지해"],["thả lỏng","타↘↗ 롱↘↗","힘 빼"],["tập trung","떱↧ 쭝→","집중해"],["bóp cò","봅↗ 꼬↘","격발해"],["hít thở","힛↗ 터↘↗","숨 쉬어"],["bình tĩnh","빈↘ 띤↧","침착해"],["đi","디→","가"],["đến","덴↗","와"],["dừng","증↘","멈춰"],["nhìn","닌↘","봐"],["nghe","응에→","들어"],["nói","노이↗","말해"],["chờ","쩌↘","기다려"],["cố lên","꼬↗ 렌→","힘내"]]},
+ {g:"🏃 동사",w:[["ăn","안→","먹다"],["uống","우옹↗","마시다"],["ngủ","응우↘↗","자다"],["nghỉ","응이↘↗","쉬다"],["làm","람↘","하다"],["học","혹↧","배우다"],["xem","쌤→","보다"],["biết","비엣↗","알다"],["hiểu","히에우↘↗","이해하다"],["nhớ","녀↗","기억·그립다"],["quên","꾸엔→","잊다"],["mua","무아→","사다"],["bán","반↗","팔다"],["cho","쪼→","주다"],["gặp","갑↧","만나다"],["giúp","줍↗","돕다"],["yêu","이에우→","사랑하다"],["thích","틱↗","좋아하다"]]},
+ {g:"🌈 형용사·상태",w:[["ngon","응온→","맛있다"],["cay","까이→","맵다"],["mặn","만↧","짜다"],["ngọt","응옷↧","달다"],["nóng","농↗","덥다"],["lạnh","란↧","춥다"],["to","또→","크다"],["nhỏ","뇨↘↗","작다"],["nhanh","냐잉→","빠르다"],["chậm","쩜↧","느리다"],["tốt","똣↗","좋다"],["mệt","멧↧","피곤하다"],["vui","부이→","기쁘다"],["buồn","부온↘","슬프다"],["đẹp","뎁↧","예쁘다"],["đắt","닫↗","비싸다"]]},
+ {g:"🔢 숫자",w:[["một","몯↧","1"],["hai","하이→","2"],["ba","바→","3"],["bốn","본↗","4"],["năm","남→","5"],["sáu","사우↗","6"],["bảy","바이↘↗","7"],["tám","땀↗","8"],["chín","찐↗","9"],["mười","므어이↘","10"]]},
+ {g:"👤 호칭·사람",w:[["tôi","또이→","저"],["anh","아잉→","나·형(남)"],["chị","찌↧","누나·언니(여)"],["em","앰→","동생·연인"],["thầy","터이↘","선생·코치"],["bạn","반↧","친구"],["người","응어이↘","사람"]]},
+ {g:"⏰ 시간",w:[["hôm nay","홈→ 나이→","오늘"],["ngày mai","응아이↘ 마이→","내일"],["bây giờ","버이→ 저↘","지금"],["giờ","저↘","시"],["phút","풋↗","분"],["sáng","상↗","아침"],["tối","또이↗","저녁"]]},
+ {g:"🍜 생존 명사",w:[["nước","느억↗","물"],["cơm","껌→","밥"],["cà phê","까→ 페→","커피"],["tiền","띠엔↘","돈"],["nhà","냐↘","집"],["xe","쎄→","차"],["đường","드엉↘","길"],["thuốc","투옥↗","약"],["cái này","까이↗ 나이↘","이거"],["bao nhiêu","바오→ 니에우→","얼마"]]}
+];
+function renderBest100(){
+  var n=0;BEST100.forEach(function(G){n+=G.w.length;});
+  var h='<h1>📚 베스트 <span class="hl">100</span> 단어</h1><p class="lead">무조건 외워야 할 필수 '+n+'개. 탭하면 발음. (색깔·방향·명령어 포함)</p>';
+  BEST100.forEach(function(G){
+    h+='<div class="bgrp">'+G.g+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+G.w.length+'</span></div><div class="bgrid">';
+    G.w.forEach(function(w){ h+='<button class="bw" onclick="sayW(\''+jsq(w[0])+'\')"><div class="v">'+w[0]+'</div><div class="s">'+arrows(w[1])+'</div><div class="k">'+w[2]+'</div></button>'; });
+    h+='</div>';
+  });
+  h+='<div class="note" style="margin-top:22px">✅ <b>시험 (완성본)</b> — 100단어를 외운 뒤 <b>듣기·뜻·작문 시험</b>으로 <b>100점</b>이면 숙지 완료. 틀린 것만 다시 복습해서 완벽하게.</div>';
+  document.getElementById("best100View").innerHTML=h;
+}
+function sayW(t){speak(t,null,"vi-VN");}
+window.sayW=sayW;
+window.showView=function(v){
+  var best=v==="best";
+  document.getElementById("best100View").style.display=best?"block":"none";
+  document.getElementById("lessonView").style.display=best?"none":"block";
+  document.getElementById("mBest").classList.toggle("on",best);
+  document.getElementById("mLesson").classList.toggle("on",!best);
+  window.scrollTo(0,0);
+};
+
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-renderTabs();render();
+renderTabs();render();renderBest100();
 </script>
 </body>
 </html>
