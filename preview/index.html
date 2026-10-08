@@ -248,6 +248,86 @@ var LESSONS=[
   drill:[{k:"피곤해?",t:"Are you tired?",s:"아 유 타이어드?"},{k:"괜찮아?",t:"Are you okay?",s:"아 유 오케이?"},{k:"다쳤어?",t:"Are you hurt?",s:"아 유 허트?"},{k:"슬퍼?",t:"Are you sad?",s:"아 유 쌔드?"},{k:"걱정 마.",t:"Don't worry.",s:"돈 워리."}],
   build:{pre:"Are you ",suf:"?",sayPre:"아 유 ",koSuf:"?",chips:[{w:"tired",say:"타이어드",ko:"피곤"},{w:"okay",say:"오케이",ko:"괜찮"},{w:"hurt",say:"허트",ko:"다쳤"},{w:"sad",say:"쌔드",ko:"슬퍼"},{w:"nervous",say:"너버스",ko:"긴장"},{w:"ready",say:"레디",ko:"준비됐"}]},
   dia:[{who:"코치",me:1,t:"Are you okay?",s:"아 유 오케이?",k:"괜찮아?"},{who:"선수",me:0,t:"I'm a bit tired.",s:"아임 어 빗 타이어드.",k:"좀 피곤해요."},{who:"코치",me:1,t:"Don't worry, take a rest.",s:"돈 워리, 테이크 어 레스트.",k:"걱정 마, 좀 쉬어."},{who:"선수",me:0,t:"Yes, thank you coach.",s:"예스, 땡큐 코치.",k:"네, 감사합니다 코치님."}]}
+},
+{id:"grab",tab:"🛵 그랩",
+ vn:{lang:"vi-VN",title:"~로 가주세요",lead:"택시·그랩에서 목적지·길 안내.",
+  explain:"목적지는 <b>Cho tôi đến + [장소]</b> = '~로 가주세요'(đến=도착). 길 안내는 Đi thẳng(직진)·Rẽ phải(우회전)·Dừng ở đây(세워요).",
+  formula:{pre:"Cho tôi đến",slot:"장소",mean:"~로 가주세요"},
+  items:[{t:"Cho tôi đến đây.",s:"쪼→ 또이→ 덴↗ 더이→",k:"여기로 가주세요."},{t:"Đi thẳng.",s:"디→ 탕↘↗",k:"직진이요."},{t:"Rẽ phải.",s:"제↘↗ 파이↘↗",k:"우회전이요."},{t:"Dừng ở đây.",s:"증↘ 어↘↗ 더이→",k:"여기서 세워요."},{t:"Bao nhiêu tiền?",s:"바오→ 니에우→ 띠엔↘?",k:"얼마예요?"}],
+  drill:[{k:"여기로 가주세요.",t:"Cho tôi đến đây.",s:"쪼→ 또이→ 덴↗ 더이→"},{k:"직진이요.",t:"Đi thẳng.",s:"디→ 탕↘↗"},{k:"우회전이요.",t:"Rẽ phải.",s:"제↘↗ 파이↘↗"},{k:"여기서 세워요.",t:"Dừng ở đây.",s:"증↘ 어↘↗ 더이→"},{k:"얼마예요?",t:"Bao nhiêu tiền?",s:"바오→ 니에우→ 띠엔↘?"}],
+  build:{pre:"Cho tôi đến ",suf:".",sayPre:"쪼→ 또이→ 덴↗ ",koSuf:" (로)",chips:[{w:"đây",say:"더이→",ko:"여기"},{w:"sân bay",say:"썬→ 바이→",ko:"공항"},{w:"khách sạn",say:"카익↗ 싼↧",ko:"호텔"},{w:"chợ",say:"쩌↧",ko:"시장"},{w:"bệnh viện",say:"벤↧ 비엔↧",ko:"병원"},{w:"trường bắn",say:"쯔엉↘ 반↗",ko:"사격장"}]},
+  dia:[{who:"나",me:1,t:"Cho tôi đến sân bay.",s:"쪼→ 또이→ 덴↗ 썬→ 바이→",k:"공항으로 가주세요."},{who:"기사",me:0,t:"Mười lăm phút nhé.",s:"므어이↘ 람→ 풋↗ 냬↗",k:"15분 걸려요."},{who:"나",me:1,t:"Nhanh một chút ạ.",s:"냐잉→ 몯↧ 쭛↗ 아↧",k:"좀 빨리요."},{who:"기사",me:0,t:"Đến nơi rồi.",s:"덴↗ 너이→ 조이↘",k:"다 왔어요."}]},
+ en:{lang:"en-US",title:"Take me to ~",lead:"택시에서 목적지·길 안내.",
+  explain:"목적지는 <b>Take me to + [장소]</b> = '~로 가주세요'. 길 안내: Go straight(직진)·Turn right(우회전)·Stop here(세워요).",
+  formula:{pre:"Take me to",slot:"place",mean:"~로 가주세요"},
+  items:[{t:"Take me here.",s:"테이크 미 히어.",k:"여기로 가주세요."},{t:"Go straight.",s:"고 스트레이트.",k:"직진이요."},{t:"Turn right.",s:"턴 라이트.",k:"우회전이요."},{t:"Stop here.",s:"스탑 히어.",k:"여기서 세워요."},{t:"How much?",s:"하우 머치?",k:"얼마예요?"}],
+  drill:[{k:"여기로 가주세요.",t:"Take me here.",s:"테이크 미 히어."},{k:"직진이요.",t:"Go straight.",s:"고 스트레이트."},{k:"우회전이요.",t:"Turn right.",s:"턴 라이트."},{k:"여기서 세워요.",t:"Stop here.",s:"스탑 히어."},{k:"얼마예요?",t:"How much?",s:"하우 머치?"}],
+  build:{pre:"Take me to ",suf:".",sayPre:"테이크 미 투 ",koSuf:" (로)",chips:[{w:"here",say:"히어",ko:"여기"},{w:"the airport",say:"디 에어포트",ko:"공항"},{w:"the hotel",say:"더 호텔",ko:"호텔"},{w:"the market",say:"더 마켓",ko:"시장"},{w:"the hospital",say:"더 하스피털",ko:"병원"},{w:"the range",say:"더 레인지",ko:"사격장"}]},
+  dia:[{who:"나",me:1,t:"Take me to the airport.",s:"테이크 미 투 디 에어포트.",k:"공항으로 가주세요."},{who:"기사",me:0,t:"About 15 minutes.",s:"어바웃 피프틴 미닛츠.",k:"15분 걸려요."},{who:"나",me:1,t:"A bit faster please.",s:"어 빗 패스터 플리즈.",k:"좀 빨리요."},{who:"기사",me:0,t:"We're here.",s:"위어 히어.",k:"다 왔어요."}]}
+},
+{id:"hotel",tab:"🏨 호텔",
+ vn:{lang:"vi-VN",title:"~ 있어요?",lead:"호텔에서 유무·시설 묻기.",
+  explain:"뭔가 있는지 물을 땐 <b>Có + [명사] + không?</b> = '~ 있어요?'. 유무를 묻는 만능 패턴이에요. 호텔·가게·식당 다 통해요.",
+  formula:{pre:"Có",slot:"명사",post:"không?",mean:"~ 있어요?"},
+  items:[{t:"Có phòng không?",s:"꼬↗ 퐁↘ 콩→?",k:"방 있어요?"},{t:"Có wifi không?",s:"꼬↗ 와이파이 콩→?",k:"와이파이 있어요?"},{t:"Có nước nóng không?",s:"꼬↗ 느억↗ 농↗ 콩→?",k:"온수 있어요?"},{t:"Có bữa sáng không?",s:"꼬↗ 브어↘ 상↗ 콩→?",k:"조식 있어요?"},{t:"Có xe đón không?",s:"꼬↗ 쎄→ 던↗ 콩→?",k:"픽업 있어요?"}],
+  drill:[{k:"방 있어요?",t:"Có phòng không?",s:"꼬↗ 퐁↘ 콩→?"},{k:"와이파이 있어요?",t:"Có wifi không?",s:"꼬↗ 와이파이 콩→?"},{k:"온수 있어요?",t:"Có nước nóng không?",s:"꼬↗ 느억↗ 농↗ 콩→?"},{k:"조식 있어요?",t:"Có bữa sáng không?",s:"꼬↗ 브어↘ 상↗ 콩→?"},{k:"픽업 있어요?",t:"Có xe đón không?",s:"꼬↗ 쎄→ 던↗ 콩→?"}],
+  build:{pre:"Có ",suf:" không?",sayPre:"꼬↗ ",saySuf:" 콩→",koSuf:" 있어요?",chips:[{w:"phòng",say:"퐁↘",ko:"방"},{w:"wifi",say:"와이파이",ko:"와이파이"},{w:"nước nóng",say:"느억↗ 농↗",ko:"온수"},{w:"bữa sáng",say:"브어↘ 상↗",ko:"조식"},{w:"xe đón",say:"쎄→ 던↗",ko:"픽업"},{w:"máy lạnh",say:"마이↗ 란↧",ko:"에어컨"}]},
+  dia:[{who:"나",me:1,t:"Có phòng trống không?",s:"꼬↗ 퐁↘ 쫑↗ 콩→?",k:"빈 방 있어요?"},{who:"직원",me:0,t:"Có ạ.",s:"꼬↗ 아↧",k:"네, 있어요."},{who:"나",me:1,t:"Một đêm bao nhiêu?",s:"몯↧ 뎀→ 바오→ 니에우→?",k:"1박에 얼마예요?"},{who:"직원",me:0,t:"Năm trăm nghìn.",s:"남→ 짬→ 응인↘",k:"50만 동이요."}]},
+ en:{lang:"en-US",title:"Do you have ~?",lead:"호텔에서 유무·시설 묻기.",
+  explain:"뭔가 있는지 물을 땐 <b>Do you have + [명사]?</b> = '~ 있어요?'. 호텔·가게·식당 어디서든 통하는 만능 패턴.",
+  formula:{pre:"Do you have",slot:"noun",post:"?",mean:"~ 있어요?"},
+  items:[{t:"Do you have a room?",s:"두 유 해브 어 룸?",k:"방 있어요?"},{t:"Do you have wifi?",s:"두 유 해브 와이파이?",k:"와이파이 있어요?"},{t:"Do you have hot water?",s:"두 유 해브 핫 워러?",k:"온수 있어요?"},{t:"Do you have breakfast?",s:"두 유 해브 브렉퍼스트?",k:"조식 있어요?"},{t:"Do you have a shuttle?",s:"두 유 해브 어 셔틀?",k:"픽업 있어요?"}],
+  drill:[{k:"방 있어요?",t:"Do you have a room?",s:"두 유 해브 어 룸?"},{k:"와이파이 있어요?",t:"Do you have wifi?",s:"두 유 해브 와이파이?"},{k:"온수 있어요?",t:"Do you have hot water?",s:"두 유 해브 핫 워러?"},{k:"조식 있어요?",t:"Do you have breakfast?",s:"두 유 해브 브렉퍼스트?"},{k:"픽업 있어요?",t:"Do you have a shuttle?",s:"두 유 해브 어 셔틀?"}],
+  build:{pre:"Do you have ",suf:"?",sayPre:"두 유 해브 ",koSuf:" 있어요?",chips:[{w:"a room",say:"어 룸",ko:"방"},{w:"wifi",say:"와이파이",ko:"와이파이"},{w:"hot water",say:"핫 워러",ko:"온수"},{w:"breakfast",say:"브렉퍼스트",ko:"조식"},{w:"a shuttle",say:"어 셔틀",ko:"픽업"},{w:"air con",say:"에어 컨",ko:"에어컨"}]},
+  dia:[{who:"나",me:1,t:"Do you have a room?",s:"두 유 해브 어 룸?",k:"방 있어요?"},{who:"직원",me:0,t:"Yes, we do.",s:"예스 위 두.",k:"네, 있어요."},{who:"나",me:1,t:"How much per night?",s:"하우 머치 퍼 나잇?",k:"1박에 얼마예요?"},{who:"직원",me:0,t:"Fifty dollars.",s:"피프티 달러스.",k:"50달러요."}]}
+},
+{id:"shop",tab:"🛒 쇼핑",
+ vn:{lang:"vi-VN",title:"~ 얼마예요?",lead:"가격 묻기·흥정.",
+  explain:"가격은 <b>[명사] + bao nhiêu?</b> = '~ 얼마예요?'. 명사를 앞에 두고 bao nhiêu를 붙여요. 비싸면 <b>Đắt quá!</b>(너무 비싸요), 깎을 땐 <b>Giảm giá đi</b>(깎아주세요).",
+  formula:{pre:"",slot:"명사",post:"bao nhiêu?",mean:"~ 얼마예요?"},
+  items:[{t:"Cái này bao nhiêu?",s:"까이↗ 나이↘ 바오→ 니에우→?",k:"이거 얼마예요?"},{t:"Áo này bao nhiêu?",s:"아오↗ 나이↘ 바오→ 니에우→?",k:"이 옷 얼마예요?"},{t:"Đắt quá!",s:"닫↗ 꽈↗",k:"너무 비싸요!"},{t:"Giảm giá đi.",s:"잠↘↗ 자↗ 디→",k:"깎아주세요."},{t:"Cho tôi cái này.",s:"쪼→ 또이→ 까이↗ 나이↘",k:"이거 주세요."}],
+  drill:[{k:"이거 얼마예요?",t:"Cái này bao nhiêu?",s:"까이↗ 나이↘ 바오→ 니에우→?"},{k:"너무 비싸요!",t:"Đắt quá!",s:"닫↗ 꽈↗"},{k:"깎아주세요.",t:"Giảm giá đi.",s:"잠↘↗ 자↗ 디→"},{k:"이거 주세요.",t:"Cho tôi cái này.",s:"쪼→ 또이→ 까이↗ 나이↘"},{k:"저거 얼마예요?",t:"Cái kia bao nhiêu?",s:"까이↗ 끼어→ 바오→ 니에우→?"}],
+  build:{pre:"",suf:" bao nhiêu?",sayPre:"",saySuf:" 바오→ 니에우→",koSuf:" 얼마예요?",chips:[{w:"Cái này",say:"까이↗ 나이↘",ko:"이거"},{w:"Áo này",say:"아오↗ 나이↘",ko:"이 옷"},{w:"Giày này",say:"자이↘ 나이↘",ko:"이 신발"},{w:"Túi này",say:"뚜이↗ 나이↘",ko:"이 가방"},{w:"Cái kia",say:"까이↗ 끼어→",ko:"저거"},{w:"Mũ này",say:"무~↗ 나이↘",ko:"이 모자"}]},
+  dia:[{who:"나",me:1,t:"Cái này bao nhiêu?",s:"까이↗ 나이↘ 바오→ 니에우→?",k:"이거 얼마예요?"},{who:"점원",me:0,t:"Một trăm nghìn.",s:"몯↧ 짬→ 응인↘",k:"10만 동이요."},{who:"나",me:1,t:"Đắt quá, giảm giá đi.",s:"닫↗ 꽈↗, 잠↘↗ 자↗ 디→",k:"너무 비싸요, 깎아주세요."},{who:"점원",me:0,t:"Tám mươi nghìn nhé.",s:"땀↗ 므어이→ 응인↘ 냬↗",k:"8만 동에요."}]},
+ en:{lang:"en-US",title:"How much is ~?",lead:"가격 묻기·흥정.",
+  explain:"가격은 <b>How much is + [명사]?</b> = '~ 얼마예요?'. 비싸면 <b>Too expensive!</b>, 깎을 땐 <b>Can you give a discount?</b>",
+  formula:{pre:"How much is",slot:"noun",post:"?",mean:"~ 얼마예요?"},
+  items:[{t:"How much is this?",s:"하우 머치 이즈 디스?",k:"이거 얼마예요?"},{t:"How much is this shirt?",s:"하우 머치 이즈 디스 셔트?",k:"이 옷 얼마예요?"},{t:"Too expensive!",s:"투 익스펜시브!",k:"너무 비싸요!"},{t:"Can you give a discount?",s:"캔 유 기브 어 디스카운트?",k:"깎아주세요."},{t:"I'll take this.",s:"아일 테이크 디스.",k:"이거 주세요."}],
+  drill:[{k:"이거 얼마예요?",t:"How much is this?",s:"하우 머치 이즈 디스?"},{k:"너무 비싸요!",t:"Too expensive!",s:"투 익스펜시브!"},{k:"깎아주세요.",t:"Can you give a discount?",s:"캔 유 기브 어 디스카운트?"},{k:"이거 주세요.",t:"I'll take this.",s:"아일 테이크 디스."},{k:"저거 얼마예요?",t:"How much is that?",s:"하우 머치 이즈 댓?"}],
+  build:{pre:"How much is ",suf:"?",sayPre:"하우 머치 이즈 ",koSuf:" 얼마예요?",chips:[{w:"this",say:"디스",ko:"이거"},{w:"this shirt",say:"디스 셔트",ko:"이 옷"},{w:"these shoes",say:"디즈 슈즈",ko:"이 신발"},{w:"this bag",say:"디스 백",ko:"이 가방"},{w:"that",say:"댓",ko:"저거"},{w:"this hat",say:"디스 햇",ko:"이 모자"}]},
+  dia:[{who:"나",me:1,t:"How much is this?",s:"하우 머치 이즈 디스?",k:"이거 얼마예요?"},{who:"점원",me:0,t:"A hundred thousand.",s:"어 헌드레드 따우전드.",k:"10만 동이요."},{who:"나",me:1,t:"Too expensive, discount please.",s:"투 익스펜시브, 디스카운트 플리즈.",k:"너무 비싸요, 깎아주세요."},{who:"점원",me:0,t:"Eighty then.",s:"에이티 덴.",k:"8만 동에요."}]}
+},
+{id:"pharm",tab:"💊 병원",
+ vn:{lang:"vi-VN",title:"저 ~ 아파요",lead:"약국·병원에서 증상 말하기.",
+  explain:"아픈 데는 <b>Tôi bị + [증상]</b> = '저 ~ 아파요'. (bị = ~을 겪다/당하다) 약국·병원에서 바로 써요.",
+  formula:{pre:"Tôi bị",slot:"증상",mean:"저 ~ 아파요"},
+  items:[{t:"Tôi bị đau đầu.",s:"또이→ 비↧ 다우→ 더우↘",k:"머리가 아파요."},{t:"Tôi bị đau bụng.",s:"또이→ 비↧ 다우→ 붕↧",k:"배가 아파요."},{t:"Tôi bị sốt.",s:"또이→ 비↧ 솓↗",k:"열이 나요."},{t:"Tôi bị cảm.",s:"또이→ 비↧ 깜↘↗",k:"감기 걸렸어요."},{t:"Tôi bị ho.",s:"또이→ 비↧ 호→",k:"기침이 나요."}],
+  drill:[{k:"머리가 아파요.",t:"Tôi bị đau đầu.",s:"또이→ 비↧ 다우→ 더우↘"},{k:"배가 아파요.",t:"Tôi bị đau bụng.",s:"또이→ 비↧ 다우→ 붕↧"},{k:"열이 나요.",t:"Tôi bị sốt.",s:"또이→ 비↧ 솓↗"},{k:"감기 걸렸어요.",t:"Tôi bị cảm.",s:"또이→ 비↧ 깜↘↗"},{k:"기침이 나요.",t:"Tôi bị ho.",s:"또이→ 비↧ 호→"}],
+  build:{pre:"Tôi bị ",suf:".",sayPre:"또이→ 비↧ ",koSuf:" 아파요",chips:[{w:"đau đầu",say:"다우→ 더우↘",ko:"두통"},{w:"đau bụng",say:"다우→ 붕↧",ko:"복통"},{w:"sốt",say:"솓↗",ko:"열"},{w:"cảm",say:"깜↘↗",ko:"감기"},{w:"ho",say:"호→",ko:"기침"},{w:"đau răng",say:"다우→ 장→",ko:"치통"}]},
+  dia:[{who:"나",me:1,t:"Tôi bị đau đầu.",s:"또이→ 비↧ 다우→ 더우↘",k:"머리가 아파요."},{who:"약사",me:0,t:"Có thuốc đây.",s:"꼬↗ 투옥↗ 더이→",k:"약 여기 있어요."},{who:"나",me:1,t:"Uống mấy viên?",s:"우옹↗ 머이↗ 비엔→?",k:"몇 알 먹어요?"},{who:"약사",me:0,t:"Hai viên, sau khi ăn.",s:"하이→ 비엔→, 사우→ 키→ 안→",k:"두 알, 식후에요."}]},
+ en:{lang:"en-US",title:"I have a ~",lead:"약국·병원에서 증상 말하기.",
+  explain:"증상은 <b>I have a + [증상]</b> = '저 ~ 아파요'. I have a headache = 머리가 아파요.",
+  formula:{pre:"I have a",slot:"symptom",mean:"저 ~ 아파요"},
+  items:[{t:"I have a headache.",s:"아이 해브 어 헤드에익.",k:"머리가 아파요."},{t:"I have a stomachache.",s:"아이 해브 어 스터먹에익.",k:"배가 아파요."},{t:"I have a fever.",s:"아이 해브 어 피버.",k:"열이 나요."},{t:"I have a cold.",s:"아이 해브 어 콜드.",k:"감기 걸렸어요."},{t:"I have a cough.",s:"아이 해브 어 코프.",k:"기침이 나요."}],
+  drill:[{k:"머리가 아파요.",t:"I have a headache.",s:"아이 해브 어 헤드에익."},{k:"배가 아파요.",t:"I have a stomachache.",s:"아이 해브 어 스터먹에익."},{k:"열이 나요.",t:"I have a fever.",s:"아이 해브 어 피버."},{k:"감기 걸렸어요.",t:"I have a cold.",s:"아이 해브 어 콜드."},{k:"기침이 나요.",t:"I have a cough.",s:"아이 해브 어 코프."}],
+  build:{pre:"I have a ",suf:".",sayPre:"아이 해브 어 ",koSuf:" 아파요",chips:[{w:"headache",say:"헤드에익",ko:"두통"},{w:"stomachache",say:"스터먹에익",ko:"복통"},{w:"fever",say:"피버",ko:"열"},{w:"cold",say:"콜드",ko:"감기"},{w:"cough",say:"코프",ko:"기침"},{w:"toothache",say:"투쓰에익",ko:"치통"}]},
+  dia:[{who:"나",me:1,t:"I have a headache.",s:"아이 해브 어 헤드에익.",k:"머리가 아파요."},{who:"약사",me:0,t:"Here's some medicine.",s:"히어즈 썸 메디슨.",k:"약 여기 있어요."},{who:"나",me:1,t:"How many pills?",s:"하우 메니 필즈?",k:"몇 알 먹어요?"},{who:"약사",me:0,t:"Two, after meals.",s:"투, 애프터 밀즈.",k:"두 알, 식후에요."}]}
+},
+{id:"dir",tab:"🧭 길찾기",
+ vn:{lang:"vi-VN",title:"~ 어디예요?",lead:"위치 묻기.",
+  explain:"위치는 <b>[명사] + ở đâu?</b> = '~ 어디예요?'. 명사 뒤에 ở đâu만 붙이면 돼요. 대답: Đằng kia(저쪽)·Gần đây(근처).",
+  formula:{pre:"",slot:"명사",post:"ở đâu?",mean:"~ 어디예요?"},
+  items:[{t:"Nhà vệ sinh ở đâu?",s:"냐↘ 베↧ 신→ 어↘↗ 더우→?",k:"화장실 어디예요?"},{t:"Taxi ở đâu?",s:"딱씨 어↘↗ 더우→?",k:"택시 어디예요?"},{t:"Chợ ở đâu?",s:"쩌↧ 어↘↗ 더우→?",k:"시장 어디예요?"},{t:"Khách sạn ở đâu?",s:"카익↗ 싼↧ 어↘↗ 더우→?",k:"호텔 어디예요?"},{t:"ATM ở đâu?",s:"에이티엠 어↘↗ 더우→?",k:"ATM 어디예요?"}],
+  drill:[{k:"화장실 어디예요?",t:"Nhà vệ sinh ở đâu?",s:"냐↘ 베↧ 신→ 어↘↗ 더우→?"},{k:"택시 어디예요?",t:"Taxi ở đâu?",s:"딱씨 어↘↗ 더우→?"},{k:"시장 어디예요?",t:"Chợ ở đâu?",s:"쩌↧ 어↘↗ 더우→?"},{k:"호텔 어디예요?",t:"Khách sạn ở đâu?",s:"카익↗ 싼↧ 어↘↗ 더우→?"},{k:"ATM 어디예요?",t:"ATM ở đâu?",s:"에이티엠 어↘↗ 더우→?"}],
+  build:{pre:"",suf:" ở đâu?",sayPre:"",saySuf:" 어↘↗ 더우→",koSuf:" 어디예요?",chips:[{w:"Nhà vệ sinh",say:"냐↘ 베↧ 신→",ko:"화장실"},{w:"Taxi",say:"딱씨",ko:"택시"},{w:"Chợ",say:"쩌↧",ko:"시장"},{w:"Khách sạn",say:"카익↗ 싼↧",ko:"호텔"},{w:"ATM",say:"에이티엠",ko:"ATM"},{w:"Bệnh viện",say:"벤↧ 비엔↧",ko:"병원"}]},
+  dia:[{who:"나",me:1,t:"Nhà vệ sinh ở đâu?",s:"냐↘ 베↧ 신→ 어↘↗ 더우→?",k:"화장실 어디예요?"},{who:"상대",me:0,t:"Đằng kia.",s:"당↘ 끼어→",k:"저쪽이요."},{who:"나",me:1,t:"Xa không?",s:"싸→ 콩→?",k:"멀어요?"},{who:"상대",me:0,t:"Gần thôi.",s:"건↘ 토이→",k:"가까워요."}]},
+ en:{lang:"en-US",title:"Where is ~?",lead:"위치 묻기.",
+  explain:"위치는 <b>Where is + [명사]?</b> = '~ 어디예요?'. 대답: Over there(저쪽)·Near here(근처).",
+  formula:{pre:"Where is",slot:"noun",post:"?",mean:"~ 어디예요?"},
+  items:[{t:"Where is the bathroom?",s:"웨어 이즈 더 배쓰룸?",k:"화장실 어디예요?"},{t:"Where is a taxi?",s:"웨어 이즈 어 택시?",k:"택시 어디예요?"},{t:"Where is the market?",s:"웨어 이즈 더 마켓?",k:"시장 어디예요?"},{t:"Where is the hotel?",s:"웨어 이즈 더 호텔?",k:"호텔 어디예요?"},{t:"Where is an ATM?",s:"웨어 이즈 언 에이티엠?",k:"ATM 어디예요?"}],
+  drill:[{k:"화장실 어디예요?",t:"Where is the bathroom?",s:"웨어 이즈 더 배쓰룸?"},{k:"택시 어디예요?",t:"Where is a taxi?",s:"웨어 이즈 어 택시?"},{k:"시장 어디예요?",t:"Where is the market?",s:"웨어 이즈 더 마켓?"},{k:"호텔 어디예요?",t:"Where is the hotel?",s:"웨어 이즈 더 호텔?"},{k:"ATM 어디예요?",t:"Where is an ATM?",s:"웨어 이즈 언 에이티엠?"}],
+  build:{pre:"Where is ",suf:"?",sayPre:"웨어 이즈 ",koSuf:" 어디예요?",chips:[{w:"the bathroom",say:"더 배쓰룸",ko:"화장실"},{w:"a taxi",say:"어 택시",ko:"택시"},{w:"the market",say:"더 마켓",ko:"시장"},{w:"the hotel",say:"더 호텔",ko:"호텔"},{w:"an ATM",say:"언 에이티엠",ko:"ATM"},{w:"the hospital",say:"더 하스피털",ko:"병원"}]},
+  dia:[{who:"나",me:1,t:"Where is the bathroom?",s:"웨어 이즈 더 배쓰룸?",k:"화장실 어디예요?"},{who:"상대",me:0,t:"Over there.",s:"오버 데어.",k:"저쪽이요."},{who:"나",me:1,t:"Is it far?",s:"이즈 잇 파?",k:"멀어요?"},{who:"상대",me:0,t:"It's close.",s:"잇츠 클로즈.",k:"가까워요."}]}
 }
 ];
 
@@ -272,7 +352,7 @@ function render(){
   document.getElementById("patTitle").textContent=d.title;
   document.getElementById("patLead").textContent=d.lead;
   document.getElementById("explain").innerHTML=d.explain;
-  document.getElementById("formula").innerHTML='<div class="big">'+d.formula.pre+' <span class="slot">'+d.formula.slot+'</span></div><div class="mean">= '+d.formula.mean+'</div>';
+  document.getElementById("formula").innerHTML='<div class="big">'+(d.formula.pre?d.formula.pre+' ':'')+'<span class="slot">'+d.formula.slot+'</span>'+(d.formula.post?' '+d.formula.post:'')+'</div><div class="mean">= '+d.formula.mean+'</div>';
   var lh="";d.items.forEach(function(it,i){lh+='<div class="card" id="li'+i+'" onclick="say('+i+')"><div class="spk">🔊</div><div><div class="tgt">'+it.t+'</div><div class="say">'+arrows(it.s)+'</div><div class="ko">'+it.k+'</div></div></div>';});
   document.getElementById("listen").innerHTML=lh;
   drillI=0;renderDrill();
@@ -292,7 +372,7 @@ window.drillNext=function(){drillI=(drillI+1)%D().drill.length;renderDrill();};
 function buildPick(i,btn){var d=D(),c=d.build.chips[i];document.querySelectorAll("#buildChips .chip").forEach(function(x){x.classList.remove("on");});var all=document.querySelectorAll("#buildChips .chip");if(btn)btn.classList.add("on");else if(all[i])all[i].classList.add("on");
   var sentence=d.build.pre+c.w+(d.build.suf||".");
   document.getElementById("buildOut").innerHTML='<span class="fx">'+d.build.pre+'</span><span class="w">'+c.w+'</span><span class="fx">'+(d.build.suf||"")+'</span>';
-  document.getElementById("buildSay").innerHTML=arrows(d.build.sayPre+c.say);
+  document.getElementById("buildSay").innerHTML=arrows(d.build.sayPre+c.say+(d.build.saySuf||""));
   document.getElementById("buildKo").textContent=c.ko+d.build.koSuf;
   speak(sentence);}
 window.buildPick=buildPick;
