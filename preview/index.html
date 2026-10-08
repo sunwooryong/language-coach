@@ -123,6 +123,7 @@
     <button class="on" onclick="setRate(0.85,this)">보통</button>
     <button onclick="setRate(1,this)">빠르게</button>
   </div>
+  <div id="audioHint" style="display:none;font-size:12px;color:var(--sub);background:var(--jade-s);border-radius:10px;padding:9px 12px;margin-top:8px;line-height:1.6">📱 <b>폰에서 소리가 안 나면</b>: 무음(벨) 해제 후 카드를 <b>한 번 더</b> 탭하세요. 폰에 <b>베트남어 음성</b>이 없으면 TTS가 안 될 수 있어요. 👉 <b>실제 완성본은 진짜 음성파일(MP3)</b>이라 지금 쓰는 앱처럼 모든 폰에서 완벽히 나옵니다 (미리보기만 폰 음성 사용).</div>
 
   <div class="step">
     <div class="step-h"><span class="step-n">1</span><span class="step-t">배우기</span></div>
@@ -334,12 +335,17 @@ var LESSONS=[
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
 function D(){return LESSONS[LESSON][LANG];}
 function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
+var __unlocked=false;
+function unlockTTS(){ if(__unlocked||!("speechSynthesis" in window))return; __unlocked=true; try{var u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);}catch(e){} }
+document.addEventListener("touchend",unlockTTS,{passive:true});
+document.addEventListener("click",unlockTTS);
 function speak(text,el,lc){
   if(!("speechSynthesis" in window))return;
-  speechSynthesis.cancel();
-  var u=new SpeechSynthesisUtterance(text);u.lang=lc||D().lang;u.rate=rate;var v=voice(u.lang);if(v)u.voice=v;
+  __unlocked=true;
+  try{speechSynthesis.cancel();}catch(e){}
+  var u=new SpeechSynthesisUtterance(text);u.lang=lc||D().lang;u.rate=rate;u.volume=1;var v=voice(u.lang);if(v)u.voice=v;
   if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");u.onend=u.onerror=function(){el.classList.remove("playing");};}
-  speechSynthesis.speak(u);
+  try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){}
 }
 window.setRate=function(r,b){rate=r;document.querySelectorAll(".speed button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");};
 function arrows(s){return s.replace(/([→↗↘~↧]+)/g,'<span class="up">$1</span>');}
@@ -380,6 +386,7 @@ window.sayDia=function(i){var l=D().dia[i];speak(l.t,document.querySelectorAll("
 window.playDialogue=function(){var ds=D().dia,i=0;(function nx(){if(i>=ds.length)return;speak(ds[i].t,document.querySelectorAll(".line")[i]);var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,450);}},200);})();};
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
+if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
 renderTabs();render();
 </script>
 </body>
