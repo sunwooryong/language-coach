@@ -102,8 +102,8 @@
   .note{background:var(--gold);color:#3a2a06;border-radius:14px;padding:15px 16px;font-size:13.5px;line-height:1.7;margin-top:22px}
   .note b{font-weight:800}
   .footer{text-align:center;color:var(--sub);font-size:12px;margin-top:24px;line-height:1.7}
-  .modebar{display:flex;gap:8px;margin:12px 0 0}
-  .modebar button{flex:1;font:inherit;font-weight:700;font-size:14px;padding:9px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);cursor:pointer}
+  .modebar{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 0}
+  .modebar button{flex:1 1 40%;font:inherit;font-weight:700;font-size:13.5px;padding:9px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);cursor:pointer}
   .modebar button.on{background:var(--jade);color:#fff;border-color:var(--jade)}
   .bgrp{margin:18px 0 8px;font-weight:800;font-size:15px}
   .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -120,6 +120,27 @@
   .arow .as{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--jade);font-weight:600;margin-top:1px}
   .arow .ak{font-size:13px;color:var(--sub);margin-top:1px}
   .arow .up{color:var(--vn);font-weight:800}
+  .combo{background:var(--jade-s);border-radius:12px;padding:11px 13px;margin:7px 0;cursor:pointer}
+  .combo .cv{font-size:15px;font-weight:700}
+  .combo .cv em{font-style:normal;color:var(--jade);border-bottom:2px solid var(--jade);padding:0 1px}
+  .combo .cs{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--jade);font-weight:600;margin-top:2px}
+  .combo .ck{font-size:13px;color:var(--sub);margin-top:1px}
+  .combo .up{color:var(--vn);font-weight:800}
+  .scen{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin:10px 0;box-shadow:0 1px 2px var(--sh)}
+  .scen .sit{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px}
+  .them{display:flex;gap:9px;align-items:flex-start;cursor:pointer;background:var(--vn-s);border-radius:11px;padding:9px 11px;margin-bottom:9px}
+  .them .face{font-size:17px}
+  .them .tv{font-size:14.5px;font-weight:700}
+  .them .ts{font-family:ui-monospace,monospace;font-size:11px;color:var(--jade);font-weight:600;margin-top:1px}
+  .them .tk{font-size:12.5px;color:var(--sub);margin-top:1px}
+  .arrowd{text-align:center;font-size:12px;color:var(--sub);margin:2px 0 7px}
+  .branch{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;background:var(--jade-s);border:1px solid var(--line);border-radius:11px;padding:9px 11px;margin:6px 0;cursor:pointer;font:inherit;color:var(--ink)}
+  .branch:active{background:var(--jade);color:#fff}
+  .branch .tag{font-size:11px;font-weight:800;color:var(--jade);flex-shrink:0;width:34px}
+  .branch .bv{font-size:14.5px;font-weight:700}
+  .branch .bs{font-family:ui-monospace,monospace;font-size:11px;color:var(--jade);font-weight:600;margin-top:1px}
+  .branch .bk{font-size:12.5px;color:var(--sub);margin-top:1px}
+  .branch .up{color:var(--vn);font-weight:800}
 </style>
 </head>
 <body class="vn">
@@ -138,10 +159,12 @@
     <button id="mLesson" class="on" onclick="showView('lesson')">📖 레슨</button>
     <button id="mBest" onclick="showView('best')">📚 베스트 100</button>
     <button id="mApply" onclick="showView('apply')">🧩 응용</button>
+    <button id="mMid" onclick="showView('mid')">🚀 중급</button>
   </div>
 
   <div id="best100View" style="display:none"></div>
   <div id="applyView" style="display:none"></div>
+  <div id="midView" style="display:none"></div>
 
   <div id="lessonView">
   <h1>레슨 · <span class="hl" id="patTitle"></span></h1>
@@ -545,20 +568,89 @@ function renderApply(){
   h+='<div class="note" style="margin-top:22px">🧩 완성본에선 각 표현을 <b>칩 교체 훈련</b>으로 만들어, 단어만 바꿔 수십 문장을 말하도록 확장합니다. (한 패턴, 백 문장)</div>';
   document.getElementById("applyView").innerHTML=h;
 }
+/* ===== 🚀 중급 — 대화 연결 ===== */
+var MID_CONN=[
+ ["rồi","조이↘","그다음·그리고"],["và","바↘","그리고"],["nhưng","니응→","하지만"],["vì","비↘","왜냐면"],["nên","넨→","그래서"],
+ ["nếu","네우↗","만약"],["thì","티↘","그러면"],["khi","키→","~할 때"],["mà","마↘","~인데·그런데"],["hoặc","호악↧","또는"],
+ ["trước khi","쯔억↗ 키→","~하기 전에"],["sau khi","사우→ 키→","~한 후에"],["càng...càng","깡↘ 깡↘","~할수록 ~하다"],["vừa...vừa","브아↘ 브아↘","~하면서 ~하다"]
+];
+var MID_COMBO=[
+ ["Hít vào <em>rồi</em> giữ.","힛↗ 바오↘ 조이↘ 즈↘↗","숨 쉬고 <b>나서</b> 멈춰."],
+ ["Bóp cò từ từ <em>nhưng</em> đừng vội.","봅↗ 꼬↘ 뜨↘ 뜨↘ 니응→ 등↘ 보이↧","천천히 격발해, <b>하지만</b> 서두르지 마."],
+ ["Tập trung <em>vì</em> đây là lần cuối.","떱↧ 쭝→ 비↘ 더이→ 라↘ 런↘ 꾸오이↗","집중해, <b>왜냐면</b> 이게 마지막이야."],
+ ["Em mệt <em>nên</em> nghỉ đi.","앰→ 멧↧ 넨→ 응이↘↗ 디→","너 피곤하니까 쉬어."],
+ ["<em>Nếu</em> sai <em>thì</em> làm lại.","네우↗ 사이→ 티↘ 람↘ 라이↧","틀리<b>면</b> 다시 해."],
+ ["Đi thẳng <em>rồi</em> rẽ trái.","디→ 탕↗ 조이↘ 제~↗ 짜이↗","직진하고 <b>나서</b> 좌회전."],
+ ["<em>Khi nào</em> xong <em>thì</em> gọi anh.","키→ 나오↘ 쏭→ 티↘ 고이↧ 아잉→","끝나<b>면</b> 나 불러."],
+ ["<em>Càng</em> tập <em>càng</em> giỏi.","깡↘ 떱↧ 깡↘ 조이↘↗","연습<b>할수록</b> 잘해져."]
+];
+var MID_SCEN=[
+ {sit:"🛵 그랩 — 기사가 물어볼 때",they:["Tới chưa anh?","떠이↗ 쯔어→ 아잉→","다 왔어요?"],opts:[
+   ["거의","Sắp tới rồi.","삽↗ 떠이↗ 조이↘","거의 다 왔어요."],
+   ["조금 더","Đi thêm chút nữa.","디→ 템→ 쭛↗ 느어~↗","조금 더 가요."],
+   ["여기","Dừng ở đây nhé.","증↘ 어↘↗ 더이→ 냬↗","여기 세워주세요."]]},
+ {sit:"🍜 식당 — 종업원이 물어볼 때",they:["Anh muốn uống gì?","아잉→ 무온↗ 우옹↗ 지↘","뭐 마실래요?"],opts:[
+   ["커피","Cho tôi cà phê.","쪼→ 또이→ 까→ 페→","커피 주세요."],
+   ["맥주","Một chai bia nhé.","몯↧ 짜이→ 비아→ 냬↗","맥주 한 병요."],
+   ["물만","Chỉ nước thôi.","찌↘↗ 느억↗ 토이→","물만요."]]},
+ {sit:"🎯 사격 코칭 — 선수가 빗나갔을 때",they:["Em bắn trượt rồi.","앰→ 반↗ 쯔읏↧ 조이↘","저 빗나갔어요."],opts:[
+   ["안심","Không sao, làm lại đi.","콩→ 사오→ 람↘ 라이↧ 디→","괜찮아, 다시 해."],
+   ["원인","Vì em vội quá.","비↘ 앰→ 보이↧ 꾸아↗","네가 너무 서둘러서 그래."],
+   ["격려","Bình tĩnh, em làm được.","빈↘ 띤↧ 앰→ 람↘ 드억↧","침착해, 넌 할 수 있어."]]},
+ {sit:"🛒 쇼핑 — 상인이 값을 부를 때",they:["Cái này hai trăm nghìn.","까이↗ 나이↘ 하이→ 짬→ 응인↘","이거 20만동이에요."],opts:[
+   ["비싸","Đắt quá.","닫↗ 꾸아↗","너무 비싸요."],
+   ["깎기","Giảm giá được không?","잠↘↗ 자↗ 드억↧ 콩→","깎아줄 수 있어요?"],
+   ["다른거","Cho tôi xem cái khác.","쪼→ 또이→ 쎔→ 까이↗ 칵↗","다른 거 보여주세요."]]},
+ {sit:"❤️ 연애 — 상대가 물어볼 때",they:["Anh đang làm gì đấy?","아잉→ 당→ 람↘ 지↘ 더이↗","뭐 하고 있어요?"],opts:[
+   ["생각","Anh đang nhớ em.","아잉→ 당→ 녀↗ 앰→","네 생각하고 있어."],
+   ["일","Anh đang làm việc.","아잉→ 당→ 람↘ 비엑↧","일하고 있어."],
+   ["초대","Đi cà phê không?","디→ 까→ 페→ 콩→","커피 마시러 갈래?"]]},
+ {sit:"💬 상담 — 상대가 힘들어할 때",they:["Hôm nay em mệt quá.","홈→ 나이→ 앰→ 멧↧ 꾸아↗","오늘 너무 피곤해요."],opts:[
+   ["공감","Anh hiểu mà.","아잉→ 히에우↘↗ 마↘","이해해."],
+   ["권유","Nghỉ một chút đi.","응이↘↗ 몯↧ 쭛↗ 디→","좀 쉬어."],
+   ["걱정","Có chuyện gì không?","꼬↗ 쭈옌↧ 지↘ 콩→","무슨 일 있어?"]]}
+];
+var MID_Q=[
+ ["Tại sao?","따이↧ 사오→","왜요?"],["Khi nào?","키→ 나오↘","언제요?"],["Ở đâu?","어↘↗ 더우→","어디서요?"],["Ai?","아이→","누구요?"],
+ ["Như thế nào?","니으→ 테↗ 나오↘","어떻게요?"],["Bao nhiêu?","바오→ 니에우→","얼마요?"],["Thật không?","턷↧ 콩→","정말요?"],["Rồi sao?","조이↘ 사오→","그래서요?"],
+ ["Gì cơ?","지↘ 꺼→","뭐라고요?"],["Đúng không?","둥↗ 콩→","맞죠?"],["Được không?","드억↧ 콩→","될까요?"],["Hiểu không?","히에우↘↗ 콩→","알겠어요?"]
+];
+function renderMid(){
+  var h='<h1>🚀 중급 · <span class="hl">대화 연결</span></h1><p class="lead">초급 문장을 이어 붙여 진짜 대화로. 탭하면 발음.</p>';
+  h+='<div class="bgrp">🔗 연결어 <span style="color:var(--sub);font-weight:400;font-size:12px">문장을 잇는 접착제</span></div><div class="bgrid">';
+  MID_CONN.forEach(function(w){ h+='<button class="bw" onclick="sayW(\''+jsq(w[0].replace(/\.\.\..*/,''))+'\')"><div class="v">'+w[0]+'</div><div class="s">'+arrows(w[1])+'</div><div class="k">'+w[2]+'</div></button>'; });
+  h+='</div>';
+  h+='<div class="bgrp">🧱 연결 예문 <span style="color:var(--sub);font-weight:400;font-size:12px">두 문장을 하나로</span></div>';
+  MID_COMBO.forEach(function(c){ h+='<button class="combo" onclick="sayW(\''+jsq(c[0].replace(/<[^>]+>/g,''))+'\')"><div class="cv">'+c[0]+'</div><div class="cs">'+arrows(c[1])+'</div><div class="ck">'+c[2]+'</div></button>'; });
+  h+='<div class="bgrp">💬 되받아치기 <span style="color:var(--sub);font-weight:400;font-size:12px">상대 말에 바로 반응</span></div>';
+  MID_SCEN.forEach(function(S){
+    h+='<div class="scen"><div class="sit">'+S.sit+'</div>';
+    h+='<div class="them" onclick="sayW(\''+jsq(S.they[0])+'\')"><div class="face">🗣️</div><div><div class="tv">'+S.they[0]+'</div><div class="ts">'+arrows(S.they[1])+'</div><div class="tk">'+S.they[2]+'</div></div></div>';
+    h+='<div class="arrowd">▾ 내가 골라서 대답 ▾</div>';
+    S.opts.forEach(function(o){ h+='<button class="branch" onclick="sayW(\''+jsq(o[1])+'\')"><div class="tag">'+o[0]+'</div><div><div class="bv">'+o[1]+'</div><div class="bs">'+arrows(o[2])+'</div><div class="bk">'+o[3]+'</div></div></button>'; });
+    h+='</div>';
+  });
+  h+='<div class="bgrp">❓ 질문 반사 <span style="color:var(--sub);font-weight:400;font-size:12px">대화를 이어가는 되묻기</span></div><div class="bgrid">';
+  MID_Q.forEach(function(w){ h+='<button class="bw" onclick="sayW(\''+jsq(w[0])+'\')"><div class="v">'+w[0]+'</div><div class="s">'+arrows(w[1])+'</div><div class="k">'+w[2]+'</div></button>'; });
+  h+='</div>';
+  h+='<div class="note" style="margin-top:22px">🚀 <b>중급의 핵심</b> — ①짧은 문장을 <b>연결어</b>로 잇고 ②상대 답을 듣고 <b>되받아치고</b> ③<b>되물어</b> 대화를 끌고 간다. 완성본에선 상대 음성이 먼저 나오고, 코치님이 골라 말하는 <b>실시간 분기 대화</b>로 확장.</div>';
+  document.getElementById("midView").innerHTML=h;
+}
 function sayW(t){speak(t,null,"vi-VN");}
 window.sayW=sayW;
 window.showView=function(v){
-  var views={lesson:"lessonView",best:"best100View",apply:"applyView"};
+  var views={lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView"};
   for(var k in views){document.getElementById(views[k]).style.display=(k===v)?"block":"none";}
   document.getElementById("mLesson").classList.toggle("on",v==="lesson");
   document.getElementById("mBest").classList.toggle("on",v==="best");
   document.getElementById("mApply").classList.toggle("on",v==="apply");
+  document.getElementById("mMid").classList.toggle("on",v==="mid");
   window.scrollTo(0,0);
 };
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-renderTabs();render();renderBest100();renderApply();
+renderTabs();render();renderBest100();renderApply();renderMid();
 </script>
 </body>
 </html>
