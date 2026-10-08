@@ -174,7 +174,7 @@
     <button class="on" onclick="setRate(0.85,this)">보통</button>
     <button onclick="setRate(1,this)">빠르게</button>
   </div>
-  <div id="audioHint" style="display:none;font-size:12px;color:var(--sub);background:var(--jade-s);border-radius:10px;padding:9px 12px;margin-top:8px;line-height:1.6">📱 <b>폰에서 소리가 안 나면</b>: 무음(벨) 해제 후 카드를 <b>한 번 더</b> 탭하세요. 폰에 <b>베트남어 음성</b>이 없으면 TTS가 안 될 수 있어요. 👉 <b>실제 완성본은 진짜 음성파일(MP3)</b>이라 지금 쓰는 앱처럼 모든 폰에서 완벽히 나옵니다 (미리보기만 폰 음성 사용).</div>
+  <div id="audioHint" style="display:none;font-size:12px;color:var(--sub);background:var(--jade-s);border-radius:10px;padding:9px 12px;margin-top:8px;line-height:1.6">🎧 이제 <b>진짜 뉴럴 음성(HoaiMy)</b>으로 재생됩니다 — 폰에서도 또렷하게 나와요. 소리가 안 나면 무음(벨) 해제 후 다시 탭하세요.</div>
 
   <div class="step">
     <div class="step-h"><span class="step-n">1</span><span class="step-t">배우기</span></div>
@@ -429,19 +429,39 @@ var COMICS={food:'<svg viewBox="0 0 440 478" xmlns="http://www.w3.org/2000/svg" 
 '<text x="30" y="414" font-size="17" font-weight="800" fill="#ffffff">Tính tiền nhé.</text><text x="30" y="433" font-size="12" fill="#ffffff" fill-opacity="0.85">계산할게요</text>'+
 '</svg>'};
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
+var AUD={}, curAudio=null;
+try{fetch("audio/manifest.json").then(function(r){return r.json();}).then(function(j){AUD=j||{};}).catch(function(){});}catch(e){}
 function D(){return LESSONS[LESSON][LANG];}
 function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
 var __unlocked=false;
 function unlockTTS(){ if(__unlocked||!("speechSynthesis" in window))return; __unlocked=true; try{var u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);}catch(e){} }
 document.addEventListener("touchend",unlockTTS,{passive:true});
 document.addEventListener("click",unlockTTS);
-function speak(text,el,lc){
-  if(!("speechSynthesis" in window))return;
+function speak(text,el,lc,onDone){
+  var mp=AUD[text];
+  if(mp){
+    try{
+      if(curAudio){try{curAudio.pause();}catch(e){}curAudio=null;}
+      try{if("speechSynthesis" in window)speechSynthesis.cancel();}catch(e){}
+      var a=new Audio(mp);a.playbackRate=(rate<0.85?0.82:1);
+      if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");}
+      curAudio=a;
+      a.onended=function(){if(el)el.classList.remove("playing");if(onDone)onDone();};
+      a.onerror=function(){if(el)el.classList.remove("playing");ttsSpeak(text,el,lc,onDone);};
+      a.play().catch(function(){if(el)el.classList.remove("playing");ttsSpeak(text,el,lc,onDone);});
+      return;
+    }catch(e){}
+  }
+  ttsSpeak(text,el,lc,onDone);
+}
+function ttsSpeak(text,el,lc,onDone){
+  if(!("speechSynthesis" in window)){if(onDone)onDone();return;}
   __unlocked=true;
   try{speechSynthesis.cancel();}catch(e){}
   var u=new SpeechSynthesisUtterance(text);u.lang=lc||D().lang;u.rate=rate;u.volume=1;var v=voice(u.lang);if(v)u.voice=v;
-  if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");u.onend=u.onerror=function(){el.classList.remove("playing");};}
-  try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){}
+  if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");}
+  u.onend=u.onerror=function(){if(el)el.classList.remove("playing");if(onDone)onDone();};
+  try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){if(onDone)onDone();}
 }
 window.setRate=function(r,b){rate=r;document.querySelectorAll(".speed button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");};
 function arrows(s){return s.replace(/([→↗↘~↧]+)/g,'<span class="up">$1</span>');}
@@ -467,7 +487,7 @@ function render(){
   if(cm){cs.style.display="block";document.getElementById("comic").innerHTML=cm;}else{cs.style.display="none";}
 }
 window.say=function(i){var it=D().items[i];speak(it.t,document.getElementById("li"+i));};
-window.playAll=function(){var its=D().items,i=0;(function nx(){if(i>=its.length)return;speak(its[i].t,document.getElementById("li"+i));var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,350);}},200);})();};
+window.playAll=function(){var its=D().items,i=0;(function nx(){if(i>=its.length)return;speak(its[i].t,document.getElementById("li"+i),null,function(){i++;setTimeout(nx,300);});})();};
 
 var drillI=0;
 function renderDrill(){var d=D().drill[drillI];document.getElementById("drillKo").textContent=d.k;document.getElementById("drillT").textContent=d.t;document.getElementById("drillS").innerHTML=arrows(d.s);document.getElementById("drillAns").classList.add("hidden");document.getElementById("drillThink").style.visibility="visible";document.getElementById("drillPos").textContent=(drillI+1)+" / "+D().drill.length;}
@@ -482,7 +502,7 @@ function buildPick(i,btn){var d=D(),c=d.build.chips[i];document.querySelectorAll
   speak(sentence);}
 window.buildPick=buildPick;
 window.sayDia=function(i){var l=D().dia[i];speak(l.t,document.querySelectorAll(".line")[i]);};
-window.playDialogue=function(){var ds=D().dia,i=0;(function nx(){if(i>=ds.length)return;speak(ds[i].t,document.querySelectorAll(".line")[i]);var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,450);}},200);})();};
+window.playDialogue=function(){var ds=D().dia,i=0;(function nx(){if(i>=ds.length)return;speak(ds[i].t,document.querySelectorAll(".line")[i],null,function(){i++;setTimeout(nx,380);});})();};
 
 /* ===== 베스트 100 필수단어 (색깔·방향·명령어 포함) ===== */
 var BEST100=[
