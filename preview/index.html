@@ -113,6 +113,13 @@
   .bw .s{font-family:ui-monospace,monospace;font-size:11px;color:var(--jade);font-weight:600}
   .bw .k{font-size:12.5px;color:var(--sub)}
   .bw .up{color:var(--vn);font-weight:800}
+  .arow{display:flex;gap:11px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:7px 0;cursor:pointer;font:inherit;color:var(--ink);box-shadow:0 1px 2px var(--sh)}
+  .arow:active{background:var(--vn-s)}
+  .arow .spk{width:34px;height:34px;border-radius:10px;background:var(--vn-s);color:var(--vn);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .arow .av{font-size:15.5px;font-weight:700;line-height:1.25}
+  .arow .as{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--jade);font-weight:600;margin-top:1px}
+  .arow .ak{font-size:13px;color:var(--sub);margin-top:1px}
+  .arow .up{color:var(--vn);font-weight:800}
 </style>
 </head>
 <body class="vn">
@@ -130,9 +137,11 @@
   <div class="modebar">
     <button id="mLesson" class="on" onclick="showView('lesson')">📖 레슨</button>
     <button id="mBest" onclick="showView('best')">📚 베스트 100</button>
+    <button id="mApply" onclick="showView('apply')">🧩 응용</button>
   </div>
 
   <div id="best100View" style="display:none"></div>
+  <div id="applyView" style="display:none"></div>
 
   <div id="lessonView">
   <h1>레슨 · <span class="hl" id="patTitle"></span></h1>
@@ -475,20 +484,81 @@ function renderBest100(){
   h+='<div class="note" style="margin-top:22px">✅ <b>시험 (완성본)</b> — 100단어를 외운 뒤 <b>듣기·뜻·작문 시험</b>으로 <b>100점</b>이면 숙지 완료. 틀린 것만 다시 복습해서 완벽하게.</div>';
   document.getElementById("best100View").innerHTML=h;
 }
+
+/* ===== 응용 표현집 (돌려쓰기) — 모든 상황 세부 보강 ===== */
+var APPLY=[
+ {g:"⏰ 시간 (세부)",sub:"어제·지난주·매일…",w:[
+  ["hôm qua","홈→ 꾸아→","어제"],["hôm nay","홈→ 나이→","오늘"],["ngày mai","응아이↘ 마이→","내일"],["hôm kia","홈→ 끼아→","그저께"],["ngày kia","응아이↘ 끼아→","모레"],
+  ["tuần trước","뚜언↘ 쯔억↗","지난주"],["tuần này","뚜언↘ 나이↘","이번주"],["tuần sau","뚜언↘ 사우→","다음주"],["cuối tuần","꾸오이↗ 뚜언↘","주말"],["ngày thường","응아이↘ 트엉↘","평일"],
+  ["mỗi ngày","모이~↗ 응아이↘","매일"],["mỗi tuần","모이~↗ 뚜언↘","매주"],["mỗi tháng","모이~↗ 탕↗","매달"],["tháng trước","탕↗ 쯔억↗","지난달"],["tháng sau","탕↗ 사우→","다음달"],
+  ["năm nay","남→ 나이→","올해"],["năm ngoái","남→ 응오아이↗","작년"],["năm sau","남→ 사우→","내년"],
+  ["bây giờ","버이→ 저↘","지금"],["lúc nãy","룩↗ 나이~↗","아까"],["lát nữa","랏↗ 느어~↗","이따가"],["sắp","삽↗","곧"],
+  ["giây","저이→","초"],["phút","풋↗","분"],["tiếng","띠엥↗","시간(단위)"],["buổi sáng","부오이↘↗ 상↗","오전"],["buổi chiều","부오이↘↗ 찌에우↘","오후"],
+  ["khi nào?","키→ 나오↘","언제?"],["mấy giờ rồi?","머이↗ 저↘ 조이↘","몇 시예요?"]]},
+ {g:"🛵 그랩·길찾기 (응용)",sub:"유턴·좌회전 후 우회전…",w:[
+  ["đi thẳng","디→ 탕↗","직진하세요"],["rẽ trái","제~↗ 짜이↗","좌회전"],["rẽ phải","제~↗ 파이↘↗","우회전"],["quay đầu","꾸아이→ 더우↘","유턴하세요"],
+  ["rẽ trái rồi rẽ phải","제~↗ 짜이↗ 조이↘ 제~↗ 파이↘↗","좌회전 후 우회전"],
+  ["cho tôi xuống đây","쪼→ 또이→ 쑤옹↗ 더이→","여기서 세워주세요"],["cho tôi xuống phía trước","쪼→ 또이→ 쑤옹↗ 피아↗ 쯔억↗","저 앞에서 내려요"],
+  ["đi thêm chút nữa","디→ 템→ 쭛↗ 느어~↗","조금 더 가요"],["đi chậm thôi","디→ 쩜↧ 토이→","천천히 가주세요"],["đi nhanh lên","디→ 냐잉→ 렌→","빨리 가주세요"],
+  ["đợi tôi ở đây","더이↧ 또이→ 어↘↗ 더이→","여기서 기다려주세요"],["ở đèn đỏ","어↘↗ 댄↘ 더↘↗","신호등에서"],["ở ngã tư","어↘↗ 응아~↗ 뜨→","사거리에서"],
+  ["cho tôi đến...","쪼→ 또이→ 덴↗","…로 가주세요"],["sắp tới chưa?","삽↗ 떠이↗ 쯔어→","다 왔어요?"],["bao nhiêu tiền?","바오→ 니에우→ 띠엔↘","얼마예요?"],
+  ["cho tôi mũ bảo hiểm","쪼→ 또이→ 무~↗ 바오↘↗ 히엠↘↗","헬멧 주세요"],["tắc đường","딱↗ 드엉↘","길이 막혀요"],["đúng rồi","둥↗ 조이↘","여기 맞아요"]]},
+ {g:"🍜 식당 (응용)",w:[
+  ["cho tôi menu","쪼→ 또이→ 메→뉴→","메뉴 주세요"],["cho tôi cái này","쪼→ 또이→ 까이↗ 나이↘","이거 주세요"],["cho tôi hai cái","쪼→ 또이→ 하이→ 까이↗","2개 주세요"],
+  ["đừng cay nhé","등↘ 까이→ 냬↗","안 맵게 해주세요"],["nhiều đá","니에우↘ 다↗","얼음 많이"],["ít đá thôi","잇↗ 다↗ 토이→","얼음 조금만"],
+  ["cho tôi mang về","쪼→ 또이→ 망→ 베↘","포장해주세요"],["tính tiền","띤↗ 띠엔↘","계산해주세요"],["ngon quá","응온→ 꾸아↗","너무 맛있어요"],
+  ["cho thêm một cái","쪼→ 템→ 몯↧ 까이↗","하나 더 주세요"],["nhà vệ sinh ở đâu?","냐↘ 베↧ 신→ 어↘↗ 더우→","화장실 어디예요?"],
+  ["gợi ý cho tôi","거이↧ 이↗ 쪼→ 또이→","추천해주세요"],["một chai bia","몯↧ 짜이→ 비아→","맥주 한 병"]]},
+ {g:"🏨 호텔 (응용)",w:[
+  ["tôi muốn nhận phòng","또이→ 무온↗ 년↧ 퐁↘","체크인할게요"],["trả phòng","짜↘↗ 퐁↘","체크아웃"],["tôi đã đặt phòng","또이→ 다~↗ 닷↧ 퐁↘","예약했어요"],
+  ["mật khẩu wifi?","멋↧ 커우↗ 와이파이","와이파이 비번?"],["đổi phòng cho tôi","도이↘↗ 퐁↘ 쪼→ 또이→","방 바꿔주세요"],["điều hòa hỏng","디에우↘ 호아↘ 홍↘↗","에어컨이 안 돼요"],
+  ["cho thêm khăn","쪼→ 템→ 칸→","수건 더 주세요"],["mấy giờ trả phòng?","머이↗ 저↘ 짜↘↗ 퐁↘","몇 시 체크아웃?"],["gửi hành lý được không?","그이↘↗ 하잉↘ 리↗ 드억↧ 콩→","짐 맡길 수 있어요?"]]},
+ {g:"🛒 쇼핑 (응용)",w:[
+  ["cái này bao nhiêu?","까이↗ 나이↘ 바오→ 니에우→","이거 얼마예요?"],["đắt quá","닫↗ 꾸아↗","너무 비싸요"],["giảm giá đi","잠↘↗ 자↗ 디→","깎아주세요"],
+  ["có màu khác không?","꼬↗ 마우↘ 칵↗ 콩→","다른 색 있어요?"],["thử được không?","트↘↗ 드억↧ 콩→","입어봐도 돼요?"],["cái to hơn","까이↗ 또→ 헌→","더 큰 거"],["cái nhỏ hơn","까이↗ 뇨↘↗ 헌→","더 작은 거"],
+  ["lấy cái này","러이↗ 까이↗ 나이↘","이걸로 할게요"],["trả thẻ được không?","짜↘↗ 태↘↗ 드억↧ 콩→","카드 돼요?"],["cho tôi túi","쪼→ 또이→ 뚜이↗","봉투 주세요"]]},
+ {g:"💊 병원·약국 (응용)",w:[
+  ["tôi đau bụng","또이→ 다우→ 붕↧","배 아파요"],["tôi đau đầu","또이→ 다우→ 더우↘","머리 아파요"],["tôi bị sốt","또이→ 비↧ 솓↗","열나요"],["tôi bị tiêu chảy","또이→ 비↧ 띠에우→ 짜이↘↗","설사해요"],
+  ["cho tôi thuốc cảm","쪼→ 또이→ 투옥↗ 깜↘↗","감기약 주세요"],["ngày mấy lần?","응아이↘ 머이↗ 런↘","하루 몇 번?"],["sau khi ăn","사우→ 키→ 안→","식후에"],
+  ["đau ở đây","다우→ 어↘↗ 더이→","여기가 아파요"],["đơn thuốc","던→ 투옥↗","처방전"]]},
+ {g:"🎯 사격 코칭 (응용)",w:[
+  ["vào tư thế","바오↘ 뜨→ 테↗","자세 잡아"],["hít vào rồi giữ","힛↗ 바오↘ 조이↘ 즈↘↗","숨 쉬고 멈춰"],["ngắm cho thẳng","응암↗ 쪼→ 탕↗","조준 정렬해"],["bóp cò từ từ","봅↗ 꼬↘ 뜨↘ 뜨↘","천천히 격발해"],
+  ["tập trung vào","떱↧ 쭝→ 바오↘","집중해"],["thả lỏng ra","타↘↗ 롱↘↗ 자→","힘 빼"],["làm lại lần nữa","람↘ 라이↧ 런↘ 느어~↗","다시 한번"],["tốt lắm","똣↗ 람↗","잘했어"],
+  ["đừng rung","등↘ 중→","흔들리지 마"],["đừng vội","등↘ 보이↧","서두르지 마"]]},
+ {g:"❤️ 연애 (응용)",w:[
+  ["anh nhớ em","아잉→ 녀↗ 앰→","보고 싶었어"],["em đẹp lắm","앰→ 뎁↧ 람↗","예뻐요"],["em đang làm gì?","앰→ 당→ 람↘ 지↘","뭐 해요?"],["em ăn cơm chưa?","앰→ 안→ 껌→ 쯔어→","밥 먹었어요?"],
+  ["đi cùng anh nhé?","디→ 꿍↘ 아잉→ 냬↗","같이 갈래요?"],["uống cà phê nhé?","우옹↗ 까→ 페→ 냬↗","커피 마실래요?"],["anh yêu em","아잉→ 이에우→ 앰→","사랑해"],["em về cẩn thận nhé","앰→ 베↘ 껀↘↗ 턴↧ 냬↗","조심히 가요"]]},
+ {g:"💬 상담·일상 (응용)",w:[
+  ["em ổn không?","앰→ 온↘↗ 콩→","괜찮아요?"],["có chuyện gì không?","꼬↗ 쭈옌↧ 지↘ 콩→","무슨 일 있어요?"],["đừng lo","등↘ 로→","걱정 마"],["nói từ từ đi","노이↗ 뜨↘ 뜨↘ 디→","천천히 말해줘"],
+  ["tôi hiểu rồi","또이→ 히에우↘↗ 조이↘","이해했어요"],["tôi không hiểu","또이→ 콩→ 히에우↘↗","못 알아들었어요"],["nói lại đi","노이↗ 라이↧ 디→","다시 말해줘"],["để anh giúp","데↘ 아잉→ 줍↗","도와줄게"]]},
+ {g:"🔢 숫자 응용",sub:"돈·수량",w:[
+  ["một nghìn","몯↧ 응인↘","1천"],["mười nghìn","므어이↘ 응인↘","1만"],["một trăm nghìn","몯↧ 짬→ 응인↘","10만"],["bao nhiêu tiền?","바오→ 니에우→ 띠엔↘","얼마예요?"],
+  ["đắt","닫↗","비싸요"],["rẻ","재↘↗","싸요"],["một cái","몯↧ 까이↗","하나"],["một chút","몯↧ 쭛↗","조금"],["nhiều","니에우↘","많이"],["một nửa","몯↧ 느어↘↗","반"],["tất cả","떳↗ 까↘↗","전부"]]}
+];
+function renderApply(){
+  var n=0;APPLY.forEach(function(G){n+=G.w.length;});
+  var h='<h1>🧩 응용 <span class="hl">표현집</span></h1><p class="lead">단어를 엮은 실전 문장 '+n+'개. 탭하면 발음. 상황에서 바로 쓰고, 밑줄 단어만 바꿔 응용하세요. (돌려쓰기)</p>';
+  APPLY.forEach(function(G){
+    h+='<div class="bgrp">'+G.g+(G.sub?' <span style="color:var(--sub);font-weight:400;font-size:12px">'+G.sub+'</span>':' <span style="color:var(--sub);font-weight:400;font-size:12px">'+G.w.length+'</span>')+'</div>';
+    G.w.forEach(function(w){ h+='<button class="arow" onclick="sayW(\''+jsq(w[0])+'\')"><div class="spk">🔊</div><div><div class="av">'+w[0]+'</div><div class="as">'+arrows(w[1])+'</div><div class="ak">'+w[2]+'</div></div></button>'; });
+  });
+  h+='<div class="note" style="margin-top:22px">🧩 완성본에선 각 표현을 <b>칩 교체 훈련</b>으로 만들어, 단어만 바꿔 수십 문장을 말하도록 확장합니다. (한 패턴, 백 문장)</div>';
+  document.getElementById("applyView").innerHTML=h;
+}
 function sayW(t){speak(t,null,"vi-VN");}
 window.sayW=sayW;
 window.showView=function(v){
-  var best=v==="best";
-  document.getElementById("best100View").style.display=best?"block":"none";
-  document.getElementById("lessonView").style.display=best?"none":"block";
-  document.getElementById("mBest").classList.toggle("on",best);
-  document.getElementById("mLesson").classList.toggle("on",!best);
+  var views={lesson:"lessonView",best:"best100View",apply:"applyView"};
+  for(var k in views){document.getElementById(views[k]).style.display=(k===v)?"block":"none";}
+  document.getElementById("mLesson").classList.toggle("on",v==="lesson");
+  document.getElementById("mBest").classList.toggle("on",v==="best");
+  document.getElementById("mApply").classList.toggle("on",v==="apply");
   window.scrollTo(0,0);
 };
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-renderTabs();render();renderBest100();
+renderTabs();render();renderBest100();renderApply();
 </script>
 </body>
 </html>
