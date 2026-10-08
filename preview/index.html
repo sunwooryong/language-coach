@@ -413,6 +413,7 @@ function speak(text,el,lc){
 }
 window.setRate=function(r,b){rate=r;document.querySelectorAll(".speed button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");};
 function arrows(s){return s.replace(/([→↗↘~↧]+)/g,'<span class="up">$1</span>');}
+function jsq(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 window.setLang=function(l){LANG=l;document.body.className=l;document.getElementById("tVN").classList.toggle("on",l==="vn");document.getElementById("tEN").classList.toggle("on",l==="en");render();window.scrollTo(0,0);};
 window.pickLesson=function(i){LESSON=i;renderTabs();render();window.scrollTo(0,0);};
 function renderTabs(){document.getElementById("lessonTabs").innerHTML=LESSONS.map(function(L,i){return '<button class="'+(i===LESSON?"on":"")+'" onclick="pickLesson('+i+')">'+L.tab+'</button>';}).join("");}
