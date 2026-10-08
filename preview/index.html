@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RYONG 언어 · 레슨 미리보기</title>
+<style>
+  :root{
+    --paper:#F7F2E9; --card:#FFFFFF; --ink:#211C17; --sub:#6B6155;
+    --vn:#BE3A31; --vn-s:#F6E3DF; --en:#1C63A8; --en-s:#DCEAF7;
+    --jade:#1C7A63; --jade-s:#D5EBE4; --gold:#B98A2E; --line:#E7DECF; --sh:rgba(60,45,25,.09);
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --paper:#15120D; --card:#201B14; --ink:#F1E8D9; --sub:#B0A693;
+    --vn:#EC8178; --vn-s:#3E201C; --en:#6BA8E8; --en-s:#16293C;
+    --jade:#5EC9AC; --jade-s:#113329; --gold:#E0B457; --line:#352C1E; --sh:rgba(0,0,0,.4);
+  }}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.55;max-width:480px;margin:0 auto;
+    padding:0 16px calc(40px + env(safe-area-inset-bottom));overflow-x:hidden}
+  .top{position:sticky;top:0;z-index:20;background:var(--paper);padding:calc(12px + env(safe-area-inset-top)) 0 8px;border-bottom:1px solid var(--line)}
+  .top .row{display:flex;align-items:center;gap:10px}
+  .badge{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .toggle{margin-left:auto;display:inline-flex;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--card)}
+  .toggle button{font:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--sub);padding:6px 11px;cursor:pointer}
+  .toggle button.on.vn{background:var(--vn);color:#fff}
+  .toggle button.on.en{background:var(--en);color:#fff}
+  .lessons{display:flex;gap:7px;margin-top:9px;overflow-x:auto;padding-bottom:2px}
+  .lessons button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:20px;padding:7px 13px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+  .lessons button.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+
+  h1{font-family:Georgia,serif;font-size:24px;letter-spacing:-.01em;margin:12px 0 2px;text-wrap:balance}
+  h1 .hl{color:var(--vn)} body.en h1 .hl{color:var(--en)}
+  .lead{color:var(--sub);font-size:13.5px;margin-bottom:6px}
+  .speed{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--sub);margin:6px 0 2px}
+  .speed button{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:16px;padding:5px 11px;cursor:pointer}
+  .speed button.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+
+  .step{margin:22px 0}
+  .step-h{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .step-n{width:26px;height:26px;border-radius:50%;background:var(--jade);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step-t{font-family:Georgia,serif;font-size:18px}
+  .step-d{font-size:13px;color:var(--sub);margin:0 0 12px 35px}
+
+  .explain{background:var(--jade-s);border-radius:14px;padding:15px 16px;font-size:14.5px;line-height:1.7}
+  .explain b{color:var(--jade)}
+  .formula{background:var(--card);border:2px solid var(--vn);border-radius:16px;padding:18px;text-align:center;margin:12px 0}
+  body.en .formula{border-color:var(--en)}
+  .formula .big{font-size:24px;font-weight:800;letter-spacing:-.01em}
+  .formula .slot{display:inline-block;min-width:80px;padding:2px 10px;margin:0 3px;border-bottom:3px dashed var(--vn);color:var(--vn)}
+  body.en .formula .slot{border-color:var(--en);color:var(--en)}
+  .formula .mean{font-size:14px;color:var(--sub);margin-top:8px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px var(--sh);margin-bottom:10px;display:flex;align-items:center;gap:13px;padding:13px 15px;cursor:pointer}
+  .card:active{background:var(--vn-s)} body.en .card:active{background:var(--en-s)}
+  .spk{width:46px;height:46px;border-radius:12px;background:var(--vn-s);color:var(--vn);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+  body.en .spk{background:var(--en-s);color:var(--en)}
+  .card.playing .spk{background:var(--vn);color:#fff} body.en .card.playing .spk{background:var(--en)}
+  .card .tgt{font-size:19px;font-weight:700;line-height:1.25}
+  .card .say{font-family:ui-monospace,monospace;font-size:12.5px;color:var(--jade);font-weight:600;margin-top:1px}
+  .card .ko{font-size:13.5px;color:var(--sub);margin-top:2px}
+  .up{color:var(--vn);font-weight:800} body.en .up{color:var(--en)}
+
+  .drill{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 18px;text-align:center}
+  .drill .q{font-size:13px;color:var(--sub);font-weight:700}
+  .drill .ko{font-size:23px;font-weight:800;margin:8px 0 4px}
+  .drill .ans{min-height:58px;display:flex;flex-direction:column;justify-content:center;margin:6px 0}
+  .drill .ans .t{font-size:21px;font-weight:800;color:var(--vn)} body.en .drill .ans .t{color:var(--en)}
+  .drill .ans .s{font-family:ui-monospace,monospace;font-size:12.5px;color:var(--jade);margin-top:3px}
+  .drill .ans.hidden .t,.drill .ans.hidden .s{visibility:hidden}
+  .drill .think{color:var(--gold);font-size:13.5px;font-weight:700}
+  .drow{display:flex;gap:9px;margin-top:12px}
+  .drow button{flex:1;font:inherit;font-weight:700;font-size:15px;padding:12px;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+  .drow button.pri{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .dpos{font-size:12px;color:var(--sub);margin-top:10px}
+
+  .build{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .build .out{text-align:center;font-size:24px;font-weight:800;padding:10px 0 4px;min-height:44px}
+  .build .out .fx{color:var(--sub)}
+  .build .out .w{color:var(--vn)} body.en .build .out .w{color:var(--en)}
+  .build .osay{text-align:center;font-family:ui-monospace,monospace;font-size:13px;color:var(--jade);min-height:18px;margin-bottom:4px}
+  .build .oko{text-align:center;font-size:14px;color:var(--sub);margin-bottom:12px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .chip{font:inherit;font-size:14px;font-weight:600;padding:9px 13px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  .chip.on{background:var(--vn);color:#fff;border-color:var(--vn)} body.en .chip.on{background:var(--en);color:#fff;border-color:var(--en)}
+  .chip small{opacity:.7;font-weight:400}
+
+  .dia{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .line{display:flex;gap:10px;margin-bottom:11px;cursor:pointer}
+  .line .who{font-size:11px;font-weight:800;width:42px;flex-shrink:0;padding-top:3px;color:var(--sub)}
+  .line.me .who{color:var(--vn)} body.en .line.me .who{color:var(--en)}
+  .line .bub{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px 12px;flex:1}
+  .line.me .bub{background:var(--vn-s)} body.en .line.me .bub{background:var(--en-s)}
+  .line .bt{font-size:16px;font-weight:700}
+  .line .bs{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--jade)}
+  .line .bk{font-size:13px;color:var(--sub);margin-top:1px}
+  .btn{display:block;width:100%;font:inherit;font-weight:700;font-size:15px;padding:13px;border-radius:13px;cursor:pointer;border:0;background:var(--jade);color:#fff;margin-top:10px}
+  .btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+
+  .note{background:var(--gold);color:#3a2a06;border-radius:14px;padding:15px 16px;font-size:13.5px;line-height:1.7;margin-top:22px}
+  .note b{font-weight:800}
+  .footer{text-align:center;color:var(--sub);font-size:12px;margin-top:24px;line-height:1.7}
+</style>
+</head>
+<body class="vn">
+  <div class="top">
+    <div class="row">
+      <span class="badge">RYONG 언어 · 미리보기</span>
+      <span class="toggle">
+        <button id="tVN" class="on vn" onclick="setLang('vn')">🇻🇳 베트남어</button>
+        <button id="tEN" class="en" onclick="setLang('en')">🇬🇧 영어</button>
+      </span>
+    </div>
+    <div class="lessons" id="lessonTabs"></div>
+  </div>
+
+  <h1>레슨 · <span class="hl" id="patTitle"></span></h1>
+  <p class="lead" id="patLead"></p>
+  <div class="speed"><span>속도</span>
+    <button onclick="setRate(0.65,this)">천천히</button>
+    <button class="on" onclick="setRate(0.85,this)">보통</button>
+    <button onclick="setRate(1,this)">빠르게</button>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">1</span><span class="step-t">배우기</span></div>
+    <div class="step-d">왜·언제 쓰는지부터. 암기 아니라 이해.</div>
+    <div class="explain" id="explain"></div>
+    <div class="formula" id="formula"></div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">2</span><span class="step-t">듣기</span></div>
+    <div class="step-d">카드를 누르면 발음이 나와요.</div>
+    <div id="listen"></div>
+    <button class="btn ghost" onclick="playAll()">▶ 전부 이어 듣기</button>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">3</span><span class="step-t">말하기 훈련</span></div>
+    <div class="step-d">한국어를 보고 <b>직접 소리 내 말한 뒤</b> 정답 확인 (Pimsleur 회상법).</div>
+    <div class="drill">
+      <div class="q">이걸 뭐라고 말할까요?</div>
+      <div class="ko" id="drillKo"></div>
+      <div class="think" id="drillThink">🗣 먼저 말해보세요…</div>
+      <div class="ans hidden" id="drillAns"><div class="t" id="drillT"></div><div class="s" id="drillS"></div></div>
+      <div class="drow">
+        <button id="drillBtn" class="pri" onclick="drillReveal()">정답 보기 🔊</button>
+        <button onclick="drillNext()">다음 →</button>
+      </div>
+      <div class="dpos" id="drillPos"></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">4</span><span class="step-t">바꿔 말하기</span></div>
+    <div class="step-d">단어만 바꾸면 문장이 무한 생성. 칩을 눌러보세요.</div>
+    <div class="build">
+      <div class="out" id="buildOut"></div>
+      <div class="osay" id="buildSay"></div>
+      <div class="oko" id="buildKo"></div>
+      <div class="chips" id="buildChips"></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">5</span><span class="step-t">실전</span></div>
+    <div class="step-d">실제 대화. 줄을 누르면 재생.</div>
+    <div class="dia" id="dia"></div>
+    <button class="btn" onclick="playDialogue()">▶ 대화 전체 듣기</button>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">6</span><span class="step-t">복습</span></div>
+    <div class="note">🔁 <b>간격 반복</b> — 오늘 배운 패턴·단어는 잊을 때쯤 자동으로 다시 나와요. 본 시스템에선 매일 복습 알림 + 핸즈프리 듣기로 굳힙니다.</div>
+  </div>
+
+  <div class="footer">
+    위 탭에서 <b>식당 · 사격 · 연애 · 상담</b> 4개 레슨을 둘러보세요. 🇻🇳↔🇬🇧 토글로 영어도 같은 방식이에요.<br>
+    실제 시스템은 레벨 0~5, 수십 패턴, 전 영역 + 진짜 뉴럴 음성으로 만듭니다. (미리보기는 폰 내장 음성)
+  </div>
+
+<script>
+/* ===== 4개 레슨 × (베트남어/영어) ===== */
+var LESSONS=[
+{id:"food",tab:"🍜 식당",
+ vn:{lang:"vi-VN",title:"주세요",lead:"식당·카페·가게에서 뭔가 달라고 할 때.",
+  explain:"<b>Cho</b>(쪼→)는 '주다·넣다'예요. 뒤에 <b>명사</b>만 붙이면 '~ 주세요'. 식당·카페·가게에서 <b>제일 많이</b> 써요. 공손하게는 끝에 <b>ạ(아↧)</b>.",
+  formula:{pre:"Cho",slot:"명사",mean:"~ 주세요"},
+  items:[{t:"Cho nước.",s:"쪼→ 느억↗",k:"물 주세요."},{t:"Cho cà phê.",s:"쪼→ 까→ 페→",k:"커피 주세요."},{t:"Cho cơm.",s:"쪼→ 껌→",k:"밥 주세요."},{t:"Cho thêm đá.",s:"쪼→ 템→ 다↗",k:"얼음 더 주세요."},{t:"Cho cái này.",s:"쪼→ 까이↗ 나이↘",k:"이거 주세요."}],
+  drill:[{k:"물 주세요.",t:"Cho nước.",s:"쪼→ 느억↗"},{k:"커피 주세요.",t:"Cho cà phê.",s:"쪼→ 까→ 페→"},{k:"이거 주세요.",t:"Cho cái này.",s:"쪼→ 까이↗ 나이↘"},{k:"메뉴 주세요.",t:"Cho thực đơn.",s:"쪼→ 특↧ 던→"},{k:"얼음 더 주세요.",t:"Cho thêm đá.",s:"쪼→ 템→ 다↗"}],
+  build:{pre:"Cho ",suf:".",sayPre:"쪼→ ",koSuf:" 주세요",chips:[{w:"nước",say:"느억↗",ko:"물"},{w:"cà phê",say:"까→ 페→",ko:"커피"},{w:"cơm",say:"껌→",ko:"밥"},{w:"thêm đá",say:"템→ 다↗",ko:"얼음 더"},{w:"cái này",say:"까이↗ 나이↘",ko:"이거"},{w:"hai cái",say:"하이→ 까이↗",ko:"두 개"},{w:"thực đơn",say:"특↧ 던→",ko:"메뉴"}]},
+  dia:[{who:"나",me:1,t:"Cho hai cà phê.",s:"쪼→ 하이→ 까→ 페→",k:"커피 두 잔 주세요."},{who:"점원",me:0,t:"Có đá không?",s:"꼬↗ 다↗ 콩→?",k:"얼음 넣을까요?"},{who:"나",me:1,t:"Cho thêm đá ạ.",s:"쪼→ 템→ 다↗ 아↧",k:"얼음 더 주세요."},{who:"점원",me:0,t:"Tính tiền nhé.",s:"띤↗ 띠엔↘ 냬↗",k:"계산할게요."}]},
+ en:{lang:"en-US",title:"Can I have ~",lead:"식당·카페·가게에서 뭔가 달라고 할 때.",
+  explain:"<b>Can I have + 명사?</b> = '~ 주세요'. 식당·카페에서 뭔가 달라고 할 때 가장 공손하고 안전해요. 'Can I get ~'도 같은 뜻.",
+  formula:{pre:"Can I have",slot:"noun",mean:"~ 주세요?"},
+  items:[{t:"Can I have water?",s:"캔 아이 해브 워러?",k:"물 주세요."},{t:"Can I have a coffee?",s:"캔 아이 해브 어 커피?",k:"커피 주세요."},{t:"Can I have the bill?",s:"캔 아이 해브 더 빌?",k:"계산서 주세요."},{t:"Can I have more ice?",s:"캔 아이 해브 모어 아이스?",k:"얼음 더 주세요."},{t:"Can I have this?",s:"캔 아이 해브 디스?",k:"이거 주세요."}],
+  drill:[{k:"물 주세요.",t:"Can I have water?",s:"캔 아이 해브 워러?"},{k:"커피 주세요.",t:"Can I have a coffee?",s:"캔 아이 해브 어 커피?"},{k:"이거 주세요.",t:"Can I have this?",s:"캔 아이 해브 디스?"},{k:"메뉴 주세요.",t:"Can I have the menu?",s:"캔 아이 해브 더 메뉴?"},{k:"얼음 더 주세요.",t:"Can I have more ice?",s:"캔 아이 해브 모어 아이스?"}],
+  build:{pre:"Can I have ",suf:"?",sayPre:"캔 아이 해브 ",koSuf:" 주세요",chips:[{w:"water",say:"워러",ko:"물"},{w:"a coffee",say:"어 커피",ko:"커피"},{w:"rice",say:"라이스",ko:"밥"},{w:"more ice",say:"모어 아이스",ko:"얼음 더"},{w:"this",say:"디스",ko:"이거"},{w:"two coffees",say:"투 커피스",ko:"두 잔"},{w:"the menu",say:"더 메뉴",ko:"메뉴"}]},
+  dia:[{who:"나",me:1,t:"Can I have two coffees?",s:"캔 아이 해브 투 커피스?",k:"커피 두 잔 주세요."},{who:"점원",me:0,t:"With ice?",s:"위드 아이스?",k:"얼음 넣을까요?"},{who:"나",me:1,t:"Yes, more ice please.",s:"예스 모어 아이스 플리즈.",k:"네, 얼음 더 주세요."},{who:"점원",me:0,t:"I'll get the bill.",s:"아일 겟 더 빌.",k:"계산해 드릴게요."}]}
+},
+{id:"shoot",tab:"🎯 사격",
+ vn:{lang:"vi-VN",title:"유지해 (지도)",lead:"선수 지도 명령 — 동사를 앞에 (TPR).",
+  explain:"코치 지시는 <b>동사를 앞에</b> 둬요(명령형). <b>Giữ</b>(즈↘↗)=유지하다/잡다. 뒤에 대상을 붙이면 '~ 유지해'. 사대에서 바로 쓰는 핵심 패턴이에요.",
+  formula:{pre:"Giữ",slot:"대상",mean:"~ 유지해"},
+  items:[{t:"Giữ súng.",s:"즈↘↗ 쑹↗",k:"총 유지해."},{t:"Giữ tư thế.",s:"즈↘↗ 뜨→ 테↗",k:"자세 유지해."},{t:"Giữ ngắm.",s:"즈↘↗ 응암↗",k:"조준 유지해."},{t:"Thả lỏng vai.",s:"타↘↗ 롱↘↗ 바이→",k:"어깨 힘 빼."},{t:"Tập trung!",s:"떱↧ 쭝→",k:"집중해!"}],
+  drill:[{k:"자세 유지해.",t:"Giữ tư thế.",s:"즈↘↗ 뜨→ 테↗"},{k:"집중해!",t:"Tập trung!",s:"떱↧ 쭝→"},{k:"어깨 힘 빼.",t:"Thả lỏng vai.",s:"타↘↗ 롱↘↗ 바이→"},{k:"천천히 당겨.",t:"Bóp cò từ từ.",s:"봅↗ 꼬↘ 뜨↘ 뜨↘"},{k:"깊게 숨 쉬어.",t:"Hít thở sâu.",s:"힛↗ 터↘↗ 써우→"}],
+  build:{pre:"Giữ ",suf:".",sayPre:"즈↘↗ ",koSuf:" 유지해",chips:[{w:"súng",say:"쑹↗",ko:"총"},{w:"tư thế",say:"뜨→ 테↗",ko:"자세"},{w:"ngắm",say:"응암↗",ko:"조준"},{w:"vai",say:"바이→",ko:"어깨"},{w:"tay",say:"따이→",ko:"손"},{w:"bình tĩnh",say:"빈↘ 띤↧",ko:"침착"},{w:"nhịp thở",say:"닙↧ 터↘↗",ko:"호흡"}]},
+  dia:[{who:"코치",me:1,t:"Sẵn sàng chưa?",s:"싼↘↗ 쌍↘ 쯔어→?",k:"준비됐니?"},{who:"선수",me:0,t:"Rồi ạ.",s:"조이↘ 아↧",k:"네."},{who:"코치",me:1,t:"Hít thở sâu, giữ tư thế.",s:"힛↗ 터↘↗ 써우→, 즈↘↗ 뜨→ 테↗",k:"깊게 숨 쉬고, 자세 유지해."},{who:"코치",me:1,t:"Tốt! Bóp cò từ từ.",s:"똣↗! 봅↗ 꼬↘ 뜨↘ 뜨↘",k:"좋아! 천천히 당겨."}]},
+ en:{lang:"en-US",title:"Keep ~ (coaching)",lead:"선수 지도 명령 — 동사를 앞에.",
+  explain:"코칭 명령은 <b>동사를 앞에</b>. <b>Keep + 대상</b> = '~ 유지해'. 간결한 명령이 사대에서 효과적이에요.",
+  formula:{pre:"Keep",slot:"target",mean:"~ 유지해"},
+  items:[{t:"Keep steady.",s:"킵 스테디.",k:"안정 유지해."},{t:"Keep your posture.",s:"킵 유어 포스처.",k:"자세 유지해."},{t:"Keep aiming.",s:"킵 에이밍.",k:"조준 유지해."},{t:"Relax your shoulders.",s:"릴랙스 유어 숄더스.",k:"어깨 힘 빼."},{t:"Focus!",s:"포커스!",k:"집중해!"}],
+  drill:[{k:"자세 유지해.",t:"Keep your posture.",s:"킵 유어 포스처."},{k:"집중해!",t:"Focus!",s:"포커스!"},{k:"어깨 힘 빼.",t:"Relax your shoulders.",s:"릴랙스 유어 숄더스."},{k:"천천히 당겨.",t:"Squeeze slowly.",s:"스퀴즈 슬로울리."},{k:"깊게 숨 쉬어.",t:"Breathe deeply.",s:"브리드 디플리."}],
+  build:{pre:"Keep ",suf:".",sayPre:"킵 ",koSuf:" 유지해",chips:[{w:"steady",say:"스테디",ko:"안정"},{w:"your posture",say:"유어 포스처",ko:"자세"},{w:"aiming",say:"에이밍",ko:"조준"},{w:"calm",say:"캄",ko:"침착"},{w:"your focus",say:"유어 포커스",ko:"집중"},{w:"your rhythm",say:"유어 리듬",ko:"리듬"}]},
+  dia:[{who:"코치",me:1,t:"Are you ready?",s:"아 유 레디?",k:"준비됐니?"},{who:"선수",me:0,t:"Yes, coach.",s:"예스 코치.",k:"네, 코치님."},{who:"코치",me:1,t:"Breathe deep, keep your posture.",s:"브리드 딥, 킵 유어 포스처.",k:"깊게 숨 쉬고, 자세 유지해."},{who:"코치",me:1,t:"Good! Squeeze slowly.",s:"굿! 스퀴즈 슬로울리.",k:"좋아! 천천히 당겨."}]}
+},
+{id:"love",tab:"❤️ 연애",
+ vn:{lang:"vi-VN",title:"나는 너를 ~해",lead:"남자→여성. 나=Anh, 너=Em.",
+  explain:"남자가 여성에게 말할 때 <b>나=Anh</b>(아잉), <b>너=Em</b>(앰). 사이에 <b>감정 동사</b>만 바꾸면 돼요. <b>Anh + [동사] + em</b> = '나는 너를 ~해'.",
+  formula:{pre:"Anh",slot:"동사",mean:"em = 나는 너를 ~해"},
+  items:[{t:"Anh nhớ em.",s:"아잉→ 녀↗ 앰→",k:"보고 싶어요."},{t:"Anh thích em.",s:"아잉→ 틱↗ 앰→",k:"좋아해요."},{t:"Anh yêu em.",s:"아잉→ 이에우→ 앰→",k:"사랑해요."},{t:"Anh thương em.",s:"아잉→ 트엉→ 앰→",k:"아껴요."},{t:"Anh cần em.",s:"아잉→ 껀↘ 앰→",k:"네가 필요해요."}],
+  drill:[{k:"보고 싶어요.",t:"Anh nhớ em.",s:"아잉→ 녀↗ 앰→"},{k:"좋아해요.",t:"Anh thích em.",s:"아잉→ 틱↗ 앰→"},{k:"사랑해요.",t:"Anh yêu em.",s:"아잉→ 이에우→ 앰→"},{k:"너를 아껴요.",t:"Anh thương em.",s:"아잉→ 트엉→ 앰→"},{k:"만나고 싶어요.",t:"Anh muốn gặp em.",s:"아잉→ 무온↗ 갑↧ 앰→"}],
+  build:{pre:"Anh ",suf:" em.",sayPre:"아잉→ ",koSuf:" (너를)",chips:[{w:"nhớ",say:"녀↗",ko:"보고 싶어"},{w:"thích",say:"틱↗",ko:"좋아해"},{w:"yêu",say:"이에우→",ko:"사랑해"},{w:"thương",say:"트엉→",ko:"아껴"},{w:"cần",say:"껀↘",ko:"필요해"},{w:"tin",say:"띤→",ko:"믿어"}]},
+  dia:[{who:"나",me:1,t:"Em tên là gì?",s:"앰→ 뗀→ 라↘ 지↘?",k:"이름이 뭐예요?"},{who:"상대",me:0,t:"Em tên Linh.",s:"앰→ 뗀→ 린→",k:"린이에요."},{who:"나",me:1,t:"Em xinh quá. Anh thích em.",s:"앰→ 씬→ 꽈↗. 아잉→ 틱↗ 앰→",k:"예뻐요. 좋아해요."},{who:"상대",me:0,t:"Hì, cảm ơn anh.",s:"히↘, 깜↘↗ 언→ 아잉→",k:"히, 고마워요."}]},
+ en:{lang:"en-US",title:"I ~ you",lead:"감정 동사만 바꾸면 돼요.",
+  explain:"<b>I + [감정동사] + you</b> = '나는 너를 ~해'. 동사만 바꾸면 돼요 (I miss you / I like you / I love you).",
+  formula:{pre:"I",slot:"verb",mean:"you = 나는 너를 ~해"},
+  items:[{t:"I miss you.",s:"아이 미스 유.",k:"보고 싶어요."},{t:"I like you.",s:"아이 라이크 유.",k:"좋아해요."},{t:"I love you.",s:"아이 러브 유.",k:"사랑해요."},{t:"I need you.",s:"아이 니드 유.",k:"네가 필요해요."},{t:"I want to see you.",s:"아이 원 투 씨 유.",k:"만나고 싶어요."}],
+  drill:[{k:"보고 싶어요.",t:"I miss you.",s:"아이 미스 유."},{k:"좋아해요.",t:"I like you.",s:"아이 라이크 유."},{k:"사랑해요.",t:"I love you.",s:"아이 러브 유."},{k:"네가 필요해요.",t:"I need you.",s:"아이 니드 유."},{k:"만나고 싶어요.",t:"I want to see you.",s:"아이 원 투 씨 유."}],
+  build:{pre:"I ",suf:" you.",sayPre:"아이 ",koSuf:" (너를)",chips:[{w:"miss",say:"미스",ko:"보고 싶어"},{w:"like",say:"라이크",ko:"좋아해"},{w:"love",say:"러브",ko:"사랑해"},{w:"need",say:"니드",ko:"필요해"},{w:"trust",say:"트러스트",ko:"믿어"},{w:"want to see",say:"원 투 씨",ko:"만나고 싶어"}]},
+  dia:[{who:"나",me:1,t:"What's your name?",s:"왓츠 유어 네임?",k:"이름이 뭐예요?"},{who:"상대",me:0,t:"I'm Linh.",s:"아임 린.",k:"린이에요."},{who:"나",me:1,t:"You're so pretty. I like you.",s:"유어 쏘 프리티. 아이 라이크 유.",k:"정말 예뻐요. 좋아해요."},{who:"상대",me:0,t:"Haha, thank you.",s:"하하, 땡큐.",k:"하하, 고마워요."}]}
+},
+{id:"talk",tab:"💬 상담",
+ vn:{lang:"vi-VN",title:"너 ~해? (챙기기)",lead:"선수·상대 상태를 물을 때.",
+  explain:"상대 상태를 물을 땐 <b>Em có + [형용사] + không?</b> = '너 ~해?'. 선수를 챙기거나 상대를 걱정할 때 써요. 대답엔 <b>Đừng lo</b>(걱정 마)로 다독여요.",
+  formula:{pre:"Em có",slot:"형용사",mean:"không? = 너 ~해?"},
+  items:[{t:"Em có mệt không?",s:"앰→ 꼬↗ 멧↧ 콩→?",k:"피곤해?"},{t:"Em có sao không?",s:"앰→ 꼬↗ 사오→ 콩→?",k:"무슨 일 있어?"},{t:"Em có đau không?",s:"앰→ 꼬↗ 다우→ 콩→?",k:"아파?"},{t:"Em có ổn không?",s:"앰→ 꼬↗ 온↘↗ 콩→?",k:"괜찮아?"},{t:"Đừng lo.",s:"등↘ 로→",k:"걱정 마."}],
+  drill:[{k:"피곤해?",t:"Em có mệt không?",s:"앰→ 꼬↗ 멧↧ 콩→?"},{k:"괜찮아?",t:"Em có ổn không?",s:"앰→ 꼬↗ 온↘↗ 콩→?"},{k:"아파?",t:"Em có đau không?",s:"앰→ 꼬↗ 다우→ 콩→?"},{k:"무슨 일 있어?",t:"Em có sao không?",s:"앰→ 꼬↗ 사오→ 콩→?"},{k:"걱정 마.",t:"Đừng lo.",s:"등↘ 로→"}],
+  build:{pre:"Em có ",suf:" không?",sayPre:"앰→ 꼬↗ ",koSuf:"?",chips:[{w:"mệt",say:"멧↧",ko:"피곤"},{w:"đau",say:"다우→",ko:"아파"},{w:"ổn",say:"온↘↗",ko:"괜찮"},{w:"buồn",say:"부온↘",ko:"슬퍼"},{w:"sợ",say:"써↧",ko:"무서워"},{w:"khỏe",say:"코에↘↗",ko:"건강해"}]},
+  dia:[{who:"코치",me:1,t:"Em có sao không?",s:"앰→ 꼬↗ 사오→ 콩→?",k:"무슨 일 있어?"},{who:"선수",me:0,t:"Em hơi mệt.",s:"앰→ 허이→ 멧↧",k:"좀 피곤해요."},{who:"코치",me:1,t:"Đừng lo, nghỉ một chút.",s:"등↘ 로→, 응이↘↗ 몯↧ 쭛↗",k:"걱정 마, 좀 쉬어."},{who:"선수",me:0,t:"Vâng ạ, cảm ơn thầy.",s:"벙→ 아↧, 깜↘↗ 언→ 터이↘",k:"네, 감사합니다 코치님."}]},
+ en:{lang:"en-US",title:"Are you ~?",lead:"상대 상태를 물을 때.",
+  explain:"<b>Are you + [형용사]?</b> = '너 ~해?'. 선수·상대를 챙길 때 써요. 다독일 땐 <b>Don't worry</b>(걱정 마).",
+  formula:{pre:"Are you",slot:"adjective",mean:"? = 너 ~해?"},
+  items:[{t:"Are you tired?",s:"아 유 타이어드?",k:"피곤해?"},{t:"Are you okay?",s:"아 유 오케이?",k:"괜찮아?"},{t:"Are you hurt?",s:"아 유 허트?",k:"다쳤어?"},{t:"Are you sad?",s:"아 유 쌔드?",k:"슬퍼?"},{t:"Don't worry.",s:"돈 워리.",k:"걱정 마."}],
+  drill:[{k:"피곤해?",t:"Are you tired?",s:"아 유 타이어드?"},{k:"괜찮아?",t:"Are you okay?",s:"아 유 오케이?"},{k:"다쳤어?",t:"Are you hurt?",s:"아 유 허트?"},{k:"슬퍼?",t:"Are you sad?",s:"아 유 쌔드?"},{k:"걱정 마.",t:"Don't worry.",s:"돈 워리."}],
+  build:{pre:"Are you ",suf:"?",sayPre:"아 유 ",koSuf:"?",chips:[{w:"tired",say:"타이어드",ko:"피곤"},{w:"okay",say:"오케이",ko:"괜찮"},{w:"hurt",say:"허트",ko:"다쳤"},{w:"sad",say:"쌔드",ko:"슬퍼"},{w:"nervous",say:"너버스",ko:"긴장"},{w:"ready",say:"레디",ko:"준비됐"}]},
+  dia:[{who:"코치",me:1,t:"Are you okay?",s:"아 유 오케이?",k:"괜찮아?"},{who:"선수",me:0,t:"I'm a bit tired.",s:"아임 어 빗 타이어드.",k:"좀 피곤해요."},{who:"코치",me:1,t:"Don't worry, take a rest.",s:"돈 워리, 테이크 어 레스트.",k:"걱정 마, 좀 쉬어."},{who:"선수",me:0,t:"Yes, thank you coach.",s:"예스, 땡큐 코치.",k:"네, 감사합니다 코치님."}]}
+}
+];
+
+var LESSON=0, LANG="vn", rate=0.85, cur=null;
+function D(){return LESSONS[LESSON][LANG];}
+function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
+function speak(text,el,lc){
+  if(!("speechSynthesis" in window))return;
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang=lc||D().lang;u.rate=rate;var v=voice(u.lang);if(v)u.voice=v;
+  if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");u.onend=u.onerror=function(){el.classList.remove("playing");};}
+  speechSynthesis.speak(u);
+}
+window.setRate=function(r,b){rate=r;document.querySelectorAll(".speed button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");};
+function arrows(s){return s.replace(/([→↗↘~↧]+)/g,'<span class="up">$1</span>');}
+window.setLang=function(l){LANG=l;document.body.className=l;document.getElementById("tVN").classList.toggle("on",l==="vn");document.getElementById("tEN").classList.toggle("on",l==="en");render();window.scrollTo(0,0);};
+window.pickLesson=function(i){LESSON=i;renderTabs();render();window.scrollTo(0,0);};
+function renderTabs(){document.getElementById("lessonTabs").innerHTML=LESSONS.map(function(L,i){return '<button class="'+(i===LESSON?"on":"")+'" onclick="pickLesson('+i+')">'+L.tab+'</button>';}).join("");}
+
+function render(){
+  var d=D();
+  document.getElementById("patTitle").textContent=d.title;
+  document.getElementById("patLead").textContent=d.lead;
+  document.getElementById("explain").innerHTML=d.explain;
+  document.getElementById("formula").innerHTML='<div class="big">'+d.formula.pre+' <span class="slot">'+d.formula.slot+'</span></div><div class="mean">= '+d.formula.mean+'</div>';
+  var lh="";d.items.forEach(function(it,i){lh+='<div class="card" id="li'+i+'" onclick="say('+i+')"><div class="spk">🔊</div><div><div class="tgt">'+it.t+'</div><div class="say">'+arrows(it.s)+'</div><div class="ko">'+it.k+'</div></div></div>';});
+  document.getElementById("listen").innerHTML=lh;
+  drillI=0;renderDrill();
+  var bh="";d.build.chips.forEach(function(c,i){bh+='<button class="chip" onclick="buildPick('+i+',this)">'+c.w+' <small>'+c.ko+'</small></button>';});
+  document.getElementById("buildChips").innerHTML=bh;buildPick(0);
+  var dh="";d.dia.forEach(function(l,i){dh+='<div class="line '+(l.me?"me":"")+'" onclick="sayDia('+i+')"><div class="who">'+l.who+'</div><div class="bub"><div class="bt">'+l.t+'</div><div class="bs">'+arrows(l.s)+'</div><div class="bk">'+l.k+'</div></div></div>';});
+  document.getElementById("dia").innerHTML=dh;
+}
+window.say=function(i){var it=D().items[i];speak(it.t,document.getElementById("li"+i));};
+window.playAll=function(){var its=D().items,i=0;(function nx(){if(i>=its.length)return;speak(its[i].t,document.getElementById("li"+i));var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,350);}},200);})();};
+
+var drillI=0;
+function renderDrill(){var d=D().drill[drillI];document.getElementById("drillKo").textContent=d.k;document.getElementById("drillT").textContent=d.t;document.getElementById("drillS").innerHTML=arrows(d.s);document.getElementById("drillAns").classList.add("hidden");document.getElementById("drillThink").style.visibility="visible";document.getElementById("drillPos").textContent=(drillI+1)+" / "+D().drill.length;}
+window.drillReveal=function(){var d=D().drill[drillI];document.getElementById("drillAns").classList.remove("hidden");document.getElementById("drillThink").style.visibility="hidden";speak(d.t);};
+window.drillNext=function(){drillI=(drillI+1)%D().drill.length;renderDrill();};
+
+function buildPick(i,btn){var d=D(),c=d.build.chips[i];document.querySelectorAll("#buildChips .chip").forEach(function(x){x.classList.remove("on");});var all=document.querySelectorAll("#buildChips .chip");if(btn)btn.classList.add("on");else if(all[i])all[i].classList.add("on");
+  var sentence=d.build.pre+c.w+(d.build.suf||".");
+  document.getElementById("buildOut").innerHTML='<span class="fx">'+d.build.pre+'</span><span class="w">'+c.w+'</span><span class="fx">'+(d.build.suf||"")+'</span>';
+  document.getElementById("buildSay").innerHTML=arrows(d.build.sayPre+c.say);
+  document.getElementById("buildKo").textContent=c.ko+d.build.koSuf;
+  speak(sentence);}
+window.buildPick=buildPick;
+window.sayDia=function(i){var l=D().dia[i];speak(l.t,document.querySelectorAll(".line")[i]);};
+window.playDialogue=function(){var ds=D().dia,i=0;(function nx(){if(i>=ds.length)return;speak(ds[i].t,document.querySelectorAll(".line")[i]);var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,450);}},200);})();};
+
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
+renderTabs();render();
+</script>
+</body>
+</html>
