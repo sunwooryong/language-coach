@@ -173,9 +173,25 @@
     <button class="btn" onclick="playDialogue()">▶ 대화 전체 듣기</button>
   </div>
 
+  <div class="step" id="comicStep" style="display:none">
+    <div class="step-h"><span class="step-n">🎨</span><span class="step-t">만화로 보기</span></div>
+    <div class="step-d">장면과 함께 기억하세요. (샘플 — 전체 레슨엔 상황별 만화가 들어가요)</div>
+    <div id="comic" style="color:var(--ink)"></div>
+  </div>
+
   <div class="step">
     <div class="step-h"><span class="step-n">6</span><span class="step-t">복습</span></div>
     <div class="note">🔁 <b>간격 반복</b> — 오늘 배운 패턴·단어는 잊을 때쯤 자동으로 다시 나와요. 본 시스템에선 매일 복습 알림 + 핸즈프리 듣기로 굳힙니다.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-h"><span class="step-n">🎵</span><span class="step-t">노래방 (샘플)</span></div>
+    <div class="step-d">공식 영상으로 따라 부르기. 완성본엔 <b>핵심 표현·단어 학습 카드</b>가 함께 들어가요. (가사는 영상 자막으로)</div>
+    <div style="font-weight:700;margin:4px 0 6px;font-size:16px">🎤 Ước Gì</div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe width="100%" height="210" src="https://www.youtube.com/embed/k7YJHCR9JBE" title="Ước Gì" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
+    <div style="font-weight:700;margin:14px 0 6px;font-size:16px">🎤 50 Năm Về Sau</div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe width="100%" height="210" src="https://www.youtube.com/embed/UPeh8jGkMjE" title="50 Năm Về Sau" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen style="display:block"></iframe></div>
+    <div class="note" style="margin-top:12px">🎶 완성본에선 각 노래의 <b>후렴·핵심 표현</b>을 뜻·발음·성조 카드로 만들어, 외워서 노래방에서 부를 수 있게 해드릴게요. (전체 가사는 위 영상 자막으로 보며 연습)</div>
   </div>
 
   <div class="footer">
@@ -332,6 +348,30 @@ var LESSONS=[
 }
 ];
 
+var COMICS={food:'<svg viewBox="0 0 440 478" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">'+
+'<rect x="2" y="2" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
+'<text x="18" y="26" font-size="12" font-weight="800" fill="var(--jade)">1</text>'+
+'<circle cx="52" cy="66" r="16" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/><path d="M32 104 Q52 78 72 104 Z" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/>'+
+'<rect x="92" y="26" width="336" height="58" rx="14" fill="var(--vn)"/><polygon points="92,52 76,62 96,70" fill="var(--vn)"/>'+
+'<text x="110" y="54" font-size="17" font-weight="800" fill="#ffffff">Cho hai cà phê.</text><text x="110" y="73" font-size="12" fill="#ffffff" fill-opacity="0.85">커피 두 잔 주세요</text>'+
+'<rect x="2" y="122" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
+'<text x="18" y="146" font-size="12" font-weight="800" fill="var(--jade)">2</text>'+
+'<rect x="348" y="214" width="82" height="16" rx="3" fill="var(--jade)" fill-opacity="0.22"/>'+
+'<circle cx="388" cy="182" r="16" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/><path d="M368 214 Q388 190 408 214 Z" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/>'+
+'<rect x="14" y="146" width="320" height="58" rx="14" fill="var(--jade)"/><polygon points="334,172 350,182 332,190" fill="var(--jade)"/>'+
+'<text x="30" y="174" font-size="17" font-weight="800" fill="#ffffff">Có đá không?</text><text x="30" y="193" font-size="12" fill="#ffffff" fill-opacity="0.85">얼음 넣을까요?</text>'+
+'<rect x="2" y="242" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
+'<text x="18" y="266" font-size="12" font-weight="800" fill="var(--jade)">3</text>'+
+'<circle cx="52" cy="306" r="16" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/><path d="M32 344 Q52 318 72 344 Z" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/>'+
+'<rect x="92" y="266" width="336" height="58" rx="14" fill="var(--vn)"/><polygon points="92,292 76,302 96,310" fill="var(--vn)"/>'+
+'<text x="110" y="294" font-size="17" font-weight="800" fill="#ffffff">Cho thêm đá ạ.</text><text x="110" y="313" font-size="12" fill="#ffffff" fill-opacity="0.85">얼음 더 주세요</text>'+
+'<rect x="2" y="362" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
+'<text x="18" y="386" font-size="12" font-weight="800" fill="var(--jade)">4</text>'+
+'<rect x="300" y="442" width="16" height="20" rx="3" fill="var(--gold)"/><rect x="324" y="442" width="16" height="20" rx="3" fill="var(--gold)"/>'+
+'<circle cx="388" cy="422" r="16" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/><path d="M368 460 Q388 436 408 460 Z" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/>'+
+'<rect x="14" y="386" width="320" height="58" rx="14" fill="var(--jade)"/><polygon points="334,412 350,422 332,430" fill="var(--jade)"/>'+
+'<text x="30" y="414" font-size="17" font-weight="800" fill="#ffffff">Tính tiền nhé.</text><text x="30" y="433" font-size="12" fill="#ffffff" fill-opacity="0.85">계산할게요</text>'+
+'</svg>'};
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
 function D(){return LESSONS[LESSON][LANG];}
 function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
@@ -366,6 +406,8 @@ function render(){
   document.getElementById("buildChips").innerHTML=bh;buildPick(0);
   var dh="";d.dia.forEach(function(l,i){dh+='<div class="line '+(l.me?"me":"")+'" onclick="sayDia('+i+')"><div class="who">'+l.who+'</div><div class="bub"><div class="bt">'+l.t+'</div><div class="bs">'+arrows(l.s)+'</div><div class="bk">'+l.k+'</div></div></div>';});
   document.getElementById("dia").innerHTML=dh;
+  var cs=document.getElementById("comicStep"),cm=COMICS[LESSONS[LESSON].id];
+  if(cm){cs.style.display="block";document.getElementById("comic").innerHTML=cm;}else{cs.style.display="none";}
 }
 window.say=function(i){var it=D().items[i];speak(it.t,document.getElementById("li"+i));};
 window.playAll=function(){var its=D().items,i=0;(function nx(){if(i>=its.length)return;speak(its[i].t,document.getElementById("li"+i));var chk=setInterval(function(){if(!speechSynthesis.speaking){clearInterval(chk);i++;setTimeout(nx,350);}},200);})();};
