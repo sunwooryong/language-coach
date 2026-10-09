@@ -698,7 +698,7 @@ function renderMid(){
 function sayW(t){speak(t,null,"vi-VN");}
 window.sayW=sayW;
 window.showView=function(v){
-  var views={lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView",live:"liveView"};
+  var views={lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView",live:"liveView",bank:"bankView"};
   for(var k in views){document.getElementById(views[k]).style.display=(k===v)?"block":"none";}
   document.getElementById("mLesson").classList.toggle("on",v==="lesson");
   document.getElementById("mBest").classList.toggle("on",v==="best");
