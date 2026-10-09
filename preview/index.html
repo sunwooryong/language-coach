@@ -174,6 +174,17 @@
   .pat .pe{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
   .pat .pe button{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:var(--jade-s);color:var(--ink);border-radius:14px;padding:4px 10px;cursor:pointer}
   .bsec{font-size:17px;font-weight:800;margin:20px 0 4px}
+  .srow{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin:6px 0;cursor:pointer;font:inherit;color:var(--ink)}
+  .srow:active{background:var(--vn-s)}
+  .srow .sp{font-size:15px}
+  .srow .sv{font-size:15px;font-weight:700}
+  .srow .sk{font-size:12.5px;color:var(--sub);margin-top:1px}
+  .verbchips{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 10px}
+  .verbchips button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:18px;padding:6px 12px;cursor:pointer}
+  .verbchips button.on{background:var(--vn);color:#fff;border-color:var(--vn)}
+  .warn{background:var(--vn-s);color:var(--vn);border-radius:10px;padding:8px 11px;font-size:12.5px;font-weight:700;margin:4px 0 8px}
+  .lvl{font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 6px;margin-left:auto;flex-shrink:0}
+  .lvl.강{background:var(--vn);color:#fff} .lvl.약{background:var(--gold);color:#3a2a06} .lvl.x{display:none}
 </style>
 </head>
 <body class="vn">
@@ -261,11 +272,6 @@
     <button class="btn" onclick="playDialogue()">▶ 대화 전체 듣기</button>
   </div>
 
-  <div class="step" id="comicStep" style="display:none">
-    <div class="step-h"><span class="step-n">🎨</span><span class="step-t">만화로 보기</span></div>
-    <div class="step-d">장면과 함께 기억하세요. (샘플 — 전체 레슨엔 상황별 만화가 들어가요)</div>
-    <div id="comic" style="color:var(--ink)"></div>
-  </div>
 
   <div class="step">
     <div class="step-h"><span class="step-n">6</span><span class="step-t">복습</span></div>
@@ -294,6 +300,7 @@
 
 <script src="live-data.js"></script>
 <script src="word-bank.js"></script>
+<script src="sentence-bank.js"></script>
 <script>
 /* ===== 4개 레슨 × (베트남어/영어) ===== */
 var LESSONS=[
@@ -443,30 +450,6 @@ var LESSONS=[
 }
 ];
 
-var COMICS={food:'<svg viewBox="0 0 440 478" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">'+
-'<rect x="2" y="2" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
-'<text x="18" y="26" font-size="12" font-weight="800" fill="var(--jade)">1</text>'+
-'<circle cx="52" cy="66" r="16" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/><path d="M32 104 Q52 78 72 104 Z" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/>'+
-'<rect x="92" y="26" width="336" height="58" rx="14" fill="var(--vn)"/><polygon points="92,52 76,62 96,70" fill="var(--vn)"/>'+
-'<text x="110" y="54" font-size="17" font-weight="800" fill="#ffffff">Cho hai cà phê.</text><text x="110" y="73" font-size="12" fill="#ffffff" fill-opacity="0.85">커피 두 잔 주세요</text>'+
-'<rect x="2" y="122" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
-'<text x="18" y="146" font-size="12" font-weight="800" fill="var(--jade)">2</text>'+
-'<rect x="348" y="214" width="82" height="16" rx="3" fill="var(--jade)" fill-opacity="0.22"/>'+
-'<circle cx="388" cy="182" r="16" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/><path d="M368 214 Q388 190 408 214 Z" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/>'+
-'<rect x="14" y="146" width="320" height="58" rx="14" fill="var(--jade)"/><polygon points="334,172 350,182 332,190" fill="var(--jade)"/>'+
-'<text x="30" y="174" font-size="17" font-weight="800" fill="#ffffff">Có đá không?</text><text x="30" y="193" font-size="12" fill="#ffffff" fill-opacity="0.85">얼음 넣을까요?</text>'+
-'<rect x="2" y="242" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
-'<text x="18" y="266" font-size="12" font-weight="800" fill="var(--jade)">3</text>'+
-'<circle cx="52" cy="306" r="16" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/><path d="M32 344 Q52 318 72 344 Z" fill="var(--vn-s)" stroke="var(--vn)" stroke-width="2"/>'+
-'<rect x="92" y="266" width="336" height="58" rx="14" fill="var(--vn)"/><polygon points="92,292 76,302 96,310" fill="var(--vn)"/>'+
-'<text x="110" y="294" font-size="17" font-weight="800" fill="#ffffff">Cho thêm đá ạ.</text><text x="110" y="313" font-size="12" fill="#ffffff" fill-opacity="0.85">얼음 더 주세요</text>'+
-'<rect x="2" y="362" width="436" height="112" rx="12" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2"/>'+
-'<text x="18" y="386" font-size="12" font-weight="800" fill="var(--jade)">4</text>'+
-'<rect x="300" y="442" width="16" height="20" rx="3" fill="var(--gold)"/><rect x="324" y="442" width="16" height="20" rx="3" fill="var(--gold)"/>'+
-'<circle cx="388" cy="422" r="16" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/><path d="M368 460 Q388 436 408 460 Z" fill="var(--jade-s)" stroke="var(--jade)" stroke-width="2"/>'+
-'<rect x="14" y="386" width="320" height="58" rx="14" fill="var(--jade)"/><polygon points="334,412 350,422 332,430" fill="var(--jade)"/>'+
-'<text x="30" y="414" font-size="17" font-weight="800" fill="#ffffff">Tính tiền nhé.</text><text x="30" y="433" font-size="12" fill="#ffffff" fill-opacity="0.85">계산할게요</text>'+
-'</svg>'};
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
 var AUD={}, curAudio=null;
 try{fetch("audio/manifest.json").then(function(r){return r.json();}).then(function(j){AUD=j||{};}).catch(function(){});}catch(e){}
@@ -522,8 +505,6 @@ function render(){
   document.getElementById("buildChips").innerHTML=bh;buildPick(0);
   var dh="";d.dia.forEach(function(l,i){dh+='<div class="line '+(l.me?"me":"")+'" onclick="sayDia('+i+')"><div class="who">'+l.who+'</div><div class="bub"><div class="bt">'+l.t+'</div><div class="bs">'+arrows(l.s)+'</div><div class="bk">'+l.k+'</div></div></div>';});
   document.getElementById("dia").innerHTML=dh;
-  var cs=document.getElementById("comicStep"),cm=COMICS[LESSONS[LESSON].id];
-  if(cm){cs.style.display="block";document.getElementById("comic").innerHTML=cm;}else{cs.style.display="none";}
 }
 window.say=function(i){var it=D().items[i];speak(it.t,document.getElementById("li"+i));};
 window.playAll=function(){var its=D().items,i=0;(function nx(){if(i>=its.length)return;speak(its[i].t,document.getElementById("li"+i),null,function(){i++;setTimeout(nx,300);});})();};
@@ -729,6 +710,31 @@ function renderBankSection(which){
   }else if(which==="shoot"){
     h+='<p class="lead">사격 전문용어 '+SHOOTBANK.reduce(function(a,g){return a+g.items.length;},0)+'개 (코치님 자료). 탭하면 발음.</p>';
     SHOOTBANK.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items); });
+  }else if(which==="sent"){
+    var tot=SENTENCEBANK.reduce(function(a,g){return a+g.items.length;},0);
+    h+='<p class="lead">예문 '+tot+'개 (한 동사로 수십 문장). 동사를 고르고, 문장을 탭하면 발음. (돌려쓰기)</p>';
+    h+='<div class="verbchips" id="verbChips">';
+    SENTENCEBANK.forEach(function(g,i){ h+='<button data-i="'+i+'" onclick="pickVerb('+i+')">'+g.label+' '+g.items.length+'</button>'; });
+    h+='</div><div id="sentList"></div>';
+    el.innerHTML=h; document.querySelectorAll("#bankNav button").forEach(function(b){b.classList.toggle("on",b.dataset.k===which);}); pickVerb(0); return;
+  }else if(which==="num"){
+    h+='<p class="lead">숫자·점수·퍼센트. 탭하면 발음. 변음 3규칙은 꼭 외우세요.</p>';
+    NUMBERS.forEach(function(g){ h+='<div class="bgrp">'+g.name+'</div>'+wcards(g.items.map(function(x){return {t:x[0],s:x[1],k:x[2]};})); });
+  }else if(which==="cls"){
+    h+='<p class="lead">분류사(단위) '+CLASSIFIERS.length+'개 — "몇 개"를 말할 때 명사 앞 단위. 탭하면 발음.</p>';
+    h+=wcards(CLASSIFIERS.map(function(x){return {t:x[0],s:x[1],k:x[2]};}));
+  }else if(which==="job"){
+    h+='<p class="lead">직업 '+JOBS.reduce(function(a,g){return a+g.items.length;},0)+'개. 탭하면 발음.</p>';
+    JOBS.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items); });
+  }else if(which==="slang"){
+    h+='<p class="lead">고급 — 베트남 사람이 말할 때 <b>알아듣기 위한</b> 참고. 아래 ⚠️ 표시는 직접 쓰지 마세요.</p>';
+    SLANG.forEach(function(g){
+      h+='<div class="bgrp">'+g.name+'</div><div class="warn">'+(g.items[0]&&g.items[0][2]==="강"?"⚠️ ":"")+g.warn+'</div>';
+      g.items.forEach(function(it){
+        var head=it[0].split('/')[0].trim();
+        h+='<button class="srow"'+(g.audio?' onclick="sayW(\''+jsq(head)+'\')"':' style="cursor:default"')+'>'+(g.audio?'<span class="sp">🔊</span>':'')+'<div><div class="sv">'+it[0]+'</div><div class="sk">'+it[1]+'</div></div><span class="lvl '+(it[2]==="강"?"강":it[2]==="약"?"약":"x")+'">'+(it[2]==="강"?"강":it[2]==="약"?"약":"")+'</span></button>';
+      });
+    });
   }else{
     var S=WORDBANK.filter(function(x){return x.sec===which;})[0]; if(!S)return;
     var tot=S.groups.reduce(function(a,g){return a+g.items.length;},0);
@@ -740,8 +746,14 @@ function renderBankSection(which){
   window.scrollTo(0,0);
 }
 window.renderBankSection=renderBankSection;
+window.pickVerb=function(i){
+  var g=SENTENCEBANK[i], h="";
+  g.items.forEach(function(it){ h+='<button class="srow" onclick="sayW(\''+jsq(it.t)+'\')"><span class="sp">🔊</span><div><div class="sv">'+it.t+'</div><div class="sk">'+it.k+'</div></div></button>'; });
+  document.getElementById("sentList").innerHTML=h;
+  document.querySelectorAll("#verbChips button").forEach(function(b){b.classList.toggle("on",+b.dataset.i===i);});
+};
 function renderBank(){
-  var nav=[["pat","📐 공식 20"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["shoot","🎯 사격 전문용어"]];
+  var nav=[["pat","📐 공식 20"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["slang","🔥 고급·속어"]];
   var h='<h1>📒 단어 · <span class="hl">공식</span></h1>';
   h+='<div class="banknav" id="bankNav">';
   nav.forEach(function(n){h+='<button data-k="'+n[0]+'" onclick="renderBankSection(\''+n[0]+'\')">'+n[1]+'</button>';});
