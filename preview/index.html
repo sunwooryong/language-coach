@@ -165,6 +165,15 @@
   .lvopt .ok2{font-size:12.5px;color:var(--sub);margin-top:1px}
   .lvopt .up{color:var(--vn);font-weight:800}
   .lvend{text-align:center;padding:16px;background:var(--jade-s);border-radius:14px;margin-top:10px}
+  .banknav{position:sticky;top:0;z-index:15;display:flex;gap:6px;overflow-x:auto;padding:8px 0;background:var(--paper);-webkit-overflow-scrolling:touch}
+  .banknav button{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:16px;padding:6px 12px;white-space:nowrap;flex-shrink:0;cursor:pointer}
+  .banknav button.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .pat{background:var(--card);border:1px solid var(--vn);border-left-width:4px;border-radius:12px;padding:11px 13px;margin:8px 0}
+  .pat .pf{font-size:16px;font-weight:800;color:var(--vn)}
+  .pat .pm{font-size:13px;color:var(--sub);margin:2px 0 4px}
+  .pat .pe{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+  .pat .pe button{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:var(--jade-s);color:var(--ink);border-radius:14px;padding:4px 10px;cursor:pointer}
+  .bsec{font-size:17px;font-weight:800;margin:20px 0 4px}
 </style>
 </head>
 <body class="vn">
@@ -185,12 +194,14 @@
     <button id="mApply" onclick="showView('apply')">🧩 응용</button>
     <button id="mMid" onclick="showView('mid')">🚀 중급</button>
     <button id="mLive" onclick="showView('live')">🎬 실전</button>
+    <button id="mBank" onclick="showView('bank')">📒 단어·공식</button>
   </div>
 
   <div id="best100View" style="display:none"></div>
   <div id="applyView" style="display:none"></div>
   <div id="midView" style="display:none"></div>
   <div id="liveView" style="display:none"></div>
+  <div id="bankView" style="display:none"></div>
 
   <div id="lessonView">
   <h1>레슨 · <span class="hl" id="patTitle"></span></h1>
@@ -282,6 +293,7 @@
   </div>
 
 <script src="live-data.js"></script>
+<script src="word-bank.js"></script>
 <script>
 /* ===== 4개 레슨 × (베트남어/영어) ===== */
 var LESSONS=[
@@ -693,8 +705,50 @@ window.showView=function(v){
   document.getElementById("mApply").classList.toggle("on",v==="apply");
   document.getElementById("mMid").classList.toggle("on",v==="mid");
   document.getElementById("mLive").classList.toggle("on",v==="live");
+  document.getElementById("mBank").classList.toggle("on",v==="bank");
   window.scrollTo(0,0);
 };
+
+/* ===== 📒 단어·공식 (자료 일괄 투입) ===== */
+function wcards(items){
+  var h='<div class="bgrid">';
+  items.forEach(function(it){
+    h+='<button class="bw" onclick="sayW(\''+jsq(it.t)+'\')"><div class="v">'+it.t+'</div>'+(it.s?'<div class="s">'+arrows(it.s)+'</div>':'')+'<div class="k">'+it.k+'</div></button>';
+  });
+  return h+'</div>';
+}
+function renderBankSection(which){
+  var el=document.getElementById("bankBody"), h="";
+  if(which==="pat"){
+    h+='<p class="lead">핵심 공식 '+PATTERNS.length+'개. 단어만 바꿔 끼우면 수백 문장. 예시를 탭하면 발음.</p>';
+    PATTERNS.forEach(function(p){
+      h+='<div class="pat"><div class="pf">'+p.form+'</div><div class="pm">'+p.fn+' · '+p.mean+'</div><div class="pe">';
+      (p.ex||"").split('/').forEach(function(e){e=e.trim(); if(e&&/[A-Za-zÀ-ỹ]/.test(e))h+='<button onclick="sayW(\''+jsq(e)+'\')">'+e+'</button>';});
+      h+='</div></div>';
+    });
+  }else if(which==="shoot"){
+    h+='<p class="lead">사격 전문용어 '+SHOOTBANK.reduce(function(a,g){return a+g.items.length;},0)+'개 (코치님 자료). 탭하면 발음.</p>';
+    SHOOTBANK.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items); });
+  }else{
+    var S=WORDBANK.filter(function(x){return x.sec===which;})[0]; if(!S)return;
+    var tot=S.groups.reduce(function(a,g){return a+g.items.length;},0);
+    h+='<p class="lead">'+which+' '+tot+'개 (발음·성조 포함). 탭하면 발음.</p>';
+    S.groups.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items); });
+  }
+  el.innerHTML=h;
+  document.querySelectorAll("#bankNav button").forEach(function(b){b.classList.toggle("on",b.dataset.k===which);});
+  window.scrollTo(0,0);
+}
+window.renderBankSection=renderBankSection;
+function renderBank(){
+  var nav=[["pat","📐 공식 20"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["shoot","🎯 사격 전문용어"]];
+  var h='<h1>📒 단어 · <span class="hl">공식</span></h1>';
+  h+='<div class="banknav" id="bankNav">';
+  nav.forEach(function(n){h+='<button data-k="'+n[0]+'" onclick="renderBankSection(\''+n[0]+'\')">'+n[1]+'</button>';});
+  h+='</div><div id="bankBody"></div>';
+  document.getElementById("bankView").innerHTML=h;
+  renderBankSection("pat");
+}
 
 /* ===== 🎬 실전 분기 대화 엔진 ===== */
 var liveCur=null, liveNode=null;
@@ -747,7 +801,7 @@ window.livePick=function(i){
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();
+renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();
 </script>
 </body>
 </html>
