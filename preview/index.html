@@ -185,6 +185,13 @@
   .warn{background:var(--vn-s);color:var(--vn);border-radius:10px;padding:8px 11px;font-size:12.5px;font-weight:700;margin:4px 0 8px}
   .lvl{font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 6px;margin-left:auto;flex-shrink:0}
   .lvl.강{background:var(--vn);color:#fff} .lvl.약{background:var(--gold);color:#3a2a06} .lvl.x{display:none}
+  .lvcard2{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--jade);border-radius:14px;padding:14px 15px;margin:11px 0;box-shadow:0 1px 2px var(--sh)}
+  .lvcard2 .lh{display:flex;align-items:center;gap:9px}
+  .lvcard2 .lno{width:30px;height:30px;border-radius:9px;background:var(--jade);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .lvcard2 .lt2{font-size:16px;font-weight:800}
+  .lvcard2 .ld2{font-size:12.5px;color:var(--sub);margin:7px 0 9px;line-height:1.6}
+  .lvcard2 .lgo{display:flex;flex-wrap:wrap;gap:7px}
+  .lvcard2 .lgo button{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--jade);background:var(--jade-s);color:var(--ink);border-radius:16px;padding:6px 12px;cursor:pointer}
 </style>
 </head>
 <body class="vn">
@@ -200,7 +207,8 @@
   </div>
 
   <div class="modebar">
-    <button id="mLesson" class="on" onclick="showView('lesson')">📖 레슨</button>
+    <button id="mHome" class="on" onclick="showView('home')">🏠 레벨</button>
+    <button id="mLesson" onclick="showView('lesson')">📖 레슨</button>
     <button id="mBest" onclick="showView('best')">📚 베스트 100</button>
     <button id="mApply" onclick="showView('apply')">🧩 응용</button>
     <button id="mMid" onclick="showView('mid')">🚀 중급</button>
@@ -208,6 +216,7 @@
     <button id="mBank" onclick="showView('bank')">📒 단어·공식</button>
   </div>
 
+  <div id="homeView" style="display:none"></div>
   <div id="best100View" style="display:none"></div>
   <div id="applyView" style="display:none"></div>
   <div id="midView" style="display:none"></div>
@@ -301,6 +310,7 @@
 <script src="live-data.js"></script>
 <script src="word-bank.js"></script>
 <script src="sentence-bank.js"></script>
+<script src="advanced-content.js"></script>
 <script>
 /* ===== 4개 레슨 × (베트남어/영어) ===== */
 var LESSONS=[
@@ -679,8 +689,9 @@ function renderMid(){
 function sayW(t){speak(t,null,"vi-VN");}
 window.sayW=sayW;
 window.showView=function(v){
-  var views={lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView",live:"liveView",bank:"bankView"};
+  var views={home:"homeView",lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView",live:"liveView",bank:"bankView"};
   for(var k in views){document.getElementById(views[k]).style.display=(k===v)?"block":"none";}
+  document.getElementById("mHome").classList.toggle("on",v==="home");
   document.getElementById("mLesson").classList.toggle("on",v==="lesson");
   document.getElementById("mBest").classList.toggle("on",v==="best");
   document.getElementById("mApply").classList.toggle("on",v==="apply");
@@ -726,6 +737,15 @@ function renderBankSection(which){
   }else if(which==="job"){
     h+='<p class="lead">직업 '+JOBS.reduce(function(a,g){return a+g.items.length;},0)+'개. 탭하면 발음.</p>';
     JOBS.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items); });
+  }else if(which==="gram"){
+    h+='<p class="lead">고급 문법·구조 '+GRAMMAR.reduce(function(a,g){return a+g.items.length;},0)+'개. 예문을 탭하면 발음. 이게 중급→고급의 핵심.</p>';
+    GRAMMAR.forEach(function(g){ h+='<div class="bgrp">'+g.name+'</div>'+wcards(g.items.map(function(x){return {t:x[0],s:x[1],k:x[2]};})); });
+  }else if(which==="comp"){
+    h+='<p class="lead">사격 경기·대회 용어 '+COMPETITION.reduce(function(a,g){return a+g.items.length;},0)+'개 (실전 대회용). 탭하면 발음.</p>';
+    COMPETITION.forEach(function(g){ h+='<div class="bgrp">'+g.name+'</div>'+wcards(g.items.map(function(x){return {t:x[0],s:x[1],k:x[2]};})); });
+  }else if(which==="idiom"){
+    h+='<p class="lead">원어민이 자주 쓰는 자연 표현 '+IDIOMS.length+'개. 탭하면 발음. 이것만 섞어도 훨씬 자연스러워요.</p>';
+    h+=wcards(IDIOMS.map(function(x){return {t:x[0],s:x[1],k:x[2]};}));
   }else if(which==="slang"){
     h+='<p class="lead">고급 — 베트남 사람이 말할 때 <b>알아듣기 위한</b> 참고. 아래 ⚠️ 표시는 직접 쓰지 마세요.</p>';
     SLANG.forEach(function(g){
@@ -753,13 +773,34 @@ window.pickVerb=function(i){
   document.querySelectorAll("#verbChips button").forEach(function(b){b.classList.toggle("on",+b.dataset.i===i);});
 };
 function renderBank(){
-  var nav=[["pat","📐 공식 20"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["slang","🔥 고급·속어"]];
+  var nav=[["pat","📐 공식 20"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["gram","🎓 고급문법"],["comp","🏅 경기용어"],["idiom","🗣️ 자연표현"],["slang","🔥 고급·속어"]];
   var h='<h1>📒 단어 · <span class="hl">공식</span></h1>';
   h+='<div class="banknav" id="bankNav">';
   nav.forEach(function(n){h+='<button data-k="'+n[0]+'" onclick="renderBankSection(\''+n[0]+'\')">'+n[1]+'</button>';});
   h+='</div><div id="bankBody"></div>';
   document.getElementById("bankView").innerHTML=h;
   renderBankSection("pat");
+}
+window.goBank=function(sub){showView("bank");renderBankSection(sub);};
+window.goLesson=function(i){showView("lesson");pickLesson(i);};
+window.goV=function(v){showView(v);};
+var LEVELS=[
+ {n:"0",t:"기초 — 읽기·숫자·호칭",d:"성조·숫자(변음 규칙)·분류사·색깔/방향/명령어 100단어부터. 소리와 숫자에 익숙해지기.",go:[["🔢 숫자","goBank('num')"],["📚 베스트 100","goV('best')"],["📏 분류사","goBank('cls')"]]},
+ {n:"1",t:"생존 — 바로 현장에서",d:"식당·그랩·호텔·쇼핑·병원 상황을 공식(Cho/Có…không?/ở đâu)으로 즉시 말하기.",go:[["🍜 식당 레슨","goLesson(0)"],["🧩 응용 표현","goV('apply')"],["📐 공식 20","goBank('pat')"]]},
+ {n:"2",t:"일상·관계 — 돌려쓰기",d:"한 동사로 수십 문장(예문 523). 연결어로 문장을 이어 중급 대화로.",go:[["📝 예문","goBank('sent')"],["🚀 중급 연결","goV('mid')"],["🏃 동사","goBank('동사')"]]},
+ {n:"3",t:"사격 코칭 — 현장 전문",d:"사격 레슨·전문용어 191개·실전 코칭 세션(12단계 분기)으로 선수 지도.",go:[["🎯 사격 레슨","goLesson(1)"],["🎯 사격 용어","goBank('shoot')"],["🎬 실전 세션","goV('live')"]]},
+ {n:"4",t:"연애·사교 — 사람 사귀기",d:"연애·상담 대화, 직업 어휘 100개로 관계를 넓히기.",go:[["❤️ 연애 레슨","goLesson(2)"],["🎬 실전 대화","goV('live')"],["💼 직업","goBank('job')"]]},
+ {n:"5",t:"유창 — 최고급",d:"고급 문법(비교·피동·연결), 원어민 자연 표현, 경기·대회 용어, 속어 알아듣기.",go:[["🎓 고급 문법","goBank('gram')"],["🗣️ 자연 표현","goBank('idiom')"],["🏅 경기 용어","goBank('comp')"],["🔥 고급·속어","goBank('slang')"]]}
+];
+function renderHome(){
+  var h='<h1>🏆 베트남어 <span class="hl">정복</span> 로드맵</h1><p class="lead">레벨 0 → 5 순서로. 각 레벨의 버튼을 누르면 바로 그 학습으로 이동해요. 매일 조금씩, 앱 하나로.</p>';
+  LEVELS.forEach(function(L){
+    h+='<div class="lvcard2"><div class="lh"><div class="lno">'+L.n+'</div><div class="lt2">'+L.t+'</div></div><div class="ld2">'+L.d+'</div><div class="lgo">';
+    L.go.forEach(function(g){ h+='<button onclick="'+g[1]+'">'+g[0]+'</button>'; });
+    h+='</div></div>';
+  });
+  h+='<div class="note" style="margin-top:20px">🎧 모든 단어·문장은 <b>진짜 뉴럴 음성</b>(HoaiMy·NamMinh)으로 탭하면 들려요. 폰에서도 또렷합니다. 노트 필기 없이 <b>이 앱 하나로</b> 회화까지.</div>';
+  document.getElementById("homeView").innerHTML=h;
 }
 
 /* ===== 🎬 실전 분기 대화 엔진 ===== */
@@ -813,7 +854,7 @@ window.livePick=function(i){
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();
+renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
 </script>
 </body>
 </html>
