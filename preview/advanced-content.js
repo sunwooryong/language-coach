@@ -52,4 +52,30 @@ var IDIOMS=[
  ["Được rồi.","드억↧ 조이↘","됐어요·좋아요"],["Nói thật đi.","노이↗ 턷↧ 디→","솔직히 말해봐"],["Hẹn gặp lại.","헨↧ 갑↧ 라이↧","또 봐요"],["Giữ sức khỏe.","즈↘↗ 슥↗ 코에↘↗","건강 챙겨요"],
  ["Thôi kệ.","토이→ 께↧","그냥 둬요"],["Tính sao đây?","띤↗ 사오→ 더이→","어쩌지?"],["Cố gắng lên.","꼬↗ 강↗ 렌→","분발해요"],["Làm tốt lắm.","람↘ 똣↗ 람↗","아주 잘했어요"]
 ];
-if(typeof module!=='undefined')module.exports={GRAMMAR,COMPETITION,IDIOMS};
+var CONJUNCTIONS=[
+ ["và","바↘","그리고 · cơm và phở (밥과 쌀국수)"],
+ ["với","버이↗","~와 함께 · đi với anh (나랑 가다)"],
+ ["rồi","조이↘","그다음·~하고 · ăn rồi đi (먹고 나서 가다)"],
+ ["hoặc","호악↧","또는 · trà hoặc cà phê (차 또는 커피)"],
+ ["nhưng","니응→","하지만 · ngon nhưng đắt (맛있지만 비싸다)"],
+ ["mà","마↘","~인데·그런데 · rẻ mà tốt (싼데 좋다)"],
+ ["vì","비↘","왜냐면 · nghỉ vì mệt (피곤해서 쉬다)"],
+ ["nên","넨→","그래서 · mệt nên nghỉ (피곤해서 쉬다)"],
+ ["bởi vì","버이↘↗ 비↘","~때문에 · bởi vì trời mưa (비 오기 때문에)"],
+ ["cho nên","쪼→ 넨→","그러므로 · trời mưa cho nên nghỉ"],
+ ["vì vậy","비↘ 버이↧","그래서·따라서 · vì vậy tôi nghỉ"],
+ ["nếu","네우↗","만약 · nếu rảnh thì đi (한가하면 가다)"],
+ ["thì","티↘","그러면 · nếu sai thì sửa (틀리면 고치다)"],
+ ["khi","키→","~할 때 · khi ăn cơm (밥 먹을 때)"],
+ ["để","데↘","~하려고 · tập để thắng (이기려고 훈련)"],
+ ["trước khi","쯔억↗ 키→","~하기 전에 · trước khi bắn (쏘기 전에)"],
+ ["sau khi","사우→ 키→","~한 후에 · sau khi ăn (먹은 후에)"],
+ ["mặc dù","막↧ 주↘","비록~지만 · mặc dù mệt nhưng vẫn tập"],
+ ["tuy nhiên","뚜이→ 니엔→","그러나 · tuy nhiên vẫn đi (그러나 그래도 가다)"],
+ ["không những...mà còn","콩→ 니응↗ 마↘ 꼰↘","~뿐 아니라 ~도 · giỏi mà còn chăm"],
+ ["càng...càng","깡↘ 깡↘","~할수록 ~하다 · càng tập càng giỏi"],
+ ["vừa...vừa","브아↘ 브아↘","~하면서 ~하다 · vừa đi vừa nói"],
+ ["tại vì","따이↧ 비↘","~때문에 · tại vì bận (바빠서)"],
+ ["do đó","조→ 도↗","그러므로 · do đó phải đi (그래서 가야 해)"]
+];
+if(typeof module!=='undefined')module.exports={GRAMMAR,COMPETITION,IDIOMS,CONJUNCTIONS};
