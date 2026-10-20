@@ -78,4 +78,32 @@ var CONJUNCTIONS=[
  ["tại vì","따이↧ 비↘","~때문에 · tại vì bận (바빠서)"],
  ["do đó","조→ 도↗","그러므로 · do đó phải đi (그래서 가야 해)"]
 ];
-if(typeof module!=='undefined')module.exports={GRAMMAR,COMPETITION,IDIOMS,CONJUNCTIONS};
+var GREETINGS=[
+ {name:"👋 인사·예의",items:[
+  ["Xin chào","씬→ 짜오↘","안녕하세요"],
+  ["Chào em","짜오↘ 앰→","안녕 (손아랫사람에게)"],
+  ["Tạm biệt","땀↧ 비엣↧","안녕히 가세요"],
+  ["Hẹn gặp lại","헨↧ 갑↧ 라이↧","또 만나요"],
+  ["Cảm ơn","깜↘↗ 언→","감사합니다"],
+  ["Cảm ơn nhiều","깜↘↗ 언→ 니에우↘","정말 감사해요"],
+  ["Không có gì","콩→ 꼬↗ 지↘","천만에요"],
+  ["Xin lỗi","씬→ 로이↧","죄송합니다"],
+  ["Không sao","콩→ 사오→","괜찮아요"],
+  ["Làm ơn","람↘ 언→","부탁합니다"],
+  ["Vâng","벙↘","네 (공손)"],
+  ["Dạ","자↧","네 (아주 공손)"],
+  ["Không","콩→","아니요"],
+  ["Rất vui được gặp","젓↗ 부이→ 드억↧ 갑↧","만나서 반가워요"]]},
+ {name:"🙋 자기소개·소통",items:[
+  ["Tôi là Ryong","또이→ 라↘ 룡","저는 룡이에요"],
+  ["Tôi là người Hàn Quốc","또이→ 라↘ 응어이↘ 한↘ 꾸옥↗","저는 한국인이에요"],
+  ["Tôi là huấn luyện viên bắn súng","또이→ 라↘ 후언↗ 루옌↧ 비엔→ 반↗ 쑹↗","저는 사격 코치예요"],
+  ["Tôi sống ở Đà Nẵng","또이→ 송↗ 어↘↗ 다↘ 낭~↗","저는 다낭에 살아요"],
+  ["Tôi nói tiếng Việt một chút","또이→ 노이↗ 띠엥↗ 비엣↧ 몯↧ 쭛↗","베트남어 조금 해요"],
+  ["Tôi không hiểu","또이→ 콩→ 히에우↘↗","못 알아들었어요"],
+  ["Nói chậm được không?","노이↗ 쩜↧ 드억↧ 콩→","천천히 말해줄래요?"],
+  ["Cái này tiếng Việt là gì?","까이↗ 나이↘ 띠엥↗ 비엣↧ 라↘ 지↘","이거 베트남어로 뭐예요?"],
+  ["Bạn tên là gì?","반↧ 뗀→ 라↘ 지↘","이름이 뭐예요?"],
+  ["Bạn khỏe không?","반↧ 코에↘↗ 콩→","잘 지내요?"]]}
+];
+if(typeof module!=='undefined')module.exports={GRAMMAR,COMPETITION,IDIOMS,CONJUNCTIONS,GREETINGS};

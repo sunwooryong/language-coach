@@ -202,6 +202,25 @@
   .steprow .st{font-size:14.5px;font-weight:700;line-height:1.3}
   .steprow .ss{font-size:12px;color:var(--sub);margin-top:1px}
   .steprow .sarrow{color:var(--jade);font-size:17px;flex-shrink:0}
+  .steprow.hot{background:var(--gold);border-color:var(--gold)} .steprow.hot .sn{background:#3a2a06} .steprow.hot .st,.steprow.hot .ss,.steprow.hot .sarrow{color:#3a2a06}
+  .qmenu-h{font-size:13px;font-weight:800;color:var(--jade);margin:16px 0 6px}
+  .qpick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .qpick button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid var(--jade);background:var(--jade-s);color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer}
+  .qhead{display:flex;align-items:center;font-size:13px;font-weight:800;color:var(--sub);margin:8px 0}
+  .qhead span{margin-left:auto;color:var(--jade)}
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 18px;text-align:center;box-shadow:0 1px 2px var(--sh)}
+  .qcard .qko{font-size:24px;font-weight:800;line-height:1.3}
+  .qcard .qhint{font-size:12.5px;color:var(--sub);margin-top:8px}
+  .qans{margin:16px 0 6px}
+  .qans.hidden,.qgrade.hidden{display:none}
+  .qans .qvn{font-size:26px;font-weight:800;color:var(--vn)}
+  .qans .qsay{font-family:ui-monospace,monospace;font-size:14px;color:var(--jade);font-weight:600;margin-top:4px}
+  .qans .up{color:var(--vn);font-weight:800}
+  .qgrade{display:flex;gap:8px;margin-top:12px}
+  .qgrade .btn{flex:1}
+  .btn.ok{background:var(--jade);color:#fff;border:0} .btn.no{background:var(--vn);color:#fff;border:0}
+  .qend{background:var(--jade-s);border-radius:16px;padding:24px 18px;text-align:center}
+  .qend .qscore{font-size:40px;font-weight:800;color:var(--jade)}
 </style>
 </head>
 <body class="vn">
@@ -226,6 +245,7 @@
   <div id="midView" style="display:none"></div>
   <div id="liveView" style="display:none"></div>
   <div id="bankView" style="display:none"></div>
+  <div id="quizView" style="display:none"></div>
 
   <div id="lessonView">
   <h1>레슨 · <span class="hl" id="patTitle"></span></h1>
@@ -693,7 +713,7 @@ function renderMid(){
 function sayW(t){speak(t,null,"vi-VN");}
 window.sayW=sayW;
 window.showView=function(v){
-  var views={home:"homeView",lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView",live:"liveView",bank:"bankView"};
+  var views={home:"homeView",lesson:"lessonView",best:"best100View",apply:"applyView",mid:"midView",live:"liveView",bank:"bankView",quiz:"quizView"};
   for(var k in views){document.getElementById(views[k]).style.display=(k===v)?"block":"none";}
   document.getElementById("homeBar").style.display=(v==="home")?"none":"block";
   document.getElementById("lessonTabs").style.display=(v==="lesson")?"flex":"none";
@@ -745,6 +765,9 @@ function renderBankSection(which){
   }else if(which==="idiom"){
     h+='<p class="lead">원어민이 자주 쓰는 자연 표현 '+IDIOMS.length+'개. 탭하면 발음. 이것만 섞어도 훨씬 자연스러워요.</p>';
     h+=wcards(IDIOMS.map(function(x){return {t:x[0],s:x[1],k:x[2]};}));
+  }else if(which==="greet"){
+    h+='<p class="lead">가장 먼저! 인사·감사·사과·자기소개. 탭하면 발음. 코치님(한국인·사격코치) 소개까지.</p>';
+    GREETINGS.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items.map(function(x){return {t:x[0],s:x[1],k:x[2]};})); });
   }else if(which==="conj"){
     h+='<p class="lead">접속사·연결어 '+CONJUNCTIONS.length+'개 — 짧은 문장을 이어 긴 말로. 탭하면 발음, 예시 포함.</p><div class="bgrid">';
     CONJUNCTIONS.forEach(function(x){ var k=x[0].replace(/\.\.\./g,' ').replace(/\s+/g,' ').trim();
@@ -777,7 +800,7 @@ window.pickVerb=function(i){
   document.querySelectorAll("#verbChips button").forEach(function(b){b.classList.toggle("on",+b.dataset.i===i);});
 };
 function renderBank(){
-  var nav=[["pat","📐 공식 20"],["conj","🔗 접속사"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["gram","🎓 고급문법"],["comp","🏅 경기용어"],["idiom","🗣️ 자연표현"],["slang","🔥 고급·속어"]];
+  var nav=[["greet","👋 인사·기본"],["pat","📐 공식 20"],["conj","🔗 접속사"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["gram","🎓 고급문법"],["comp","🏅 경기용어"],["idiom","🗣️ 자연표현"],["slang","🔥 고급·속어"]];
   var h='<h1>📒 단어 · <span class="hl">공식</span></h1>';
   h+='<div class="banknav" id="bankNav">';
   nav.forEach(function(n){h+='<button data-k="'+n[0]+'" onclick="renderBankSection(\''+n[0]+'\')">'+n[1]+'</button>';});
@@ -789,43 +812,111 @@ window.goBank=function(sub){showView("bank");renderBankSection(sub);};
 window.goLesson=function(i){showView("lesson");pickLesson(i);};
 window.goV=function(v){showView(v);};
 var STEPS=[
- {lv:"LEVEL 0 · 기초 — 소리·숫자·기본"},
- {no:1,t:"필수 100단어 (색깔·방향·명령어)",ss:"무조건 외울 베스트 100",go:"goV('best')"},
- {no:2,t:"숫자 + 변음 규칙",ss:"1~백만·점수·% · mốt/tư/lăm",go:"goBank('num')"},
- {no:3,t:"분류사 (단위 세기)",ss:"cái·con·ly·chai… 몇 개를 셀 때",go:"goBank('cls')"},
- {no:4,t:"호칭·문법부품",ss:"tôi/anh/em · có/không/rồi/chưa",go:"goBank('명사')"},
+ {lv:"LEVEL 0 · 기초 — 인사·소리·숫자"},
+ {no:1,t:"인사·기본·자기소개",ss:"Xin chào · 감사·사과 · 저는 한국인·사격코치",go:"goBank('greet')"},
+ {no:2,t:"필수 100단어 (색깔·방향·명령어)",ss:"무조건 외울 베스트 100",go:"goV('best')"},
+ {no:3,t:"숫자 + 변음 규칙",ss:"1~백만·점수·% · mốt/tư/lăm",go:"goBank('num')"},
+ {no:4,t:"분류사 (단위 세기)",ss:"cái·con·ly·chai… 몇 개를 셀 때",go:"goBank('cls')"},
+ {no:5,t:"호칭·문법부품",ss:"tôi/anh/em · có/không/rồi/chưa",go:"goBank('명사')"},
+ {icon:"🎓",t:"복습·시험 — 뜻 보고 말하기",ss:"여기서 배운 걸 말하기로 점검(100점 시험). 아무 때나!",go:"openQuiz()",hot:1},
  {lv:"LEVEL 1 · 생존 — 바로 현장에서"},
- {no:5,t:"핵심 공식 20 (돌려쓰기)",ss:"Cho+N · Có+N+không? · ~ở đâu?",go:"goBank('pat')"},
- {no:6,t:"응용 표현집",ss:"시간·그랩·식당·호텔·쇼핑·병원 실전",go:"goV('apply')"},
- {no:7,t:"상황별 레슨",ss:"식당·사격·연애·상담·그랩·호텔·쇼핑·병원·길찾기",go:"goV('lesson')"},
+ {no:6,t:"핵심 공식 20 (돌려쓰기)",ss:"Cho+N · Có+N+không? · ~ở đâu?",go:"goBank('pat')"},
+ {no:7,t:"응용 표현집",ss:"시간·그랩·식당·호텔·쇼핑·병원 실전",go:"goV('apply')"},
+ {no:8,t:"상황별 레슨 (듣기·회상 드릴)",ss:"식당·사격·연애·상담·그랩·호텔·쇼핑·병원·길찾기",go:"goV('lesson')"},
  {lv:"LEVEL 2 · 단어 확장 — 어휘 늘리기"},
- {no:8,t:"동사 82",ss:"기본·일상·이동·구매·소통·감정·사격",go:"goBank('동사')"},
- {no:9,t:"형용사 57",ss:"상태·맛·크기·품질·속도·사격감각",go:"goBank('형용사')"},
- {no:10,t:"예문 523 (한 동사, 백 문장)",ss:"동사별 실전 문장으로 돌려쓰기",go:"goBank('sent')"},
+ {no:9,t:"동사 82",ss:"기본·일상·이동·구매·소통·감정·사격",go:"goBank('동사')"},
+ {no:10,t:"형용사 57",ss:"상태·맛·크기·품질·속도·사격감각",go:"goBank('형용사')"},
+ {no:11,t:"예문 523 (한 동사, 백 문장)",ss:"동사별 실전 문장으로 돌려쓰기",go:"goBank('sent')"},
  {lv:"LEVEL 3 · 문장 잇기 — 접속사"},
- {no:11,t:"접속사·연결어 24",ss:"và·nhưng·vì·nên·nếu…thì·mặc dù…",go:"goBank('conj')"},
- {no:12,t:"중급 대화 연결",ss:"상대 말 듣고 되받아치기·되묻기",go:"goV('mid')"},
+ {no:12,t:"접속사·연결어 24",ss:"và·nhưng·vì·nên·nếu…thì·mặc dù…",go:"goBank('conj')"},
+ {no:13,t:"중급 대화 연결",ss:"상대 말 듣고 되받아치기·되묻기",go:"goV('mid')"},
  {lv:"LEVEL 4 · 사격 코칭 — 현장 전문"},
- {no:13,t:"사격 레슨",ss:"자세·호흡·조준·격발 지도 표현",go:"goLesson(1)"},
- {no:14,t:"사격 전문용어 191",ss:"10개 분야 전문 어휘",go:"goBank('shoot')"},
- {no:15,t:"실전 코칭 세션",ss:"선수와 12단계 분기 대화",go:"goV('live')"},
+ {no:14,t:"사격 레슨",ss:"자세·호흡·조준·격발 지도 표현",go:"goLesson(1)"},
+ {no:15,t:"사격 전문용어 191",ss:"10개 분야 전문 어휘",go:"goBank('shoot')"},
+ {no:16,t:"실전 코칭 세션",ss:"선수와 12단계 분기 대화",go:"goV('live')"},
  {lv:"LEVEL 5 · 사교·관계"},
- {no:16,t:"연애·상담 레슨",ss:"마음·감정 표현",go:"goLesson(2)"},
- {no:17,t:"직업 어휘 100",ss:"9개 분야 직업",go:"goBank('job')"},
+ {no:17,t:"연애·상담 레슨",ss:"마음·감정 표현",go:"goLesson(2)"},
+ {no:18,t:"직업 어휘 100",ss:"9개 분야 직업",go:"goBank('job')"},
  {lv:"LEVEL 6 · 유창 — 최고급"},
- {no:18,t:"고급 문법 23",ss:"비교 hơn/nhất · 피동 bị/được · 고급 연결",go:"goBank('gram')"},
- {no:19,t:"원어민 자연 표현 24",ss:"Không sao đâu · Cố lên · Trời ơi",go:"goBank('idiom')"},
- {no:20,t:"경기·대회 용어 34",ss:"예선·결선·기록·메달·심판",go:"goBank('comp')"},
- {no:21,t:"고급·속어 (알아듣기)",ss:"vãi·á đù + 거친말 인지(사용금지)",go:"goBank('slang')"}
+ {no:19,t:"고급 문법 23",ss:"비교 hơn/nhất · 피동 bị/được · 고급 연결",go:"goBank('gram')"},
+ {no:20,t:"원어민 자연 표현 24",ss:"Không sao đâu · Cố lên · Trời ơi",go:"goBank('idiom')"},
+ {no:21,t:"경기·대회 용어 34",ss:"예선·결선·기록·메달·심판",go:"goBank('comp')"},
+ {no:22,t:"고급·속어 (알아듣기)",ss:"vãi·á đù + 거친말 인지(사용금지)",go:"goBank('slang')"},
+ {icon:"🎓",t:"복습·시험 (전체 아무 세트나)",ss:"베스트100·인사·접속사·숫자를 복습/시험",go:"openQuiz()",hot:1}
 ];
 function renderHome(){
-  var h='<h1>🏆 베트남어 <span class="hl">정복</span> 커리큘럼</h1><p class="lead">위 → 아래 <b>순서대로 1 → 21</b>. 한 칸을 누르면 그 학습으로 가고, 끝나면 위의 <b>📚 커리큘럼으로</b> 버튼으로 돌아와요. 매일 조금씩, 앱 하나로.</p>';
+  var h='<h1>🏆 베트남어 <span class="hl">정복</span> 커리큘럼</h1><p class="lead">위 → 아래 <b>순서대로 1 → 22</b>. 한 칸을 누르면 그 학습으로, 끝나면 위의 <b>📚 커리큘럼으로</b> 버튼으로 복귀. 🎓 복습·시험으로 말하기를 꼭 점검하세요.</p>';
   STEPS.forEach(function(s){
     if(s.lv){ h+='<div class="stephead">'+s.lv+'</div>'; return; }
-    h+='<button class="steprow" onclick="'+s.go+'"><div class="sn">'+s.no+'</div><div class="stx"><div class="st">'+s.t+'</div><div class="ss">'+s.ss+'</div></div><div class="sarrow">→</div></button>';
+    var badge=s.icon?s.icon:s.no;
+    h+='<button class="steprow'+(s.hot?' hot':'')+'" onclick="'+s.go+'"><div class="sn">'+badge+'</div><div class="stx"><div class="st">'+s.t+'</div><div class="ss">'+s.ss+'</div></div><div class="sarrow">→</div></button>';
   });
   h+='<div class="note" style="margin-top:20px">🎧 모든 단어·문장은 <b>진짜 뉴럴 음성</b>으로 탭하면 들려요(폰에서도 또렷). 🔁 처음엔 1번부터 차례로, 익숙해지면 아무 칸이나. 노트 없이 <b>이 앱 하나로</b> 회화까지.</div>';
   document.getElementById("homeView").innerHTML=h;
+}
+
+/* ===== 🎓 복습·시험 (능동 회상) ===== */
+var QZ={items:[],i:0,wrong:[],mode:"test",title:""};
+function quizSet(k){
+  var a=[];
+  if(k==="best100"){ BEST100.forEach(function(g){g.w.forEach(function(w){a.push([w[0],w[1],w[2]]);});}); }
+  else if(k==="greet"){ GREETINGS.forEach(function(g){g.items.forEach(function(x){a.push([x[0],x[1],x[2]]);});}); }
+  else if(k==="conj"){ CONJUNCTIONS.forEach(function(x){a.push([x[0].replace(/\.\.\./g,' ').replace(/\s+/g,' ').trim(),x[1],x[2]]);}); }
+  else if(k==="num"){ NUMBERS.forEach(function(g){g.items.forEach(function(x){a.push([x[0],x[1],x[2]]);});}); }
+  return a;
+}
+var QSETS={best100:"베스트 100",greet:"인사·기본",conj:"접속사",num:"숫자"};
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+window.openQuiz=function(){
+  showView("quiz");
+  var h='<h1>🎓 복습 · <span class="hl">시험</span></h1><p class="lead">뜻을 보고 <b>베트남어로 소리 내어</b> 말한 뒤, 정답·발음으로 확인하세요. 말하기가 늘어요.</p>';
+  h+='<div class="qmenu-h">🔁 복습 (플래시카드 — 편하게)</div><div class="qpick">';
+  for(var k in QSETS){ h+='<button onclick="startQuiz(\''+k+'\',\'review\')">'+QSETS[k]+'</button>'; }
+  h+='</div><div class="qmenu-h">📝 시험 (100점 도전 — 맞/틀 채점)</div><div class="qpick">';
+  for(var k2 in QSETS){ h+='<button onclick="startQuiz(\''+k2+'\',\'test\')">'+QSETS[k2]+'</button>'; }
+  h+='</div><div class="note" style="margin-top:16px">✅ 시험에서 <b>100점</b>이면 그 세트 숙지 완료. 틀린 것만 다시 볼 수 있어요.</div>';
+  document.getElementById("quizView").innerHTML=h;
+};
+window.startQuiz=function(setKey,mode){
+  QZ={items:shuffle(quizSet(setKey).slice()),i:0,wrong:[],mode:mode,title:QSETS[setKey]};
+  quizStep();
+};
+function quizStep(){
+  var el=document.getElementById("quizView");
+  if(QZ.i>=QZ.items.length){ return quizEnd(); }
+  var it=QZ.items[QZ.i];
+  var h='<button class="lvback" onclick="openQuiz()">← 복습·시험 메뉴</button>';
+  h+='<div class="qhead">'+(QZ.mode==="test"?"📝 시험":"🔁 복습")+' · '+QZ.title+'<span>'+(QZ.i+1)+' / '+QZ.items.length+'</span></div>';
+  h+='<div class="qcard"><div class="qko">'+it[2]+'</div><div class="qhint">🗣️ 베트남어로 말해보세요</div>';
+  h+='<div id="qans" class="qans hidden"><div class="qvn">'+it[0]+'</div><div class="qsay">'+arrows(it[1])+'</div></div>';
+  h+='<button class="btn" id="qreveal" onclick="quizReveal()">정답 보기 🔊</button>';
+  h+='<div id="qgrade" class="qgrade hidden">'+(QZ.mode==="test"
+     ?'<button class="btn no" onclick="quizMark(false)">🙁 틀림</button><button class="btn ok" onclick="quizMark(true)">😀 맞음</button>'
+     :'<button class="btn" onclick="quizMark(true)">다음 →</button>')+'</div></div>';
+  el.innerHTML=h;
+}
+window.quizReveal=function(){
+  var it=QZ.items[QZ.i];
+  document.getElementById("qans").classList.remove("hidden");
+  document.getElementById("qreveal").classList.add("hidden");
+  document.getElementById("qgrade").classList.remove("hidden");
+  sayW(it[0]);
+};
+window.quizMark=function(ok){ if(!ok)QZ.wrong.push(QZ.items[QZ.i]); QZ.i++; quizStep(); };
+window.quizRetryWrong=function(){ QZ.items=shuffle(QZ.wrong.slice()); QZ.wrong=[]; QZ.i=0; quizStep(); };
+function quizEnd(){
+  var el=document.getElementById("quizView"), total=QZ.items.length, wrong=QZ.wrong.length;
+  var h='<button class="lvback" onclick="openQuiz()">← 복습·시험 메뉴</button>';
+  if(QZ.mode==="test"){
+    var score=total?Math.round((total-wrong)/total*100):0;
+    h+='<div class="qend"><div class="qscore">'+score+'점</div><div style="font-weight:700">'+(total-wrong)+' / '+total+' 정답</div>';
+    if(score===100){ h+='<p style="margin-top:12px">🎉 완벽! <b>'+QZ.title+'</b> 숙지 완료.</p>'; }
+    else { h+='<p style="margin-top:12px">틀린 <b>'+wrong+'개</b>만 다시 볼까요?</p><button class="btn" style="margin-top:6px" onclick="quizRetryWrong()">🔁 틀린 것 다시</button>'; }
+    h+='<button class="btn ghost" style="margin-top:8px" onclick="openQuiz()">메뉴로</button></div>';
+  } else {
+    h+='<div class="qend">🔁 <b>복습 완료!</b> ('+total+'개)<br><button class="btn" style="margin-top:12px" onclick="openQuiz()">메뉴로</button></div>';
+  }
+  el.innerHTML=h;
 }
 
 /* ===== 🎬 실전 분기 대화 엔진 ===== */
