@@ -486,7 +486,7 @@ var LESSONS=[
 
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
 var AUD={}, curAudio=null;
-try{fetch("audio/manifest.json").then(function(r){return r.json();}).then(function(j){AUD=j||{};}).catch(function(){});}catch(e){}
+try{fetch("audio/manifest.json?v=7").then(function(r){return r.json();}).then(function(j){AUD=j||{};}).catch(function(){});}catch(e){}
 function D(){return LESSONS[LESSON][LANG];}
 function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
 var __unlocked=false;
