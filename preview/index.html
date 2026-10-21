@@ -203,6 +203,15 @@
   .steprow .ss{font-size:12px;color:var(--sub);margin-top:1px}
   .steprow .sarrow{color:var(--jade);font-size:17px;flex-shrink:0}
   .steprow.hot{background:var(--gold);border-color:var(--gold)} .steprow.hot .sn{background:#3a2a06} .steprow.hot .st,.steprow.hot .ss,.steprow.hot .sarrow{color:#3a2a06}
+  .vck{color:var(--jade);font-weight:800;margin-left:7px}
+  .statbar{display:flex;gap:8px;margin:6px 0 10px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
+  .stat .snum{font-size:18px;font-weight:800}
+  .stat .slab{font-size:11px;color:var(--sub);margin-top:2px}
+  .todaycard,.contcard{display:flex;align-items:center;gap:8px;width:100%;text-align:left;font:inherit;font-size:14px;border-radius:12px;padding:12px 14px;margin:6px 0;cursor:pointer;border:0}
+  .todaycard{background:var(--vn);color:#fff}
+  .contcard{background:var(--jade-s);color:var(--ink);border:1px solid var(--jade)}
+  .todaycard span,.contcard span{margin-left:auto;font-weight:800}
   .qmenu-h{font-size:13px;font-weight:800;color:var(--jade);margin:16px 0 6px}
   .qpick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
   .qpick button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid var(--jade);background:var(--jade-s);color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer}
@@ -717,6 +726,7 @@ window.showView=function(v){
   for(var k in views){document.getElementById(views[k]).style.display=(k===v)?"block":"none";}
   document.getElementById("homeBar").style.display=(v==="home")?"none":"block";
   document.getElementById("lessonTabs").style.display=(v==="lesson")?"flex":"none";
+  if(v==="home" && typeof renderHome==="function") renderHome();
   window.scrollTo(0,0);
 };
 
@@ -811,6 +821,23 @@ function renderBank(){
 window.goBank=function(sub){showView("bank");renderBankSection(sub);};
 window.goLesson=function(i){showView("lesson");pickLesson(i);};
 window.goV=function(v){showView(v);};
+
+/* ===== 💾 진도·기억 저장 + 간격반복(SRS) ===== */
+var DB={}, DAY=86400000, SRS_IV=[0,1,2,4,7,15,30];
+function dbLoad(){ try{DB=JSON.parse(localStorage.getItem("ryong_v1"))||{};}catch(e){DB={};}
+  DB.srs=DB.srs||{}; DB.mastered=DB.mastered||{}; DB.streak=DB.streak||{count:0,last:null}; DB.visited=DB.visited||{}; if(DB.lastStep===undefined)DB.lastStep=null; }
+function dbSave(){ try{localStorage.setItem("ryong_v1",JSON.stringify(DB));}catch(e){} }
+function dayStr(ms){ var t=new Date(ms==null?Date.now():ms); return t.getFullYear()+"-"+(t.getMonth()+1)+"-"+t.getDate(); }
+function bumpStreak(){ var t=dayStr(); if(DB.streak.last===t)return; var ys=dayStr(Date.now()-DAY);
+  DB.streak.count=(DB.streak.last===ys)?(DB.streak.count+1):1; DB.streak.last=t; dbSave(); }
+function srsReview(key,say,ko,correct){ var it=DB.srs[key]||{box:0}; it.box=correct?Math.min(it.box+1,SRS_IV.length-1):0;
+  it.say=say; it.ko=ko; it.due=correct?(Date.now()+SRS_IV[it.box]*DAY):(Date.now()+600000);
+  DB.srs[key]=it; if(it.box>=4)DB.mastered[key]=1; else if(!correct)delete DB.mastered[key]; dbSave(); }
+function srsDue(limit){ var now=Date.now(), out=[]; for(var k in DB.srs){ if(DB.srs[k].due<=now) out.push([k,DB.srs[k].say,DB.srs[k].ko]); }
+  out.sort(function(a,b){return DB.srs[a[0]].due-DB.srs[b[0]].due;}); return limit?out.slice(0,limit):out; }
+function masteredCount(){ return Object.keys(DB.mastered).length; }
+window.openStep=function(i){ DB.lastStep=i; DB.visited[i]=1; dbSave(); try{(new Function(STEPS[i].go))();}catch(e){} };
+
 var STEPS=[
  {lv:"LEVEL 0 · 기초 — 인사·소리·숫자"},
  {no:1,t:"인사·기본·자기소개",ss:"Xin chào · 감사·사과 · 저는 한국인·사격코치",go:"goBank('greet')"},
@@ -845,15 +872,24 @@ var STEPS=[
  {icon:"🎓",t:"복습·시험 (전체 아무 세트나)",ss:"베스트100·인사·접속사·숫자를 복습/시험",go:"openQuiz()",hot:1}
 ];
 function renderHome(){
-  var h='<h1>🏆 베트남어 <span class="hl">정복</span> 커리큘럼</h1><p class="lead">위 → 아래 <b>순서대로 1 → 22</b>. 한 칸을 누르면 그 학습으로, 끝나면 위의 <b>📚 커리큘럼으로</b> 버튼으로 복귀. 🎓 복습·시험으로 말하기를 꼭 점검하세요.</p>';
-  STEPS.forEach(function(s){
+  var due=srsDue().length, mast=masteredCount(), stk=DB.streak.count||0;
+  var h='<h1>🏆 베트남어 <span class="hl">정복</span> 커리큘럼</h1>';
+  h+='<div class="statbar"><div class="stat"><div class="snum">🔥 '+stk+'</div><div class="slab">연속일</div></div>'
+    +'<div class="stat"><div class="snum">✅ '+mast+'</div><div class="slab">숙지 단어</div></div>'
+    +'<div class="stat"><div class="snum">⏰ '+due+'</div><div class="slab">복습 대기</div></div></div>';
+  if(due>0){ h+='<button class="todaycard" onclick="startDue()">📅 <b>오늘의 복습 '+due+'개</b> — 잊기 전에 지금!<span>▶</span></button>'; }
+  if(DB.lastStep!=null && STEPS[DB.lastStep] && !STEPS[DB.lastStep].lv){ var ls=STEPS[DB.lastStep];
+    h+='<button class="contcard" onclick="openStep('+DB.lastStep+')">↩ <b>이어보기</b> — '+(ls.no?ls.no+'. ':'')+ls.t+'<span>▶</span></button>'; }
+  h+='<p class="lead" style="margin-top:12px">순서대로 1 → 22. 한 칸을 누르면 학습으로, 끝나면 위 <b>📚 커리큘럼으로</b>. 🎓 복습·시험으로 말하기를 점검하면 <b>⏰복습 대기</b>에 쌓여요.</p>';
+  STEPS.forEach(function(s,i){
     if(s.lv){ h+='<div class="stephead">'+s.lv+'</div>'; return; }
-    var badge=s.icon?s.icon:s.no;
-    h+='<button class="steprow'+(s.hot?' hot':'')+'" onclick="'+s.go+'"><div class="sn">'+badge+'</div><div class="stx"><div class="st">'+s.t+'</div><div class="ss">'+s.ss+'</div></div><div class="sarrow">→</div></button>';
+    var badge=s.icon?s.icon:s.no, done=DB.visited[i]?'<span class="vck">✓</span>':'';
+    h+='<button class="steprow'+(s.hot?' hot':'')+'" onclick="openStep('+i+')"><div class="sn">'+badge+'</div><div class="stx"><div class="st">'+s.t+done+'</div><div class="ss">'+s.ss+'</div></div><div class="sarrow">→</div></button>';
   });
-  h+='<div class="note" style="margin-top:20px">🎧 모든 단어·문장은 <b>진짜 뉴럴 음성</b>으로 탭하면 들려요(폰에서도 또렷). 🔁 처음엔 1번부터 차례로, 익숙해지면 아무 칸이나. 노트 없이 <b>이 앱 하나로</b> 회화까지.</div>';
+  h+='<div class="note" style="margin-top:20px">🎧 모든 단어·문장은 <b>진짜 뉴럴 음성</b>으로 탭하면 들려요. 💾 진도·연속일수·숙지 단어·복습은 <b>이 폰에 자동 저장</b>돼요. 노트 없이 <b>이 앱 하나로</b>.</div>';
   document.getElementById("homeView").innerHTML=h;
 }
+window.startDue=function(){ var items=srsDue(30); if(!items.length)return; bumpStreak(); QZ={items:shuffle(items.slice()),i:0,wrong:[],mode:"test",title:"오늘의 복습"}; showView("quiz"); quizStep(); };
 
 /* ===== 🎓 복습·시험 (능동 회상) ===== */
 var QZ={items:[],i:0,wrong:[],mode:"test",title:""};
@@ -878,6 +914,7 @@ window.openQuiz=function(){
   document.getElementById("quizView").innerHTML=h;
 };
 window.startQuiz=function(setKey,mode){
+  bumpStreak();
   QZ={items:shuffle(quizSet(setKey).slice()),i:0,wrong:[],mode:mode,title:QSETS[setKey]};
   quizStep();
 };
@@ -902,7 +939,7 @@ window.quizReveal=function(){
   document.getElementById("qgrade").classList.remove("hidden");
   sayW(it[0]);
 };
-window.quizMark=function(ok){ if(!ok)QZ.wrong.push(QZ.items[QZ.i]); QZ.i++; quizStep(); };
+window.quizMark=function(ok){ var it=QZ.items[QZ.i]; if(QZ.mode==="test" && it) srsReview(it[0],it[1],it[2],ok); if(!ok)QZ.wrong.push(it); QZ.i++; quizStep(); };
 window.quizRetryWrong=function(){ QZ.items=shuffle(QZ.wrong.slice()); QZ.wrong=[]; QZ.i=0; quizStep(); };
 function quizEnd(){
   var el=document.getElementById("quizView"), total=QZ.items.length, wrong=QZ.wrong.length;
@@ -970,7 +1007,7 @@ window.livePick=function(i){
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
+dbLoad();renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
 </script>
 </body>
 </html>
