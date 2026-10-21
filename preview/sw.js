@@ -1,15 +1,15 @@
 /* RYONG 베트남어 서비스워커 — 앱 셸 선캐시 + 음성 런타임 캐시 */
-var VER = "ryong-v7";
+var VER = "ryong-v8";
 var SHELL = "shell-" + VER;
 var MEDIA = "media-" + VER;
 var SHELL_FILES = [
   "./",
   "./index.html",
-  "./live-data.js?v=7",
-  "./word-bank.js?v=7",
-  "./sentence-bank.js?v=7",
-  "./advanced-content.js?v=7",
-  "./audio/manifest.json?v=7",
+  "./live-data.js?v=8",
+  "./word-bank.js?v=8",
+  "./sentence-bank.js?v=8",
+  "./advanced-content.js?v=8",
+  "./audio/manifest.json?v=8",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png"

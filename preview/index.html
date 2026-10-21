@@ -349,10 +349,10 @@
     실제 시스템은 레벨 0~5, 수십 패턴, 전 영역으로 확장됩니다. (음성: 진짜 뉴럴 HoaiMy·NamMinh)
   </div>
 
-<script src="live-data.js?v=7"></script>
-<script src="word-bank.js?v=7"></script>
-<script src="sentence-bank.js?v=7"></script>
-<script src="advanced-content.js?v=7"></script>
+<script src="live-data.js?v=8"></script>
+<script src="word-bank.js?v=8"></script>
+<script src="sentence-bank.js?v=8"></script>
+<script src="advanced-content.js?v=8"></script>
 <script>
 /* ===== 4개 레슨 × (베트남어/영어) ===== */
 var LESSONS=[
@@ -503,8 +503,8 @@ var LESSONS=[
 ];
 
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
-var AUD={}, curAudio=null;
-try{fetch("audio/manifest.json?v=7").then(function(r){return r.json();}).then(function(j){AUD=j||{};}).catch(function(){});}catch(e){}
+var AUD={}, curAudio=null, AUD_READY=false, AUD_P=null;
+AUD_P=fetch("audio/manifest.json?v=8").then(function(r){return r.json();}).then(function(j){AUD=j||{};AUD_READY=true;}).catch(function(){AUD_READY=true;});
 function D(){return LESSONS[LESSON][LANG];}
 function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
 var __unlocked=false;
@@ -512,30 +512,39 @@ function unlockTTS(){ if(__unlocked||!("speechSynthesis" in window))return; __un
 document.addEventListener("touchend",unlockTTS,{passive:true});
 document.addEventListener("click",unlockTTS);
 function speak(text,el,lc,onDone){
+  /* 음성 인덱스가 아직 로딩 중이면 기다렸다가 재생 — 폰 TTS 오발음 방지 */
+  if(!AUD_READY && AUD_P){ if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");} AUD_P.then(function(){ speak(text,el,lc,onDone); }); return; }
   var mp=AUD[text];
   if(mp){
     try{
       if(curAudio){try{curAudio.pause();}catch(e){}curAudio=null;}
       try{if("speechSynthesis" in window)speechSynthesis.cancel();}catch(e){}
-      var a=new Audio(mp);a.playbackRate=(rate<0.85?0.82:1);
-      if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");}
-      curAudio=a;
-      a.onended=function(){if(el)el.classList.remove("playing");if(onDone)onDone();};
-      a.onerror=function(){if(el)el.classList.remove("playing");ttsSpeak(text,el,lc,onDone);};
-      a.play().catch(function(){if(el)el.classList.remove("playing");ttsSpeak(text,el,lc,onDone);});
+      var tried=0;
+      function playOne(){
+        var a=new Audio(mp);a.playbackRate=(rate<0.85?0.82:1);
+        if(el){if(cur&&cur!==el)cur.classList.remove("playing");cur=el;el.classList.add("playing");}
+        curAudio=a;
+        a.onended=function(){if(el)el.classList.remove("playing");if(onDone)onDone();};
+        a.onerror=function(){ if(tried++<1){ setTimeout(playOne,300); return; } if(el)el.classList.remove("playing"); ttsSpeak(text,el,lc,onDone); };
+        a.play().catch(function(){ if(tried++<1){ setTimeout(playOne,300); return; } if(el)el.classList.remove("playing"); ttsSpeak(text,el,lc,onDone); });
+      }
+      playOne();
       return;
     }catch(e){}
   }
   ttsSpeak(text,el,lc,onDone);
 }
 function ttsSpeak(text,el,lc,onDone){
-  if(!("speechSynthesis" in window)){if(onDone)onDone();return;}
+  if(!("speechSynthesis" in window)){if(el)el.classList.remove("playing");if(onDone)onDone();return;}
+  var lang=lc||D().lang, v=voice(lang);
+  /* 베트남어를 베트남어 음성 없이 한국어/영어 음성으로 읽으면 "쪼 느억"처럼 엉터리 → 차라리 무음 */
+  if(/^vi/i.test(lang) && !v){ if(el)el.classList.remove("playing"); if(onDone)onDone(); return; }
   __unlocked=true;
   try{speechSynthesis.cancel();}catch(e){}
-  var u=new SpeechSynthesisUtterance(text);u.lang=lc||D().lang;u.rate=rate;u.volume=1;var v=voice(u.lang);if(v)u.voice=v;
+  var u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=rate;u.volume=1;if(v)u.voice=v;
   if(el){if(cur)cur.classList.remove("playing");cur=el;el.classList.add("playing");}
   u.onend=u.onerror=function(){if(el)el.classList.remove("playing");if(onDone)onDone();};
-  try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){if(onDone)onDone();}
+  try{speechSynthesis.speak(u);speechSynthesis.resume();}catch(e){if(el)el.classList.remove("playing");if(onDone)onDone();}
 }
 window.setRate=function(r,b){rate=r;document.querySelectorAll(".speed button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");};
 function arrows(s){return s.replace(/([→↗↘~↧]+)/g,'<span class="up">$1</span>');}
@@ -784,6 +793,13 @@ function renderBankSection(which){
   }else if(which==="idiom"){
     h+='<p class="lead">원어민이 자주 쓰는 자연 표현 '+IDIOMS.length+'개. 탭하면 발음. 이것만 섞어도 훨씬 자연스러워요.</p>';
     h+=wcards(IDIOMS.map(function(x){return {t:x[0],s:x[1],k:x[2]};}));
+  }else if(which==="tone"){
+    h+='<p class="lead">베트남어의 핵심 — <b>성조 6개</b>. 같은 <b>ma</b>인데 성조로 뜻이 완전히 달라져요. 성조가 틀리면 못 알아들어요. 탭해서 소리 차이를 느껴보세요.</p>';
+    h+='<div class="bgrid">';
+    TONES.forEach(function(t){
+      h+='<button class="bw" onclick="sayW(\''+jsq(t.ex[0])+'\')"><div class="v">'+t.ex[0]+' <span style="color:var(--jade)">'+t.sign+'</span></div><div class="s">'+t.name+'</div><div class="k">'+t.ex[2]+'</div></button>';
+    });
+    h+='</div><div class="note" style="margin-top:14px">↗올림 ↘내림 ↘↗내렸다올림 ~↗끊고올림 ↧낮게뚝 →평평. 모든 단어 카드의 한글 발음에 이 화살표가 붙어 있어요.</div>';
   }else if(which==="greet"){
     h+='<p class="lead">가장 먼저! 인사·감사·사과·자기소개. 탭하면 발음. 코치님(한국인·사격코치) 소개까지.</p>';
     GREETINGS.forEach(function(g){ h+='<div class="bgrp">'+g.name+' <span style="color:var(--sub);font-weight:400;font-size:12px">'+g.items.length+'</span></div>'+wcards(g.items.map(function(x){return {t:x[0],s:x[1],k:x[2]};})); });
@@ -819,7 +835,7 @@ window.pickVerb=function(i){
   document.querySelectorAll("#verbChips button").forEach(function(b){b.classList.toggle("on",+b.dataset.i===i);});
 };
 function renderBank(){
-  var nav=[["greet","👋 인사·기본"],["pat","📐 공식 20"],["conj","🔗 접속사"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["gram","🎓 고급문법"],["comp","🏅 경기용어"],["idiom","🗣️ 자연표현"],["slang","🔥 고급·속어"]];
+  var nav=[["tone","🎵 성조"],["greet","👋 인사·기본"],["pat","📐 공식 20"],["conj","🔗 접속사"],["sent","📝 예문"],["동사","🏃 동사"],["형용사","🌈 형용사"],["명사","📦 명사·단어"],["num","🔢 숫자"],["cls","📏 분류사"],["job","💼 직업"],["shoot","🎯 사격 전문용어"],["gram","🎓 고급문법"],["comp","🏅 경기용어"],["idiom","🗣️ 자연표현"],["slang","🔥 고급·속어"]];
   var h='<h1>📒 단어 · <span class="hl">공식</span></h1>';
   h+='<div class="banknav" id="bankNav">';
   nav.forEach(function(n){h+='<button data-k="'+n[0]+'" onclick="renderBankSection(\''+n[0]+'\')">'+n[1]+'</button>';});
@@ -830,6 +846,15 @@ function renderBank(){
 window.goBank=function(sub){showView("bank");renderBankSection(sub);};
 window.goLesson=function(i){showView("lesson");pickLesson(i);};
 window.goV=function(v){showView(v);};
+
+var TONES=[
+ {sign:"→",name:"ngang · 평평하게",ex:["ma","마→","귀신"]},
+ {sign:"↗",name:"sắc · 짧게 올림",ex:["má","마↗","엄마(남부)·볼"]},
+ {sign:"↘",name:"huyền · 아래로 내림",ex:["mà","마↘","그런데·인데"]},
+ {sign:"↘↗",name:"hỏi · 내렸다 올림",ex:["mả","마↘↗","무덤"]},
+ {sign:"~↗",name:"ngã · 끊고 올림",ex:["mã","마~↗","말(馬)·코드"]},
+ {sign:"↧",name:"nặng · 낮게 뚝",ex:["mạ","마↧","모(벼)·도금"]}
+];
 
 /* ===== 💾 진도·기억 저장 + 간격반복(SRS) ===== */
 var DB={}, DAY=86400000, SRS_IV=[0,1,2,4,7,15,30];
@@ -848,36 +873,37 @@ function masteredCount(){ return Object.keys(DB.mastered).length; }
 window.openStep=function(i){ DB.lastStep=i; DB.visited[i]=1; dbSave(); try{(new Function(STEPS[i].go))();}catch(e){} };
 
 var STEPS=[
- {lv:"LEVEL 0 · 기초 — 인사·소리·숫자"},
- {no:1,t:"인사·기본·자기소개",ss:"Xin chào · 감사·사과 · 저는 한국인·사격코치",go:"goBank('greet')"},
- {no:2,t:"필수 100단어 (색깔·방향·명령어)",ss:"무조건 외울 베스트 100",go:"goV('best')"},
- {no:3,t:"숫자 + 변음 규칙",ss:"1~백만·점수·% · mốt/tư/lăm",go:"goBank('num')"},
- {no:4,t:"분류사 (단위 세기)",ss:"cái·con·ly·chai… 몇 개를 셀 때",go:"goBank('cls')"},
- {no:5,t:"호칭·문법부품",ss:"tôi/anh/em · có/không/rồi/chưa",go:"goBank('명사')"},
+ {lv:"LEVEL 0 · 기초 — 성조·인사·숫자"},
+ {no:1,t:"성조 6개 (소리의 뼈대)",ss:"ma/má/mà/mả/mã/mạ — 성조로 뜻이 바뀐다",go:"goBank('tone')"},
+ {no:2,t:"인사·기본·자기소개",ss:"Xin chào · 감사·사과 · 저는 한국인·사격코치",go:"goBank('greet')"},
+ {no:3,t:"필수 100단어 (색깔·방향·명령어)",ss:"무조건 외울 베스트 100",go:"goV('best')"},
+ {no:4,t:"숫자 + 변음 규칙",ss:"1~백만·점수·% · mốt/tư/lăm",go:"goBank('num')"},
+ {no:5,t:"분류사 (단위 세기)",ss:"cái·con·ly·chai… 몇 개를 셀 때",go:"goBank('cls')"},
+ {no:6,t:"호칭·문법부품",ss:"tôi/anh/em · có/không/rồi/chưa",go:"goBank('명사')"},
  {icon:"🎓",t:"복습·시험 — 뜻 보고 말하기",ss:"여기서 배운 걸 말하기로 점검(100점 시험). 아무 때나!",go:"openQuiz()",hot:1},
  {lv:"LEVEL 1 · 생존 — 바로 현장에서"},
- {no:6,t:"핵심 공식 20 (돌려쓰기)",ss:"Cho+N · Có+N+không? · ~ở đâu?",go:"goBank('pat')"},
- {no:7,t:"응용 표현집",ss:"시간·그랩·식당·호텔·쇼핑·병원 실전",go:"goV('apply')"},
- {no:8,t:"상황별 레슨 (듣기·회상 드릴)",ss:"식당·사격·연애·상담·그랩·호텔·쇼핑·병원·길찾기",go:"goV('lesson')"},
+ {no:7,t:"핵심 공식 20 (돌려쓰기)",ss:"Cho+N · Có+N+không? · ~ở đâu?",go:"goBank('pat')"},
+ {no:8,t:"응용 표현집",ss:"시간·그랩·식당·호텔·쇼핑·병원 실전",go:"goV('apply')"},
+ {no:9,t:"상황별 레슨 (듣기·회상 드릴)",ss:"식당·사격·연애·상담·그랩·호텔·쇼핑·병원·길찾기",go:"goV('lesson')"},
  {lv:"LEVEL 2 · 단어 확장 — 어휘 늘리기"},
- {no:9,t:"동사 82",ss:"기본·일상·이동·구매·소통·감정·사격",go:"goBank('동사')"},
- {no:10,t:"형용사 57",ss:"상태·맛·크기·품질·속도·사격감각",go:"goBank('형용사')"},
- {no:11,t:"예문 523 (한 동사, 백 문장)",ss:"동사별 실전 문장으로 돌려쓰기",go:"goBank('sent')"},
+ {no:10,t:"동사 82",ss:"기본·일상·이동·구매·소통·감정·사격",go:"goBank('동사')"},
+ {no:11,t:"형용사 57",ss:"상태·맛·크기·품질·속도·사격감각",go:"goBank('형용사')"},
+ {no:12,t:"예문 523 (한 동사, 백 문장)",ss:"동사별 실전 문장으로 돌려쓰기",go:"goBank('sent')"},
  {lv:"LEVEL 3 · 문장 잇기 — 접속사"},
- {no:12,t:"접속사·연결어 24",ss:"và·nhưng·vì·nên·nếu…thì·mặc dù…",go:"goBank('conj')"},
- {no:13,t:"중급 대화 연결",ss:"상대 말 듣고 되받아치기·되묻기",go:"goV('mid')"},
+ {no:13,t:"접속사·연결어 24",ss:"và·nhưng·vì·nên·nếu…thì·mặc dù…",go:"goBank('conj')"},
+ {no:14,t:"중급 대화 연결",ss:"상대 말 듣고 되받아치기·되묻기",go:"goV('mid')"},
  {lv:"LEVEL 4 · 사격 코칭 — 현장 전문"},
- {no:14,t:"사격 레슨",ss:"자세·호흡·조준·격발 지도 표현",go:"goLesson(1)"},
- {no:15,t:"사격 전문용어 191",ss:"10개 분야 전문 어휘",go:"goBank('shoot')"},
- {no:16,t:"실전 코칭 세션",ss:"선수와 12단계 분기 대화",go:"goV('live')"},
+ {no:15,t:"사격 레슨",ss:"자세·호흡·조준·격발 지도 표현",go:"goLesson(1)"},
+ {no:16,t:"사격 전문용어 191",ss:"10개 분야 전문 어휘",go:"goBank('shoot')"},
+ {no:17,t:"실전 코칭 세션",ss:"선수와 12단계 분기 대화",go:"goV('live')"},
  {lv:"LEVEL 5 · 사교·관계"},
- {no:17,t:"연애·상담 레슨",ss:"마음·감정 표현",go:"goLesson(2)"},
- {no:18,t:"직업 어휘 100",ss:"9개 분야 직업",go:"goBank('job')"},
+ {no:18,t:"연애·상담 레슨",ss:"마음·감정 표현",go:"goLesson(2)"},
+ {no:19,t:"직업 어휘 100",ss:"9개 분야 직업",go:"goBank('job')"},
  {lv:"LEVEL 6 · 유창 — 최고급"},
- {no:19,t:"고급 문법 23",ss:"비교 hơn/nhất · 피동 bị/được · 고급 연결",go:"goBank('gram')"},
- {no:20,t:"원어민 자연 표현 24",ss:"Không sao đâu · Cố lên · Trời ơi",go:"goBank('idiom')"},
- {no:21,t:"경기·대회 용어 34",ss:"예선·결선·기록·메달·심판",go:"goBank('comp')"},
- {no:22,t:"고급·속어 (알아듣기)",ss:"vãi·á đù + 거친말 인지(사용금지)",go:"goBank('slang')"},
+ {no:20,t:"고급 문법 23",ss:"비교 hơn/nhất · 피동 bị/được · 고급 연결",go:"goBank('gram')"},
+ {no:21,t:"원어민 자연 표현 24",ss:"Không sao đâu · Cố lên · Trời ơi",go:"goBank('idiom')"},
+ {no:22,t:"경기·대회 용어 34",ss:"예선·결선·기록·메달·심판",go:"goBank('comp')"},
+ {no:23,t:"고급·속어 (알아듣기)",ss:"vãi·á đù + 거친말 인지(사용금지)",go:"goBank('slang')"},
  {icon:"🎓",t:"복습·시험 (전체 아무 세트나)",ss:"베스트100·인사·접속사·숫자를 복습/시험",go:"openQuiz()",hot:1}
 ];
 function renderHome(){
@@ -889,7 +915,8 @@ function renderHome(){
   if(due>0){ h+='<button class="todaycard" onclick="startDue()">📅 <b>오늘의 복습 '+due+'개</b> — 잊기 전에 지금!<span>▶</span></button>'; }
   if(DB.lastStep!=null && STEPS[DB.lastStep] && !STEPS[DB.lastStep].lv){ var ls=STEPS[DB.lastStep];
     h+='<button class="contcard" onclick="openStep('+DB.lastStep+')">↩ <b>이어보기</b> — '+(ls.no?ls.no+'. ':'')+ls.t+'<span>▶</span></button>'; }
-  h+='<p class="lead" style="margin-top:12px">순서대로 1 → 22. 한 칸을 누르면 학습으로, 끝나면 위 <b>📚 커리큘럼으로</b>. 🎓 복습·시험으로 말하기를 점검하면 <b>⏰복습 대기</b>에 쌓여요.</p>';
+  if(window.__deferredPrompt){ h+='<button class="todaycard" style="background:var(--jade)" onclick="installApp()">📲 <b>홈 화면에 앱으로 설치</b> — 오프라인에서도 열려요<span>▶</span></button>'; }
+  h+='<p class="lead" style="margin-top:12px">순서대로 1 → 23. 한 칸을 누르면 학습으로, 끝나면 위 <b>📚 커리큘럼으로</b>. 🎓 복습·시험으로 말하기를 점검하면 <b>⏰복습 대기</b>에 쌓여요.</p>';
   STEPS.forEach(function(s,i){
     if(s.lv){ h+='<div class="stephead">'+s.lv+'</div>'; return; }
     var badge=s.icon?s.icon:s.no, done=DB.visited[i]?'<span class="vck">✓</span>':'';
@@ -1036,6 +1063,8 @@ if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
 dbLoad();renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
 if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
+window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); window.__deferredPrompt=e; if(document.getElementById("homeView")&&getComputedStyle(document.getElementById("homeView")).display!=="none") renderHome(); });
+window.installApp=function(){ var p=window.__deferredPrompt; if(!p)return; p.prompt(); p.userChoice.finally(function(){ window.__deferredPrompt=null; renderHome(); }); };
 </script>
 </body>
 </html>
