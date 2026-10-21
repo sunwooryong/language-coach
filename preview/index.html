@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>RYONG 언어 · 레슨 미리보기</title>
+<title>RYONG 베트남어 정복</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1C7A63">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="베트남어">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <style>
   :root{
     --paper:#F7F2E9; --card:#FFFFFF; --ink:#211C17; --sub:#6B6155;
@@ -228,6 +234,9 @@
   .qgrade{display:flex;gap:8px;margin-top:12px}
   .qgrade .btn{flex:1}
   .btn.ok{background:var(--jade);color:#fff;border:0} .btn.no{background:var(--vn);color:#fff;border:0}
+  .qrec{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
+  .qrec.hidden{display:none}
+  .recbtn{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:8px 13px;cursor:pointer}
   .qend{background:var(--jade-s);border-radius:16px;padding:24px 18px;text-align:center}
   .qend .qscore{font-size:40px;font-weight:800;color:var(--jade)}
 </style>
@@ -927,18 +936,36 @@ function quizStep(){
   h+='<div class="qcard"><div class="qko">'+it[2]+'</div><div class="qhint">🗣️ 베트남어로 말해보세요</div>';
   h+='<div id="qans" class="qans hidden"><div class="qvn">'+it[0]+'</div><div class="qsay">'+arrows(it[1])+'</div></div>';
   h+='<button class="btn" id="qreveal" onclick="quizReveal()">정답 보기 🔊</button>';
+  h+='<div id="qrec" class="qrec hidden"><button class="recbtn" id="recBtn" onclick="toggleRec()">🎤 내 발음 녹음</button>'
+    +'<button class="recbtn" id="recPlay" onclick="playRec()" style="display:none">▶ 내 발음</button>'
+    +'<button class="recbtn" onclick="sayW(window.__qvn)">🔊 정답 듣기</button></div>';
   h+='<div id="qgrade" class="qgrade hidden">'+(QZ.mode==="test"
      ?'<button class="btn no" onclick="quizMark(false)">🙁 틀림</button><button class="btn ok" onclick="quizMark(true)">😀 맞음</button>'
      :'<button class="btn" onclick="quizMark(true)">다음 →</button>')+'</div></div>';
-  el.innerHTML=h;
+  el.innerHTML=h; window.__qvn=it[0]; recReset();
 }
 window.quizReveal=function(){
   var it=QZ.items[QZ.i];
   document.getElementById("qans").classList.remove("hidden");
   document.getElementById("qreveal").classList.add("hidden");
+  document.getElementById("qrec").classList.remove("hidden");
   document.getElementById("qgrade").classList.remove("hidden");
   sayW(it[0]);
 };
+/* 🎤 발음 녹음·비교 */
+var _mrec=null,_chunks=[],_recURL=null,_recOn=false;
+function recReset(){ _recOn=false; if(_recURL){try{URL.revokeObjectURL(_recURL);}catch(e){}_recURL=null;} var p=document.getElementById("recPlay"); if(p)p.style.display="none"; var b=document.getElementById("recBtn"); if(b)b.textContent="🎤 내 발음 녹음"; }
+window.toggleRec=function(){
+  if(_recOn){ try{_mrec&&_mrec.stop();}catch(e){} return; }
+  if(!navigator.mediaDevices||!window.MediaRecorder){ alert("이 기기·브라우저는 녹음을 지원하지 않아요. 정답 발음을 듣고 따라 하세요."); return; }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){
+    _chunks=[]; try{_mrec=new MediaRecorder(st);}catch(e){ st.getTracks().forEach(function(t){t.stop();}); alert("녹음을 시작할 수 없어요."); return; }
+    _mrec.ondataavailable=function(e){ if(e.data&&e.data.size)_chunks.push(e.data); };
+    _mrec.onstop=function(){ if(_recURL){try{URL.revokeObjectURL(_recURL);}catch(e){}} _recURL=URL.createObjectURL(new Blob(_chunks)); st.getTracks().forEach(function(t){t.stop();}); _recOn=false; var b=document.getElementById("recBtn"); if(b)b.textContent="🎤 다시 녹음"; var p=document.getElementById("recPlay"); if(p)p.style.display="inline-block"; };
+    _mrec.start(); _recOn=true; var b=document.getElementById("recBtn"); if(b)b.textContent="⏹ 녹음 중지";
+  }).catch(function(){ alert("마이크 권한이 필요해요. 브라우저 설정에서 허용해 주세요."); });
+};
+window.playRec=function(){ if(!_recURL)return; try{if(curAudio)curAudio.pause();}catch(e){} var a=new Audio(_recURL); curAudio=a; a.play().catch(function(){}); };
 window.quizMark=function(ok){ var it=QZ.items[QZ.i]; if(QZ.mode==="test" && it) srsReview(it[0],it[1],it[2],ok); if(!ok)QZ.wrong.push(it); QZ.i++; quizStep(); };
 window.quizRetryWrong=function(){ QZ.items=shuffle(QZ.wrong.slice()); QZ.wrong=[]; QZ.i=0; quizStep(); };
 function quizEnd(){
@@ -1008,6 +1035,7 @@ window.livePick=function(i){
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
 dbLoad();renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
+if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
 </script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "name": "RYONG 베트남어 정복",
+  "short_name": "베트남어",
+  "description": "코치님 맞춤 베트남어 학습 — 인사부터 유창까지, 음성·시험·복습",
+  "start_url": "./?pwa=1",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F2E9",
+  "theme_color": "#1C7A63",
+  "lang": "ko",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
