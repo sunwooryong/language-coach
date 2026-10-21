@@ -10,17 +10,25 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="베트남어">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
+<script>try{var _t=localStorage.getItem("ryong_theme");if(_t==="light"||_t==="dark")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
 <style>
   :root{
     --paper:#F7F2E9; --card:#FFFFFF; --ink:#211C17; --sub:#6B6155;
     --vn:#BE3A31; --vn-s:#F6E3DF; --en:#1C63A8; --en-s:#DCEAF7;
     --jade:#1C7A63; --jade-s:#D5EBE4; --gold:#B98A2E; --line:#E7DECF; --sh:rgba(60,45,25,.09);
   }
-  @media(prefers-color-scheme:dark){:root{
-    --paper:#15120D; --card:#201B14; --ink:#F1E8D9; --sub:#B0A693;
-    --vn:#EC8178; --vn-s:#3E201C; --en:#6BA8E8; --en-s:#16293C;
-    --jade:#5EC9AC; --jade-s:#113329; --gold:#E0B457; --line:#352C1E; --sh:rgba(0,0,0,.4);
+  /* 시스템이 다크일 때(사용자가 라이트로 고정하지 않았으면) */
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#211B12; --card:#2C2418; --ink:#F3ECDC; --sub:#BBB09B;
+    --vn:#F08A80; --vn-s:#45241F; --en:#80B3ED; --en-s:#1A2E42;
+    --jade:#63CFB2; --jade-s:#153B2F; --gold:#E4BA5E; --line:#3D3324; --sh:rgba(0,0,0,.35);
   }}
+  /* 사용자가 다크로 고정 */
+  :root[data-theme="dark"]{
+    --paper:#211B12; --card:#2C2418; --ink:#F3ECDC; --sub:#BBB09B;
+    --vn:#F08A80; --vn-s:#45241F; --en:#80B3ED; --en-s:#1A2E42;
+    --jade:#63CFB2; --jade-s:#153B2F; --gold:#E4BA5E; --line:#3D3324; --sh:rgba(0,0,0,.35);
+  }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html{-webkit-text-size-adjust:100%}
   body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -29,6 +37,7 @@
   .top{position:sticky;top:0;z-index:20;background:var(--paper);padding:calc(12px + env(safe-area-inset-top)) 0 8px;border-bottom:1px solid var(--line)}
   .top .row{display:flex;align-items:center;gap:10px}
   .badge{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .themebtn{font:inherit;font-size:15px;line-height:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 8px;cursor:pointer;margin-left:6px}
   .toggle{margin-left:auto;display:inline-flex;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--card)}
   .toggle button{font:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--sub);padding:6px 11px;cursor:pointer}
   .toggle button.on.vn{background:var(--vn);color:#fff}
@@ -239,12 +248,31 @@
   .recbtn{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:8px 13px;cursor:pointer}
   .qend{background:var(--jade-s);border-radius:16px;padding:24px 18px;text-align:center}
   .qend .qscore{font-size:40px;font-weight:800;color:var(--jade)}
+  /* ===== 반응형: 시스템·화면 폭에 맞춰 자동 ===== */
+  html{background:var(--paper)}
+  @media(min-width:680px){
+    body{max-width:720px;padding-left:26px;padding-right:26px}
+    .bgrid{grid-template-columns:repeat(3,1fr)}
+    h1{font-size:28px}
+    .steprow{padding:13px 16px} .steprow .st{font-size:15.5px} .steprow .ss{font-size:12.5px}
+    .qcard{padding:30px 24px} .qcard .qko{font-size:30px} .qans .qvn{font-size:32px}
+    .lb{max-width:70%}
+  }
+  @media(min-width:1024px){
+    body{max-width:900px;padding-top:0;box-shadow:0 0 0 1px var(--line)}
+    .bgrid{grid-template-columns:repeat(4,1fr)}
+    .steprows{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .steprows .stephead{grid-column:1 / -1}
+    .lb{max-width:60%}
+  }
+  @media(min-width:1024px) and (hover:hover){ .steprow:hover,.bw:hover,.arow:hover,.srow:hover,.lvcard:hover,.qpick button:hover{filter:brightness(1.04);transition:filter .12s} }
 </style>
 </head>
 <body class="vn">
   <div class="top">
     <div class="row">
       <span class="badge">RYONG 언어 · 미리보기</span>
+      <button id="themeBtn" class="themebtn" onclick="cycleTheme()" title="테마: 시스템/라이트/다크">🖥️</button>
       <span class="toggle">
         <button id="tVN" class="on vn" onclick="setLang('vn')">🇻🇳 베트남어</button>
         <button id="tEN" class="en" onclick="setLang('en')">🇬🇧 영어</button>
@@ -349,10 +377,10 @@
     실제 시스템은 레벨 0~5, 수십 패턴, 전 영역으로 확장됩니다. (음성: 진짜 뉴럴 HoaiMy·NamMinh)
   </div>
 
-<script src="live-data.js?v=8"></script>
-<script src="word-bank.js?v=8"></script>
-<script src="sentence-bank.js?v=8"></script>
-<script src="advanced-content.js?v=8"></script>
+<script src="live-data.js?v=9"></script>
+<script src="word-bank.js?v=9"></script>
+<script src="sentence-bank.js?v=9"></script>
+<script src="advanced-content.js?v=9"></script>
 <script>
 /* ===== 4개 레슨 × (베트남어/영어) ===== */
 var LESSONS=[
@@ -504,7 +532,7 @@ var LESSONS=[
 
 var LESSON=0, LANG="vn", rate=0.85, cur=null;
 var AUD={}, curAudio=null, AUD_READY=false, AUD_P=null;
-AUD_P=fetch("audio/manifest.json?v=8").then(function(r){return r.json();}).then(function(j){AUD=j||{};AUD_READY=true;}).catch(function(){AUD_READY=true;});
+AUD_P=fetch("audio/manifest.json?v=9").then(function(r){return r.json();}).then(function(j){AUD=j||{};AUD_READY=true;}).catch(function(){AUD_READY=true;});
 function D(){return LESSONS[LESSON][LANG];}
 function voice(lc){var vs=speechSynthesis?speechSynthesis.getVoices():[];return vs.filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf(lc.toLowerCase().slice(0,2))===0;})[0]||null;}
 var __unlocked=false;
@@ -549,6 +577,17 @@ function ttsSpeak(text,el,lc,onDone){
 window.setRate=function(r,b){rate=r;document.querySelectorAll(".speed button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");};
 function arrows(s){return s.replace(/([→↗↘~↧]+)/g,'<span class="up">$1</span>');}
 function jsq(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+/* 🎨 테마: 시스템(auto) ↔ 라이트 ↔ 다크 */
+function themeMode(){ try{return localStorage.getItem("ryong_theme")||"auto";}catch(e){return "auto";} }
+function applyTheme(m){
+  var r=document.documentElement;
+  if(m==="light"||m==="dark") r.setAttribute("data-theme",m); else r.removeAttribute("data-theme");
+  try{localStorage.setItem("ryong_theme",m);}catch(e){}
+  var b=document.getElementById("themeBtn"); if(b){ b.textContent=(m==="light"?"☀️":m==="dark"?"🌙":"🖥️"); b.title="테마: "+(m==="light"?"라이트":m==="dark"?"다크":"시스템 자동"); }
+  var dark=(m==="dark")||(m==="auto"&&window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches);
+  var mc=document.querySelector('meta[name="theme-color"]'); if(mc)mc.content=dark?"#211B12":"#1C7A63";
+}
+window.cycleTheme=function(){ var m=themeMode(); applyTheme(m==="auto"?"light":(m==="light"?"dark":"auto")); };
 window.setLang=function(l){LANG=l;document.body.className=l;document.getElementById("tVN").classList.toggle("on",l==="vn");document.getElementById("tEN").classList.toggle("on",l==="en");render();window.scrollTo(0,0);};
 window.pickLesson=function(i){LESSON=i;renderTabs();render();window.scrollTo(0,0);};
 function renderTabs(){document.getElementById("lessonTabs").innerHTML=LESSONS.map(function(L,i){return '<button class="'+(i===LESSON?"on":"")+'" onclick="pickLesson('+i+')">'+L.tab+'</button>';}).join("");}
@@ -917,11 +956,13 @@ function renderHome(){
     h+='<button class="contcard" onclick="openStep('+DB.lastStep+')">↩ <b>이어보기</b> — '+(ls.no?ls.no+'. ':'')+ls.t+'<span>▶</span></button>'; }
   if(window.__deferredPrompt){ h+='<button class="todaycard" style="background:var(--jade)" onclick="installApp()">📲 <b>홈 화면에 앱으로 설치</b> — 오프라인에서도 열려요<span>▶</span></button>'; }
   h+='<p class="lead" style="margin-top:12px">순서대로 1 → 23. 한 칸을 누르면 학습으로, 끝나면 위 <b>📚 커리큘럼으로</b>. 🎓 복습·시험으로 말하기를 점검하면 <b>⏰복습 대기</b>에 쌓여요.</p>';
+  h+='<div class="steprows">';
   STEPS.forEach(function(s,i){
     if(s.lv){ h+='<div class="stephead">'+s.lv+'</div>'; return; }
     var badge=s.icon?s.icon:s.no, done=DB.visited[i]?'<span class="vck">✓</span>':'';
     h+='<button class="steprow'+(s.hot?' hot':'')+'" onclick="openStep('+i+')"><div class="sn">'+badge+'</div><div class="stx"><div class="st">'+s.t+done+'</div><div class="ss">'+s.ss+'</div></div><div class="sarrow">→</div></button>';
   });
+  h+='</div>';
   h+='<div class="note" style="margin-top:20px">🎧 모든 단어·문장은 <b>진짜 뉴럴 음성</b>으로 탭하면 들려요. 💾 진도·연속일수·숙지 단어·복습은 <b>이 폰에 자동 저장</b>돼요. 노트 없이 <b>이 앱 하나로</b>.</div>';
   document.getElementById("homeView").innerHTML=h;
 }
@@ -1061,7 +1102,7 @@ window.livePick=function(i){
 
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){};
 if(("ontouchstart" in window)||navigator.maxTouchPoints>0){var ah=document.getElementById("audioHint");if(ah)ah.style.display="block";}
-dbLoad();renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
+applyTheme(themeMode());dbLoad();renderTabs();render();renderBest100();renderApply();renderMid();renderLiveList();renderBank();renderHome();showView("home");
 if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
 window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); window.__deferredPrompt=e; if(document.getElementById("homeView")&&getComputedStyle(document.getElementById("homeView")).display!=="none") renderHome(); });
 window.installApp=function(){ var p=window.__deferredPrompt; if(!p)return; p.prompt(); p.userChoice.finally(function(){ window.__deferredPrompt=null; renderHome(); }); };
